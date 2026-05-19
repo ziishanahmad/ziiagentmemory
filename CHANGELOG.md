@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.9.21] — 2026-05-19
+
+Quality + integration wave. Native OpenCode plugin with full Claude Code hook parity lands as the headline. Five user-blocking bug fixes alongside: MCP `memory_recall` returning the wrong shape, env-file `AGENTMEMORY_DROP_STALE_INDEX` silently ignored, hook scripts crashing on Windows usernames with spaces, viewer search inputs interrupting CJK IME composition, and the v0.9.19 iii-console installer workaround can come out now that upstream is fixed.
+
+### Added
+
+- **OpenCode plugin with 22 auto-capture hooks** ([PR #237](https://github.com/rohitg00/agentmemory/pull/237) by [@cl0ckt0wer](https://github.com/cl0ckt0wer), closes [#236](https://github.com/rohitg00/agentmemory/issues/236) + [#244](https://github.com/rohitg00/agentmemory/issues/244)). Complete OpenCode plugin in `plugin/opencode/` matching Claude Code hook parity. Covers the full OpenCode lifecycle:
+  - **Session lifecycle** (8 hooks): `session.created`, `session.idle`, `session.status`, `session.compacted`, `session.updated`, `session.diff`, `session.deleted`, `session.error`
+  - **Messages** (3 hooks): `chat.message`, `message.updated` (user + assistant), `message.removed`
+  - **Tool lifecycle** (2 hooks): `message.part.updated` (ToolPart completed/error) + `tool.execute.before`
+  - **Two-layer enrichment pipeline**: memory context injected via `/context` on first turn, file enrichment via `/enrich` on subsequent turns with stashed files
+  - **Two slash commands**: `/recall` (memory search) and `/remember` (save insight)
+  - Full gap analysis documented in `plugin/opencode/README.md`
+
+### Fixed
+
+- **`memory_recall` endpoint + format/token_budget forwarding** ([PR #516](https://github.com/rohitg00/agentmemory/pull/516) by [@serhiizghama](https://github.com/serhiizghama), closes [#507](https://github.com/rohitg00/agentmemory/issues/507) + [#440](https://github.com/rohitg00/agentmemory/issues/440)). The MCP `memory_recall` tool always returned compact mode and dropped the `format` + `token_budget` params. Fixed at two root causes: (1) the standalone shim was routing through `/agentmemory/smart-search` instead of `/agentmemory/search`; (2) the local-fallback path didn't read `format` or `token_budget` off the request. Now routes to the correct endpoint, forwards both params end-to-end, and defaults `format` to `"full"` matching the documented MCP schema. Regression test covers URL routing + body shape + the no-smart-search assertion.
+
+- **env-file `AGENTMEMORY_DROP_STALE_INDEX` flag now honored** ([PR #461](https://github.com/rohitg00/agentmemory/pull/461) by [@honor2030](https://github.com/honor2030), closes [#456](https://github.com/rohitg00/agentmemory/issues/456)). Setting `AGENTMEMORY_DROP_STALE_INDEX=true` in `~/.agentmemory/.env` was silently ignored because the boot path read `process.env` directly instead of going through `getMergedEnv()`. New `isDropStaleIndexEnabled()` config helper reads the merged env so the file-based setting now fires. Combined with [#455](https://github.com/rohitg00/agentmemory/issues/455) + [#469](https://github.com/rohitg00/agentmemory/issues/469) user reports, this is the unblock path for the stale-index server-crash recovery loop.
+
+- **Windows hook scripts quote plugin paths correctly** ([PR #487](https://github.com/rohitg00/agentmemory/pull/487) by [@honor2030](https://github.com/honor2030), closes [#477](https://github.com/rohitg00/agentmemory/issues/477)). Hook command strings in `plugin/hooks/hooks.json` + `plugin/hooks/hooks.codex.json` referenced `${CLAUDE_PLUGIN_ROOT}/scripts/*.mjs` without quotes. Windows users with spaces in their username (`C:\\Users\\Rohit Ghumare\\.claude\\plugins\\...`) had every hook crash on the unquoted path. Added quotes around every script path + regression test in `test/codex-plugin.test.ts` covering the shape of the full hooks table.
+
+- **Viewer search inputs honor IME composition** ([PR #517](https://github.com/rohitg00/agentmemory/pull/517) by [@jonathanzhan1975](https://github.com/jonathanzhan1975)). CJK users typing in the viewer's Memories / Lessons / Actions / Crystals / Graph search inputs hit mid-character interruption — every keystroke fired the existing `oninput=` re-render handler, which captured/replaced the input value and broke the IME composition mid-syllable. New `bindImeSafeSearch` helper listens for `compositionstart` / `compositionend` + checks `event.isComposing` and defers re-render until the composition completes. `capture/restoreSearchFocus` keeps cursor position across re-renders. Five search inputs migrated off inline `oninput=` to the safe binding.
+
+### Changed
+
+- **Drop iii-console installer `--next` workaround** ([PR #546](https://github.com/rohitg00/agentmemory/pull/546)). v0.9.19 routed first-run iii-console install through `bash -s -- --next` to dodge an upstream tag-prefix bug at [iii-hq/iii#1652](https://github.com/iii-hq/iii/issues/1652) (jq filter rejected `iii/v0.12.0` slash-prefixed tags). Upstream [iii-hq/iii#1660](https://github.com/iii-hq/iii/pull/1660) shipped 2026-05-19 with the fix; the installer at `install.iii.dev/console/main/install.sh` is a thin CDN proxy serving `raw.githubusercontent.com/iii-hq/iii/main/console/install.sh` so the fix is live without an iii release tag. Reverted to the canonical bare `curl ... | sh` invocation and dropped the workaround comment block.
+
+### Infrastructure
+
+- 92 test files, 1043 tests pass on `chore(release): v0.9.21`.
+- Bundles 5 user-blocking fixes plus one major contributor feature (OpenCode plugin from @cl0ckt0wer with 22 auto-capture hooks). Two contributors landing first PRs this release: @serhiizghama and @jonathanzhan1975.
+
+[0.9.21]: https://github.com/rohitg00/agentmemory/compare/v0.9.20...v0.9.21
+
 ## [0.9.20] — 2026-05-18
 
 Hotfix: revert the Codex Stop → session-end chain shipped in v0.9.19.
