@@ -19,6 +19,18 @@ function safeParseInt(value: string | undefined, fallback: number): number {
 const DATA_DIR = join(homedir(), ".agentmemory");
 const ENV_FILE = join(DATA_DIR, ".env");
 
+/**
+ * Resolved paths that the runtime actually reads. Exported so error
+ * messages can show users the exact location where their flags belong,
+ * which matters when HOME differs from the expected user dir (LaunchAgent
+ * plists, systemd units, Docker, etc.).
+ */
+export const RESOLVED_PATHS = {
+  dataDir: DATA_DIR,
+  envFile: ENV_FILE,
+  envFileExists: (): boolean => existsSync(ENV_FILE),
+};
+
 function loadEnvFile(): Record<string, string> {
   if (!existsSync(ENV_FILE)) return {};
   const content = readFileSync(ENV_FILE, "utf-8");

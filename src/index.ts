@@ -12,6 +12,7 @@ import {
   isConsolidationEnabled,
   isContextInjectionEnabled,
   isDropStaleIndexEnabled,
+  RESOLVED_PATHS,
 } from "./config.js";
 import {
   createProvider,
@@ -387,18 +388,40 @@ async function main() {
             `AGENTMEMORY_DROP_STALE_INDEX=true is set — discarding the persisted ` +
             `vectors. Live observations will rebuild the index over time.`,
         );
+        // Persist the empty vector index back so subsequent starts don't
+        // trip the same guard. Without this, the KV still holds the stale
+        // payload, so removing AGENTMEMORY_DROP_STALE_INDEX from .env would
+        // crash-loop the server again on the next boot.
+        await indexPersistence.save().catch((err) => {
+          console.warn(
+            `[agentmemory] Failed to persist cleared vector index:`,
+            err,
+          );
+        });
       } else {
+        const envExists = RESOLVED_PATHS.envFileExists();
         throw new Error(
           `[agentmemory] Refusing to start: persisted vector index has ` +
             `${mismatches.length} of ${loaded.vector.size} vectors with the ` +
             `wrong dimension. Active provider (${embeddingProvider?.name}) ` +
             `declares ${activeDim}; dimensions seen on disk: ${distinct}. ` +
             `First mismatched obsIds: ${sample}. Loading would silently corrupt ` +
-            `search (cross-dimension cosine returns 0). Choose one:\n` +
-            `  - Re-embed the existing index against the new provider, then start.\n` +
-            `  - Set AGENTMEMORY_DROP_STALE_INDEX=true to discard the persisted ` +
-            `vectors and rebuild from live observations.\n` +
-            `  - Switch the embedding provider back to the one that wrote the index.`,
+            `search (cross-dimension cosine returns 0).\n` +
+            `\n` +
+            `Resolved paths:\n` +
+            `  data dir: ${RESOLVED_PATHS.dataDir}\n` +
+            `  env file: ${RESOLVED_PATHS.envFile} (exists: ${envExists})\n` +
+            `\n` +
+            `Recovery — pick ONE:\n` +
+            `  1. One-shot drop + rebuild (recommended):\n` +
+            `       echo 'AGENTMEMORY_DROP_STALE_INDEX=true' >> ${RESOLVED_PATHS.envFile}\n` +
+            `       # restart agentmemory; the flag can be removed after the next clean boot.\n` +
+            `  2. Re-embed the existing index against the new provider, then start.\n` +
+            `  3. Switch the embedding provider back to the one that wrote the index.\n` +
+            `\n` +
+            `If running under a service manager (LaunchAgent, systemd, Docker), confirm\n` +
+            `HOME points at the user account that owns ${RESOLVED_PATHS.dataDir} —\n` +
+            `the .env file above is what the running process actually reads.`,
         );
       }
     } else {
