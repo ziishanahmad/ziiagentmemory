@@ -501,6 +501,19 @@ export function registerGraphFunction(
           let existing: GraphNode | null = null;
           if (existingId) {
             existing = await kv.get<GraphNode>(KV.graphNodes, existingId);
+            // #825 follow-up: name-index lookups can resolve into
+            // pre-reset rows. Drop them so extract writes a fresh
+            // node + index entry instead of silently reconnecting
+            // to a legacy orphan (which would keep the snapshot at
+            // 0 forever after a reset).
+            if (
+              existing &&
+              snap.resetAt &&
+              typeof existing.createdAt === "string" &&
+              existing.createdAt < snap.resetAt
+            ) {
+              existing = null;
+            }
           }
 
           if (existing) {
@@ -540,6 +553,15 @@ export function registerGraphFunction(
           let existing: GraphEdge | null = null;
           if (existingId) {
             existing = await kv.get<GraphEdge>(KV.graphEdges, existingId);
+            // Same #825 orphan check as the node path above.
+            if (
+              existing &&
+              snap.resetAt &&
+              typeof existing.createdAt === "string" &&
+              existing.createdAt < snap.resetAt
+            ) {
+              existing = null;
+            }
           }
 
           if (existing) {
@@ -813,9 +835,13 @@ export function registerGraphFunction(
       // (operator opt-in to attempt rebuild on a corpus they know is
       // small enough — typically under 10K nodes on the default iii
       // state adapter).
+      // Strict boolean check on force — accept only literal `true`,
+      // never truthy strings/numbers, so a hand-crafted JSON payload
+      // can't accidentally bypass the legacy-corpus safeguard.
+      const forceRebuild = data?.force === true;
       try {
         const existing = await readSnapshot(kv);
-        if (!existing && !data?.force) {
+        if (!existing && !forceRebuild) {
           logger.warn("Graph snapshot rebuild refused: no prior snapshot", {
             hint: "legacy corpus or empty store",
           });
@@ -950,7 +976,17 @@ export function registerGraphFunction(
   // what we are leaving behind here.
   sdk.registerFunction("mem::graph-reset", async () => {
     const started = Date.now();
-    await kv.set(KV.graphSnapshot, SNAPSHOT_KEY, emptySnapshot());
+    // Stamp resetAt=now on the empty snapshot. Future
+    // mem::graph-extract calls compare each name-index lookup's
+    // existing node `createdAt` against this timestamp; anything
+    // older counts as an orphan and is dropped from the merge path,
+    // forcing extract to write a fresh row instead of reconnecting
+    // to a pre-reset entry.
+    const resetSnapshot: GraphSnapshot = {
+      ...emptySnapshot(),
+      resetAt: new Date().toISOString(),
+    };
+    await kv.set(KV.graphSnapshot, SNAPSHOT_KEY, resetSnapshot);
     const counts: Record<string, number> = {
       [KV.graphSnapshot]: 1,
     };

@@ -1660,16 +1660,26 @@ export function registerMcpEndpoints(
             // cross-agent rows when isolated mode is on. Mirror the
             // search-side filter explicitly here; the upstream filter
             // doesn't apply to a raw kv.list.
+            //
+            // Fail-closed: if isolated mode is on but no AGENT_ID is
+            // available, return an empty `relevant` array rather than
+            // letting every memory through. The mem::search call
+            // above already throws in this case, but the kv.list feed
+            // is a separate path that has to enforce isolation on its
+            // own.
             const isolated = isAgentScopeIsolated();
             const activeAgentId = isolated ? getAgentId() : undefined;
-            const relevant = memories
-              .filter((m) => m.isLatest)
-              .filter(
-                (m) =>
-                  activeAgentId === undefined ||
-                  m.agentId === activeAgentId,
-              )
-              .slice(0, 5);
+            const relevant =
+              isolated && activeAgentId === undefined
+                ? []
+                : memories
+                    .filter((m) => m.isLatest)
+                    .filter(
+                      (m) =>
+                        activeAgentId === undefined ||
+                        m.agentId === activeAgentId,
+                    )
+                    .slice(0, 5);
             return {
               status_code: 200,
               body: {
