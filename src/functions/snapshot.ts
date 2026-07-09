@@ -21,7 +21,10 @@ const COMMIT_HASH_RE = /^[0-9a-f]{7,40}$/i;
 const execFileAsync = promisify(execFile);
 
 async function gitExec(dir: string, args: string[]): Promise<string> {
-  const { stdout } = await execFileAsync("git", args, { cwd: dir });
+  // #1007: on Windows, execFile("git") can fail if git is only on
+  // the MSYS/Git-Bash PATH and not the system PATH. Use shell: true
+  // so the OS resolves git via PATH lookup.
+  const { stdout } = await execFileAsync("git", args, { cwd: dir, shell: true });
   return stdout.trim();
 }
 
@@ -223,10 +226,119 @@ export function registerSnapshotFunction(
         });
         return { success: true, commitHash: data.commitHash };
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
+        const msg = err instanceof Error ? err.message
+          : typeof err === "object" && err !== null ? JSON.stringify(err)
+          : String(err);
         logger.error("Snapshot restore failed", { error: msg });
         return { success: false, error: msg };
       }
     },
   );
+}
+
+/**
+ * #1007: Auto-restore from the latest snapshot commit on daemon startup.
+ *
+ * Called after registerSnapshotFunction during boot. Checks:
+ * 1. Snapshot dir exists and has git history (at least 1 commit)
+ * 2. The KV store is empty (no memories) — avoids overwriting new data
+ *
+ * If both conditions are met, restores from HEAD. Errors are logged but
+ * never thrown — a failed restore should not prevent daemon startup.
+ *
+ * Set AGENTMEMORY_AUTO_RESTORE=false to disable.
+ */
+export async function autoRestoreFromSnapshot(
+  kv: StateKV,
+  snapshotDir: string,
+): Promise<void> {
+  // Check if snapshot dir has git history
+  if (!existsSync(join(snapshotDir, ".git"))) {
+    return;
+  }
+
+  // Check if there's at least one commit
+  let headHash: string;
+  try {
+    headHash = await gitExec(snapshotDir, ["rev-parse", "HEAD"]);
+  } catch {
+    // No commits yet — nothing to restore
+    return;
+  }
+
+  if (!headHash || !COMMIT_HASH_RE.test(headHash)) {
+    return;
+  }
+
+  // Only restore if the store is empty — don't overwrite live data
+  const existingMemories = await kv.list<Memory>(KV.memories);
+  if (existingMemories.length > 0) {
+    logger.info("Auto-restore skipped — store has existing memories", {
+      count: existingMemories.length,
+    });
+    return;
+  }
+
+  try {
+    await gitExec(snapshotDir, ["checkout", headHash, "--", "state.json"]);
+    const content = readFileSync(join(snapshotDir, "state.json"), "utf-8");
+    const state = JSON.parse(content) as {
+      sessions?: Array<{ id: string } & Record<string, unknown>>;
+      memories?: Array<{ id: string } & Record<string, unknown>>;
+      graphNodes?: Array<{ id: string } & Record<string, unknown>>;
+      observations?: Record<
+        string,
+        Array<{ id: string } & Record<string, unknown>>
+      >;
+      accessLogs?: AccessLogExport[];
+    };
+
+    if (state.sessions) {
+      for (const session of state.sessions) {
+        await kv.set(KV.sessions, session.id, session);
+      }
+    }
+    if (state.memories) {
+      for (const memory of state.memories) {
+        await kv.set(KV.memories, memory.id, memory);
+      }
+    }
+    if (state.graphNodes) {
+      for (const node of state.graphNodes) {
+        await kv.set(KV.graphNodes, node.id, node);
+      }
+    }
+    if (state.observations) {
+      for (const [sessionId, obs] of Object.entries(state.observations)) {
+        for (const o of obs) {
+          await kv.set(KV.observations(sessionId), o.id, o);
+        }
+      }
+    }
+    if (state.accessLogs) {
+      for (const log of state.accessLogs) {
+        await kv.set(KV.accessLog, log.memoryId, log);
+      }
+    }
+
+    // Restore HEAD working tree
+    await gitExec(snapshotDir, ["checkout", "HEAD", "--", "state.json"]);
+
+    await recordAudit(kv, "import", "mem::snapshot-restore", [], {
+      commitHash: headHash,
+      autoRestore: true,
+      sessions: state.sessions?.length || 0,
+      memories: state.memories?.length || 0,
+      graphNodes: state.graphNodes?.length || 0,
+    });
+
+    logger.info("Auto-restore from snapshot succeeded", {
+      commitHash: headHash,
+      memories: state.memories?.length || 0,
+      sessions: state.sessions?.length || 0,
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : typeof err === "object" ? JSON.stringify(err) : String(err);
+    logger.warn("Auto-restore from snapshot failed", { error: msg });
+  }
 }

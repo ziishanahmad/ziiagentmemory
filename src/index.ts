@@ -98,7 +98,7 @@ import { DedupMap } from "./functions/dedup.js";
 import { registerHealthMonitor } from "./health/monitor.js";
 import { initMetrics, OTEL_CONFIG } from "./telemetry/setup.js";
 import { VERSION } from "./version.js";
-import { bootLog } from "./logger.js";
+import { bootLog, bootWarn } from "./logger.js";
 import { mkdirSync, writeFileSync, unlinkSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
@@ -517,6 +517,72 @@ async function main() {
         `[agentmemory] Failed to backfill memories into BM25:`,
         err,
       );
+    }
+  }
+
+  // #1007: auto-restore from latest snapshot on startup. Only restores
+  // when the KV store is empty (no memories) to avoid overwriting live
+  // data. Set AGENTMEMORY_AUTO_RESTORE=false to disable. Runs after all
+  // functions are registered so kv.list / kv.set work.
+  if (snapshotConfig.enabled && getEnvVar("AGENTMEMORY_AUTO_RESTORE") !== "false") {
+    bootLog(`Auto-restore: checking for snapshot…`);
+    // Use fetch to call the REST API for snapshot restore. The SDK trigger
+    // path for state::set fails during boot (deserialization error on
+    // complex value objects). REST API goes through the HTTP adapter which
+    // handles serialization correctly.
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const { execFile } = await import("node:child_process");
+      const { promisify } = await import("node:util");
+      const { existsSync } = await import("node:fs");
+      const execFileAsync = promisify(execFile);
+      const snapshotDir = snapshotConfig.dir;
+
+      // Check if store is empty
+      const healthRes = await fetch(
+        `http://localhost:${config.restPort}/agentmemory/memories`,
+        { signal: AbortSignal.timeout(5000) },
+      );
+      if (healthRes.ok) {
+        const memData = await healthRes.json() as { memories?: unknown[] };
+        if (memData.memories && memData.memories.length > 0) {
+          bootLog(`Auto-restore: skipped, store has existing memories`);
+          // Skip restore
+        } else if (existsSync(snapshotDir + "/.git")) {
+          const { stdout } = await execFileAsync(
+            "git", ["rev-parse", "HEAD"],
+            { cwd: snapshotDir, shell: true },
+          );
+          const headHash = stdout.trim();
+          if (headHash) {
+            bootLog(`Auto-restore: restoring from ${headHash.slice(0, 8)}…`);
+            const restoreRes = await fetch(
+              `http://localhost:${config.restPort}/agentmemory/snapshot/restore`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ commitHash: headHash }),
+                signal: AbortSignal.timeout(30000),
+              },
+            );
+            if (restoreRes.ok) {
+              const result = await restoreRes.json() as { success?: boolean };
+              if (result?.success) {
+                bootWarn(`Auto-restore: succeeded from ${headHash.slice(0, 8)}`);
+              } else {
+                bootWarn(`Auto-restore: restore returned non-success`);
+              }
+            } else {
+              bootWarn(`Auto-restore: restore HTTP ${restoreRes.status}`);
+            }
+          }
+        } else {
+          bootLog(`Auto-restore: no snapshot directory found`);
+        }
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      bootWarn(`Auto-restore: failed — ${msg}`);
     }
   }
 
