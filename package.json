@@ -1,6 +1,6 @@
 {
   "name": "ziiagentmemory",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Persistent memory for AI coding agents — CJK-aware dedup, memory_update versioning, standalone MCP server",
   "type": "module",
   "main": "dist/index.mjs",
