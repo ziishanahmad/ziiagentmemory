@@ -108,14 +108,14 @@ export function registerFileIndexFunction(sdk: ISdk, kv: StateKV): void {
         return { context: "" };
       }
 
-      const lines: string[] = ["<agentmemory-file-context>"];
+      const lines: string[] = ["<ZiiAgentMemory-file-context>"];
       for (const fh of results) {
         lines.push(`## ${fh.file}`);
         for (const obs of fh.observations) {
           lines.push(`- [${obs.type}] ${obs.title}: ${obs.narrative}`);
         }
       }
-      lines.push("</agentmemory-file-context>");
+      lines.push("</ZiiAgentMemory-file-context>");
 
       const accessedIds: string[] = [];
       for (const fh of results) {

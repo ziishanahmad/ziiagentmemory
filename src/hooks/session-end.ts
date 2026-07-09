@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 function isSdkChildContext(payload: unknown): boolean {
-  if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+  if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
   if (!payload || typeof payload !== "object") return false;
   return (payload as { entrypoint?: unknown }).entrypoint === "sdk-ts";
 }
 
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 
 function authHeaders(): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json" };
@@ -32,7 +32,7 @@ async function main() {
 
   const sessionId = ((data.session_id || data.sessionId) as string) || "unknown";
 
-  fetch(`${REST_URL}/agentmemory/session/end`, {
+  fetch(`${REST_URL}/ziiagentmemory/session/end`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ sessionId }),
@@ -40,14 +40,14 @@ async function main() {
   }).catch(() => {});
 
   if (process.env["CONSOLIDATION_ENABLED"] === "true") {
-    fetch(`${REST_URL}/agentmemory/crystals/auto`, {
+    fetch(`${REST_URL}/ziiagentmemory/crystals/auto`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ olderThanDays: 0 }),
       signal: AbortSignal.timeout(60000),
     }).catch(() => {});
 
-    fetch(`${REST_URL}/agentmemory/consolidate-pipeline`, {
+    fetch(`${REST_URL}/ziiagentmemory/consolidate-pipeline`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ tier: "all", force: true }),
@@ -56,7 +56,7 @@ async function main() {
   }
 
   if (process.env["CLAUDE_MEMORY_BRIDGE"] === "true") {
-    fetch(`${REST_URL}/agentmemory/claude-bridge/sync`, {
+    fetch(`${REST_URL}/ziiagentmemory/claude-bridge/sync`, {
       method: "POST",
       headers: authHeaders(),
       signal: AbortSignal.timeout(30000),

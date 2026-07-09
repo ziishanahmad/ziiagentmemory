@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="../../assets/banner.png" alt="agentmemory" width="640" />
+  <img src="../../assets/banner.png" alt="ZiiAgentMemory" width="640" />
 </p>
 
 <h1 align="center">
   <img src="https://github.com/openclaw.png?size=80" alt="OpenClaw" width="28" height="28" align="center" />
-  &nbsp;agentmemory for OpenClaw
+  &nbsp;ZiiAgentMemory for OpenClaw
 </h1>
 
 <p align="center">
   <strong>Your OpenClaw agents remember everything. No more re-explaining.</strong><br/>
-  <sub>Persistent cross-session memory via <a href="https://github.com/rohitg00/agentmemory">agentmemory</a> — 95.2% retrieval accuracy on <a href="https://arxiv.org/abs/2410.10813">LongMemEval-S</a>.</sub>
+  <sub>Persistent cross-session memory via <a href="https://github.com/ziishanahmad/ziiagentmemory">ZiiAgentMemory</a> — 95.2% retrieval accuracy on <a href="https://arxiv.org/abs/2410.10813">LongMemEval-S</a>.</sub>
 </p>
 
 <p align="center">
@@ -27,28 +27,28 @@
 **Paste this prompt into OpenClaw** and it does the whole setup for you:
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111.
+Install ZiiAgentMemory for OpenClaw. Run `npx ziiagentmemory` in a separate terminal to start the memory server on localhost:3111.
 
 For zero-code setup, add this MCP server so OpenClaw gets all 43 memory tools:
 
 {
   "mcpServers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"]
+      "args": ["-y", "ziiagentmemory"]
     }
   }
 }
 
-For deeper memory integration, copy `integrations/openclaw` from the agentmemory repo to `~/.openclaw/extensions/agentmemory`, then enable it in `~/.openclaw/openclaw.json`:
+For deeper memory integration, copy `integrations/openclaw` from the ZiiAgentMemory repo to `~/.openclaw/extensions/ZiiAgentMemory`, then enable it in `~/.openclaw/openclaw.json`:
 
 {
   "plugins": {
     "slots": {
-      "memory": "agentmemory"
+      "memory": "ZiiAgentMemory"
     },
     "entries": {
-      "agentmemory": {
+      "ZiiAgentMemory": {
         "enabled": true,
         "config": {
           "base_url": "http://localhost:3111",
@@ -62,17 +62,17 @@ For deeper memory integration, copy `integrations/openclaw` from the agentmemory
   }
 }
 
-Restart OpenClaw. Verify with `curl http://localhost:3111/agentmemory/health`. Open http://localhost:3113 for the real-time viewer.
+Restart OpenClaw. Verify with `curl http://localhost:3111/ziiagentmemory/health`. Open http://localhost:3113 for the real-time viewer.
 ```
 
 That's it. OpenClaw handles the rest.
 
 ## Option 1: MCP server (zero code)
 
-Start the agentmemory server in a separate terminal:
+Start the ziiagentmemory server in a separate terminal:
 
 ```bash
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 ```
 
 Then add to your OpenClaw MCP config:
@@ -80,9 +80,9 @@ Then add to your OpenClaw MCP config:
 ```json
 {
   "mcpServers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"]
+      "args": ["-y", "ziiagentmemory"]
     }
   }
 }
@@ -96,7 +96,7 @@ Copy this folder into OpenClaw's extension directory:
 
 ```bash
 mkdir -p ~/.openclaw/extensions
-cp -r integrations/openclaw ~/.openclaw/extensions/agentmemory
+cp -r integrations/openclaw ~/.openclaw/extensions/ziiagentmemory
 ```
 
 Then enable it in `~/.openclaw/openclaw.json`:
@@ -105,10 +105,10 @@ Then enable it in `~/.openclaw/openclaw.json`:
 {
   "plugins": {
     "slots": {
-      "memory": "agentmemory"
+      "memory": "ZiiAgentMemory"
     },
     "entries": {
-      "agentmemory": {
+      "ZiiAgentMemory": {
         "enabled": true,
         "config": {
           "base_url": "http://localhost:3111",
@@ -125,31 +125,31 @@ Then enable it in `~/.openclaw/openclaw.json`:
 
 What the plugin does:
 
-- claims the `plugins.slots.memory = "agentmemory"` slot via `api.registerMemoryCapability({ promptBuilder })` so OpenClaw recognises it as the active memory plugin
+- claims the `plugins.slots.memory = "ZiiAgentMemory"` slot via `api.registerMemoryCapability({ promptBuilder })` so OpenClaw recognises it as the active memory plugin
 - recalls relevant long-term memory before the agent starts (via the `before_agent_start` hook)
 - captures completed conversation turns after the agent finishes (via the `agent_end` hook)
 - shares the same backend with Claude Code, Codex CLI, Gemini CLI, Hermes, pi, and other agents
 
 ### Memory runtime (current scope)
 
-The plugin currently registers a `promptBuilder` only — not a full `MemoryPluginRuntime` adapter. OpenClaw's `MemoryRuntimeBackendConfig` type today is `{ backend: "builtin" }` or `{ backend: "qmd" }`; both are openclaw-internal backends that don't fit agentmemory's external REST shape. The hook-driven recall + capture flow above is the working integration path. If you need OpenClaw's in-process memory-runtime APIs (e.g. `getMemorySearchManager`) backed by agentmemory, file an upstream request against `openclaw` for an `"external"` backend type and we'll wire `runtime` here once the contract supports it.
+The plugin currently registers a `promptBuilder` only — not a full `MemoryPluginRuntime` adapter. OpenClaw's `MemoryRuntimeBackendConfig` type today is `{ backend: "builtin" }` or `{ backend: "qmd" }`; both are openclaw-internal backends that don't fit ZiiAgentMemory's external REST shape. The hook-driven recall + capture flow above is the working integration path. If you need OpenClaw's in-process memory-runtime APIs (e.g. `getMemorySearchManager`) backed by ZiiAgentMemory, file an upstream request against `openclaw` for an `"external"` backend type and we'll wire `runtime` here once the contract supports it.
 
 ## Troubleshooting
 
-**Plugin validates but does not load** — make sure the folder contains `package.json`, `openclaw.plugin.json`, and `plugin.mjs`, and that `plugins.slots.memory` is set to `agentmemory`.
+**Plugin validates but does not load** — make sure the folder contains `package.json`, `openclaw.plugin.json`, and `plugin.mjs`, and that `plugins.slots.memory` is set to `ziiagentmemory`.
 
-**`plugins.slots.memory = "agentmemory"` reports `unavailable`** — upgrade to v0.9.11+. Older versions of this plugin registered hooks but never called `api.registerMemoryCapability(...)`, so the memory-slot machinery did not consider the slot claimed. The current plugin registers a memory capability (prompt builder) at startup, which is the documented OpenClaw API for occupying the slot.
+**`plugins.slots.memory = "ZiiAgentMemory"` reports `unavailable`** — upgrade to v0.9.11+. Older versions of this plugin registered hooks but never called `api.registerMemoryCapability(...)`, so the memory-slot machinery did not consider the slot claimed. The current plugin registers a memory capability (prompt builder) at startup, which is the documented OpenClaw API for occupying the slot.
 
-**Connection refused on port 3111** — the agentmemory server is not running. Start it with `npx @agentmemory/agentmemory`.
+**Connection refused on port 3111** — the ziiagentmemory server is not running. Start it with `npx ziiagentmemory`.
 
 **No memories returned** — open `http://localhost:3113` and verify observations are being captured.
 
 ## See also
 
-- [agentmemory main README](../../README.md)
+- [ZiiAgentMemory main README](../../README.md)
 - [Hermes integration](../hermes/README.md)
 - [pi integration](../pi/README.md)
 
 ## License
 
-Apache-2.0 (same as agentmemory)
+Apache-2.0 (same as ZiiAgentMemory)

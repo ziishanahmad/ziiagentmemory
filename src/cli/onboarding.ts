@@ -4,20 +4,20 @@
 // have never recorded a `firstRunAt`) or when the user passes
 // `--reset`. The flow asks for:
 //
-//   1. Which agents will be wired to agentmemory (multi-select). Each
+//   1. Which agents will be wired to ZiiAgentMemory (multi-select). Each
 //      option carries a small glyph that we reuse in /status output so
 //      the user recognises them later. The label mirrors README row 1
 //      (native plugins) and row 2 (MCP-only).
 //   2. Which LLM provider to use for compress / consolidate / graph.
 //      "skip — BM25-only mode" is a real first-class option; lots of
-//      users want agentmemory purely as a hybrid keyword + vector
+//      users want ZiiAgentMemory purely as a hybrid keyword + vector
 //      memory layer without granting LLM API keys.
 //
-// We then write `~/.agentmemory/preferences.json` and seed
-// `~/.agentmemory/.env` with a commented-out `*_API_KEY=` line for the
-// chosen provider. This matches the existing `agentmemory init` flow
+// We then write `~/.ziiagentmemory/preferences.json` and seed
+// `~/.ziiagentmemory/.env` with a commented-out `*_API_KEY=` line for the
+// chosen provider. This matches the existing `ziiagentmemory init` flow
 // closely so users who skip onboarding still get the same file via
-// `agentmemory init`.
+// `ziiagentmemory init`.
 
 import { copyFile, mkdir } from "node:fs/promises";
 import { constants as fsConstants, existsSync, writeFileSync } from "node:fs";
@@ -32,12 +32,12 @@ import type { ConnectResult } from "./connect/types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Native plugin row — these agents ship an agentmemory plugin or
+// Native plugin row — these agents ship an ZiiAgentMemory plugin or
 // first-party integration. Glyphs match SkillKit's published set
 // where they overlap; the rest fall back to the generic `◇`.
 // Display glyph per agent; the agent set itself comes from connect's
 // ADAPTERS (single source of truth) so the picker can never drift from
-// what `agentmemory connect` can actually wire (#872). Unknown adapters
+// what `ziiagentmemory connect` can actually wire (#872). Unknown adapters
 // fall back to a neutral glyph.
 const AGENT_GLYPH: Record<string, string> = {
   "claude-code": "⟁",
@@ -87,7 +87,7 @@ export function getInitialAgentValues(
 }
 
 // Mirror src/cli.ts findEnvExample so onboarding ships the same .env
-// skeleton whether called directly or via `agentmemory init`. We
+// skeleton whether called directly or via `ziiagentmemory init`. We
 // duplicate (rather than import) so the onboarding module doesn't
 // pull cli.ts's top-level side effects into the test runner.
 function findEnvExample(): string | null {
@@ -104,7 +104,7 @@ function findEnvExample(): string | null {
 }
 
 async function seedEnvFile(provider: string | null): Promise<string | null> {
-  const target = join(homedir(), ".agentmemory", ".env");
+  const target = join(homedir(), ".ziiagentmemory", ".env");
   const dir = dirname(target);
   await mkdir(dir, { recursive: true });
 
@@ -122,8 +122,8 @@ async function seedEnvFile(provider: string | null): Promise<string | null> {
     // edit. This matches the shape of the bundled `.env.example`
     // without forcing us to keep two copies in sync.
     const lines = [
-      "# agentmemory environment — uncomment what you need",
-      "# AGENTMEMORY_URL=http://localhost:3111",
+      "# ZiiAgentMemory environment — uncomment what you need",
+      "# ZIIAGENTMEMORY_URL=http://localhost:3111",
       "",
     ];
     const envKey = PROVIDERS.find((x) => x.value === provider)?.envKey;
@@ -168,23 +168,23 @@ export async function runOnboarding(): Promise<OnboardingResult> {
 
   p.note(
     [
-      "Welcome to agentmemory.",
+      "Welcome to ZiiAgentMemory.",
       "",
       "Persistent memory for your AI coding agents. We'll pick which",
       "agents to wire up and which provider (if any) handles compression",
-      "and consolidation. Either step can be changed later in ~/.agentmemory/.env.",
+      "and consolidation. Either step can be changed later in ~/.ziiagentmemory/.env.",
     ].join("\n"),
     "first-run setup",
   );
 
   const agentsPicked = await p.multiselect<string>({
-    message: "Which agents will use agentmemory? (space to toggle, enter to confirm)",
+    message: "Which agents will use ZiiAgentMemory? (space to toggle, enter to confirm)",
     options: buildAgentOptions(),
     required: false,
     initialValues: getInitialAgentValues(),
   });
   if (p.isCancel(agentsPicked)) {
-    p.cancel("Setup cancelled. Re-run any time with: agentmemory --reset");
+    p.cancel("Setup cancelled. Re-run any time with: ZiiAgentMemory --reset");
     process.exit(0);
   }
 
@@ -201,12 +201,12 @@ export async function runOnboarding(): Promise<OnboardingResult> {
   }
 
   const providerPicked = await p.select<string>({
-    message: "Which LLM provider should agentmemory use for compress/consolidate?",
+    message: "Which LLM provider should ZiiAgentMemory use for compress/consolidate?",
     options: PROVIDERS.map(({ value, label }) => ({ value, label })),
     initialValue: "anthropic",
   });
   if (p.isCancel(providerPicked)) {
-    p.cancel("Setup cancelled. Re-run any time with: agentmemory --reset");
+    p.cancel("Setup cancelled. Re-run any time with: ZiiAgentMemory --reset");
     process.exit(0);
   }
 
@@ -232,12 +232,12 @@ export async function runOnboarding(): Promise<OnboardingResult> {
     firstRunAt: new Date().toISOString(),
   });
 
-  const prefsLocation = join(homedir(), ".agentmemory", "preferences.json");
+  const prefsLocation = join(homedir(), ".ziiagentmemory", "preferences.json");
   const lines = [`✓ Saved preferences to ${prefsLocation}`];
   if (envPath) {
     lines.push(`✓ Wrote ${envPath} (edit to add your API key)`);
   } else {
-    lines.push(`! Could not write ~/.agentmemory/.env — run \`agentmemory init\` after this completes.`);
+    lines.push(`! Could not write ~/.ziiagentmemory/.env — run \`ziiagentmemory init\` after this completes.`);
   }
   if (provider) {
     const envKey = PROVIDERS.find((x) => x.value === provider)?.envKey;
@@ -245,7 +245,7 @@ export async function runOnboarding(): Promise<OnboardingResult> {
       lines.push(`  Uncomment ${envKey}= in that file to enable ${provider}.`);
     }
   } else {
-    lines.push("  No provider chosen — agentmemory will run in BM25-only mode.");
+    lines.push("  No provider chosen — ZiiAgentMemory will run in BM25-only mode.");
   }
   p.note(lines.join("\n"), "ready");
 
@@ -260,11 +260,11 @@ function enableInjectContextInEnv(envPath: string | null): boolean {
   if (!envPath || !existsSync(envPath)) return false;
   try {
     const current = readFileSync(envPath, "utf-8");
-    if (/^\s*AGENTMEMORY_INJECT_CONTEXT\s*=\s*true\b/m.test(current)) {
+    if (/^\s*ZIIAGENTMEMORY_INJECT_CONTEXT\s*=\s*true\b/m.test(current)) {
       return true;
     }
     const prefix = current.length > 0 && !current.endsWith("\n") ? "\n" : "";
-    appendFileSync(envPath, `${prefix}AGENTMEMORY_INJECT_CONTEXT=true\n`, { mode: 0o600 });
+    appendFileSync(envPath, `${prefix}ZIIAGENTMEMORY_INJECT_CONTEXT=true\n`, { mode: 0o600 });
     return true;
   } catch {
     return false;
@@ -280,7 +280,7 @@ async function maybePromptContextInjection(envPath: string | null): Promise<void
   });
 
   if (p.isCancel(enable)) {
-    p.cancel("Setup cancelled. Re-run any time with: agentmemory --reset");
+    p.cancel("Setup cancelled. Re-run any time with: ZiiAgentMemory --reset");
     process.exit(0);
   }
 
@@ -293,26 +293,26 @@ async function maybePromptContextInjection(envPath: string | null): Promise<void
   if (enable === true) {
     const wrote = enableInjectContextInEnv(envPath);
     if (wrote) {
-      p.log.success("Context injection enabled (AGENTMEMORY_INJECT_CONTEXT=true).");
+      p.log.success("Context injection enabled (ZIIAGENTMEMORY_INJECT_CONTEXT=true).");
     } else {
       p.log.warn(
-        "Could not update ~/.agentmemory/.env. Set AGENTMEMORY_INJECT_CONTEXT=true there to enable it.",
+        "Could not update ~/.ziiagentmemory/.env. Set ZIIAGENTMEMORY_INJECT_CONTEXT=true there to enable it.",
       );
     }
   } else {
-    p.log.info("Context injection left off. Set AGENTMEMORY_INJECT_CONTEXT=true later to enable.");
+    p.log.info("Context injection left off. Set ZIIAGENTMEMORY_INJECT_CONTEXT=true later to enable.");
   }
 }
 
 async function wireSelectedAgents(agents: string[]): Promise<void> {
   p.note("Wire selected agents now?", "next step");
   const confirmed = await p.confirm({
-    message: "Run `agentmemory connect <agent>` for each selected agent now? [Y/n]",
+    message: "Run `ziiagentmemory connect <agent>` for each selected agent now? [Y/n]",
     initialValue: true,
   });
 
   if (p.isCancel(confirmed) || confirmed === false) {
-    const cmds = agents.map((a) => `  agentmemory connect ${a}`);
+    const cmds = agents.map((a) => `  ziiagentmemory connect ${a}`);
     p.note(["Wire later with:", ...cmds].join("\n"), "later");
     return;
   }

@@ -161,7 +161,7 @@ export function registerObserveFunction(
             payload: { deltaBytes: bytesWritten },
             action: TriggerAction.Void(),
           });
-          if (process.env["AGENTMEMORY_IMAGE_EMBEDDINGS"] === "true") {
+          if (process.env["ZIIAGENTMEMORY_IMAGE_EMBEDDINGS"] === "true") {
             sdk.trigger({
               function_id: "mem::vision-embed",
               payload: {

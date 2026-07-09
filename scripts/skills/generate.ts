@@ -67,7 +67,7 @@ function mdEscape(s: string): string {
 function tools(): string {
   const all = getAllTools();
   const lines = [
-    `agentmemory exposes ${all.length} MCP tools. ${ESSENTIAL_TOOLS.size} are in the lean core set (\`--tools core\` or \`AGENTMEMORY_TOOLS=core\`); the rest load with \`--tools all\` (default).`,
+    `ZiiAgentMemory exposes ${all.length} MCP tools. ${ESSENTIAL_TOOLS.size} are in the lean core set (\`--tools core\` or \`ZIIAGENTMEMORY_TOOLS=core\`); the rest load with \`--tools all\` (default).`,
     "",
     "| Tool | Core | Parameters | Purpose |",
     "| --- | --- | --- | --- |",
@@ -100,7 +100,7 @@ function rest(): string {
     .filter((e) => (seen.has(e.path) ? false : (seen.add(e.path), true)))
     .sort((a, b) => a.path.localeCompare(b.path));
   const lines = [
-    `The REST API is the primary surface. All paths are under \`http://localhost:3111\` (override with \`--port\`). When \`AGENTMEMORY_SECRET\` is set, send \`Authorization: Bearer $AGENTMEMORY_SECRET\`; localhost is otherwise open.`,
+    `The REST API is the primary surface. All paths are under \`http://localhost:3111\` (override with \`--port\`). When \`ZIIAGENTMEMORY_SECRET\` is set, send \`Authorization: Bearer $ZIIAGENTMEMORY_SECRET\`; localhost is otherwise open.`,
     "",
     `${rows.length} registered endpoints:`,
     "",
@@ -124,7 +124,7 @@ function env(): string {
   }
   const sorted = [...vars].sort();
   const lines = [
-    `Configuration is read from the environment and from \`~/.agentmemory/.env\` (no \`export\` prefix). ${sorted.length} recognized variables:`,
+    `Configuration is read from the environment and from \`~/.ziiagentmemory/.env\` (no \`export\` prefix). ${sorted.length} recognized variables:`,
     "",
     ...sorted.map((v) => `- \`${v}\``),
   ];
@@ -133,7 +133,7 @@ function env(): string {
 
 function agents(): string {
   const lines = [
-    `\`agentmemory connect <agent>\` wires the memory server into a host agent. ${ADAPTERS.length} adapters:`,
+    `\`ziiagentmemory connect <agent>\` wires the memory server into a host agent. ${ADAPTERS.length} adapters:`,
     "",
     "| Agent | Name | Protocol |",
     "| --- | --- | --- |",
@@ -157,11 +157,11 @@ function hooks(): string {
   return lines.join("\n");
 }
 
-applyBlock(join(SKILLS, "agentmemory-mcp-tools", "REFERENCE.md"), "tools", tools());
-applyBlock(join(SKILLS, "agentmemory-rest-api", "REFERENCE.md"), "rest", rest());
-applyBlock(join(SKILLS, "agentmemory-config", "REFERENCE.md"), "env", env());
-applyBlock(join(SKILLS, "agentmemory-agents", "REFERENCE.md"), "agents", agents());
-applyBlock(join(SKILLS, "agentmemory-hooks", "REFERENCE.md"), "hooks", hooks());
+applyBlock(join(SKILLS, "ZiiAgentMemory-mcp-tools", "REFERENCE.md"), "tools", tools());
+applyBlock(join(SKILLS, "ZiiAgentMemory-rest-api", "REFERENCE.md"), "rest", rest());
+applyBlock(join(SKILLS, "ZiiAgentMemory-config", "REFERENCE.md"), "env", env());
+applyBlock(join(SKILLS, "ZiiAgentMemory-agents", "REFERENCE.md"), "agents", agents());
+applyBlock(join(SKILLS, "ZiiAgentMemory-hooks", "REFERENCE.md"), "hooks", hooks());
 
 if (check && process.exitCode) {
   console.error("\nSkill reference docs are stale. Run: npm run skills:gen");

@@ -1,4 +1,4 @@
-// Thin logging shim for agentmemory.
+// Thin logging shim for ZiiAgentMemory.
 //
 // iii-sdk v0.11 dropped `getContext()`, which had been the source of a
 // contextual logger in every function handler (`getContext().logger`).
@@ -11,14 +11,14 @@
 // `const ctx = getContext();` line, and rename `ctx.logger.*` to
 // `logger.*`. Nothing else changes.
 //
-// Output goes to stderr as `[agentmemory] <level> <msg> <json-fields>`.
-// The iii-engine's `iii-exec` worker runs the agentmemory binary as a
+// Output goes to stderr as `[ZiiAgentMemory] <level> <msg> <json-fields>`.
+// The iii-engine's `iii-exec` worker runs the ZiiAgentMemory binary as a
 // child process and forwards stderr into `docker logs
-// agentmemory-iii-engine-1`, so these lines end up next to the engine's
+// ZiiAgentMemory-iii-engine-1`, so these lines end up next to the engine's
 // own output without needing any OTEL wiring. If we later want
 // structured OTEL logs, this file is the only thing that changes.
 //
-// See rohitg00/agentmemory#143 follow-up — the #116 migration updated
+// See rohitg00/ZiiAgentMemory#143 follow-up — the #116 migration updated
 // test mocks but left the real `getContext()` imports in place, which
 // passed `npm test` (tests mock iii-sdk) and `npm run build` (tsdown
 // doesn't type-check) but crashed `node dist/index.mjs` on first
@@ -28,14 +28,14 @@ type Fields = Record<string, unknown> | undefined;
 
 function fmt(level: string, msg: string, fields: Fields): string {
   if (!fields || Object.keys(fields).length === 0) {
-    return `[agentmemory] ${level} ${msg}`;
+    return `[ZiiAgentMemory] ${level} ${msg}`;
   }
   try {
-    return `[agentmemory] ${level} ${msg} ${JSON.stringify(fields)}`;
+    return `[ZiiAgentMemory] ${level} ${msg} ${JSON.stringify(fields)}`;
   } catch {
     // Fields contained a circular reference or a BigInt — fall back
     // to the plain message so a log line never throws.
-    return `[agentmemory] ${level} ${msg}`;
+    return `[ZiiAgentMemory] ${level} ${msg}`;
   }
 }
 
@@ -64,16 +64,16 @@ export const logger = {
 //
 // `bootLog` is for the one-shot status lines that every register-*
 // function used to dump via `console.log` during engine startup. On a
-// fresh install that's ~25 lines of `[agentmemory] X enabled` noise
+// fresh install that's ~25 lines of `[ZiiAgentMemory] X enabled` noise
 // before the user can see a prompt. In quiet mode (default), each
 // line is captured into a buffer and discarded; the CLI surfaces a
 // single compressed summary instead. In verbose mode (set by
-// `--verbose` or `AGENTMEMORY_VERBOSE=1`) the lines pass straight
+// `--verbose` or `ZIIAGENTMEMORY_VERBOSE=1`) the lines pass straight
 // through to stderr exactly like the old console.log calls.
 
 let bootVerbose =
-  process.env["AGENTMEMORY_VERBOSE"] === "1" ||
-  process.env["AGENTMEMORY_VERBOSE"] === "true";
+  process.env["ZIIAGENTMEMORY_VERBOSE"] === "1" ||
+  process.env["ZIIAGENTMEMORY_VERBOSE"] === "true";
 
 const bootBuffer: string[] = [];
 
@@ -88,7 +88,7 @@ export function isBootVerbose(): boolean {
 export function bootLog(msg: string): void {
   if (bootVerbose) {
     try {
-      process.stderr.write(`[agentmemory] ${msg}\n`);
+      process.stderr.write(`[ZiiAgentMemory] ${msg}\n`);
     } catch {
       // stderr unavailable — drop.
     }
@@ -101,7 +101,7 @@ export function bootWarn(msg: string): void {
   // Warnings always surface; they're rare and the user needs to see
   // them even when the rest of the boot log is suppressed.
   try {
-    process.stderr.write(`[agentmemory] warn ${msg}\n`);
+    process.stderr.write(`[ZiiAgentMemory] warn ${msg}\n`);
   } catch {}
 }
 

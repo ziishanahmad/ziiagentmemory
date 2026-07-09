@@ -58,7 +58,7 @@ function requireConfiguredSecret(
   if (secret) return null;
   return {
     status_code: 503,
-    body: { error: `${feature} requires AGENTMEMORY_SECRET` },
+    body: { error: `${feature} requires ZIIAGENTMEMORY_SECRET` },
   };
 }
 
@@ -79,7 +79,7 @@ function graphDisabledResponse(): Response {
     error: "Knowledge graph not enabled",
     flag: "GRAPH_EXTRACTION_ENABLED",
     enableHow: "Set GRAPH_EXTRACTION_ENABLED=true and restart. Requires an LLM provider key.",
-    docsHref: "https://github.com/rohitg00/agentmemory#knowledge-graph",
+    docsHref: "https://github.com/rohitg00/ZiiAgentMemory#knowledge-graph",
   });
 }
 
@@ -88,25 +88,25 @@ function consolidationDisabledResponse(): Response {
     error: "Consolidation pipeline not enabled",
     flag: "CONSOLIDATION_ENABLED",
     enableHow: "Set CONSOLIDATION_ENABLED=true and restart. Requires an LLM provider key.",
-    docsHref: "https://github.com/rohitg00/agentmemory#consolidation",
+    docsHref: "https://github.com/rohitg00/ZiiAgentMemory#consolidation",
   });
 }
 
 function slotsDisabledResponse(): Response {
   return flagDisabledResponse({
     error: "Memory slots not enabled",
-    flag: "AGENTMEMORY_SLOTS",
-    enableHow: "Set AGENTMEMORY_SLOTS=true (in ~/.agentmemory/.env or the shell) and restart.",
-    docsHref: "https://github.com/rohitg00/agentmemory#memory-slots",
+    flag: "ZIIAGENTMEMORY_SLOTS",
+    enableHow: "Set ZIIAGENTMEMORY_SLOTS=true (in ~/.ziiagentmemory/.env or the shell) and restart.",
+    docsHref: "https://github.com/rohitg00/ZiiAgentMemory#memory-slots",
   });
 }
 
 function reflectDisabledResponse(): Response {
   return flagDisabledResponse({
     error: "Slot reflection not enabled",
-    flag: "AGENTMEMORY_REFLECT",
-    enableHow: "Set AGENTMEMORY_REFLECT=true (in ~/.agentmemory/.env or the shell) and restart. Requires AGENTMEMORY_SLOTS=true.",
-    docsHref: "https://github.com/rohitg00/agentmemory#memory-slots",
+    flag: "ZIIAGENTMEMORY_REFLECT",
+    enableHow: "Set ZIIAGENTMEMORY_REFLECT=true (in ~/.ziiagentmemory/.env or the shell) and restart. Requires ZIIAGENTMEMORY_SLOTS=true.",
+    docsHref: "https://github.com/rohitg00/ZiiAgentMemory#memory-slots",
   });
 }
 
@@ -166,13 +166,13 @@ export function registerApiTriggers(
   sdk.registerFunction("api::liveness",
     async (): Promise<Response> => ({
       status_code: 200,
-      body: { status: "ok", service: "agentmemory", viewerPort: getBoundViewerPort(), viewerSkipped: getViewerSkipped() },
+      body: { status: "ok", service: "ZiiAgentMemory", viewerPort: getBoundViewerPort(), viewerSkipped: getViewerSkipped() },
     }),
   );
   sdk.registerTrigger({
     type: "http",
     function_id: "api::liveness",
-    config: { api_path: "/agentmemory/livez", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/livez", http_method: "GET" },
   });
 
   sdk.registerFunction("api::config-flags",
@@ -191,7 +191,7 @@ export function registerApiTriggers(
           needsLlm: true,
           description: "Extracts entities and relations from observations into a knowledge graph.",
           enableHow: "Set GRAPH_EXTRACTION_ENABLED=true and provide an LLM key, then restart.",
-          docsHref: "https://github.com/rohitg00/agentmemory#knowledge-graph",
+          docsHref: "https://github.com/rohitg00/ZiiAgentMemory#knowledge-graph",
         },
         {
           key: "CONSOLIDATION_ENABLED",
@@ -202,29 +202,29 @@ export function registerApiTriggers(
           needsLlm: true,
           description: "Periodically summarizes sessions into semantic facts + procedures.",
           enableHow: "Set CONSOLIDATION_ENABLED=true and provide an LLM key, then restart.",
-          docsHref: "https://github.com/rohitg00/agentmemory#consolidation",
+          docsHref: "https://github.com/rohitg00/ZiiAgentMemory#consolidation",
         },
         {
-          key: "AGENTMEMORY_AUTO_COMPRESS",
+          key: "ZIIAGENTMEMORY_AUTO_COMPRESS",
           label: "LLM-powered observation compression",
           enabled: isAutoCompressEnabled(),
           default: false,
           affects: ["Memories", "Timeline"],
           needsLlm: true,
           description: "Every observation is compressed by the LLM for richer summaries (costs tokens). OFF uses zero-LLM synthetic compression.",
-          enableHow: "Set AGENTMEMORY_AUTO_COMPRESS=true and provide an LLM key.",
-          docsHref: "https://github.com/rohitg00/agentmemory/issues/138",
+          enableHow: "Set ZIIAGENTMEMORY_AUTO_COMPRESS=true and provide an LLM key.",
+          docsHref: "https://github.com/ziishanahmad/ziiagentmemory/issues/138",
         },
         {
-          key: "AGENTMEMORY_INJECT_CONTEXT",
+          key: "ZIIAGENTMEMORY_INJECT_CONTEXT",
           label: "In-conversation context injection",
           enabled: isContextInjectionEnabled(),
           default: false,
           affects: ["Hooks"],
           needsLlm: false,
           description: "Hooks write recalled context into Claude Code's conversation. OFF captures in the background without injecting.",
-          enableHow: "Set AGENTMEMORY_INJECT_CONTEXT=true and restart.",
-          docsHref: "https://github.com/rohitg00/agentmemory/issues/143",
+          enableHow: "Set ZIIAGENTMEMORY_INJECT_CONTEXT=true and restart.",
+          docsHref: "https://github.com/ziishanahmad/ziiagentmemory/issues/143",
         },
       ];
       return {
@@ -242,7 +242,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::config-flags",
     config: {
-      api_path: "/agentmemory/config/flags",
+      api_path: "/ziiagentmemory/config/flags",
       http_method: "GET",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -262,7 +262,7 @@ export function registerApiTriggers(
         status_code: statusCode,
         body: {
           status,
-          service: "agentmemory",
+          service: "ZiiAgentMemory",
           version: VERSION,
           health: health || null,
           functionMetrics,
@@ -277,7 +277,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::health",
     config: {
-      api_path: "/agentmemory/health",
+      api_path: "/ziiagentmemory/health",
       http_method: "GET",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -316,7 +316,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::observe",
     config: {
-      api_path: "/agentmemory/observe",
+      api_path: "/ziiagentmemory/observe",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -355,7 +355,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::context",
     config: {
-      api_path: "/agentmemory/context",
+      api_path: "/ziiagentmemory/context",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -417,7 +417,7 @@ export function registerApiTriggers(
       // #817: propagate agentId so the upstream isolation filter
       // applies. Honors body.agentId (POST body), ?agentId=... query
       // param, or implicit fallback to the worker's AGENT_ID when
-      // AGENTMEMORY_AGENT_SCOPE=isolated.
+      // ZIIAGENTMEMORY_AGENT_SCOPE=isolated.
       const bodyAgentId =
         typeof body.agentId === "string" && body.agentId.trim().length > 0
           ? (body.agentId as string).trim()
@@ -442,7 +442,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::search",
     config: {
-      api_path: "/agentmemory/search",
+      api_path: "/ziiagentmemory/search",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -470,7 +470,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::compress-file",
-    config: { api_path: "/agentmemory/compress-file", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/compress-file", http_method: "POST" },
   });
 
   sdk.registerFunction("api::replay::load",
@@ -491,7 +491,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::replay::load",
-    config: { api_path: "/agentmemory/replay/load", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/replay/load", http_method: "GET" },
   });
 
   sdk.registerFunction("api::replay::sessions",
@@ -508,7 +508,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::replay::sessions",
-    config: { api_path: "/agentmemory/replay/sessions", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/replay/sessions", http_method: "GET" },
   });
 
   sdk.registerFunction("api::replay::import",
@@ -554,7 +554,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::replay::import",
-    config: { api_path: "/agentmemory/replay/import-jsonl", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/replay/import-jsonl", http_method: "POST" },
   });
 
   sdk.registerFunction("api::session::start",
@@ -608,7 +608,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::session::start",
     config: {
-      api_path: "/agentmemory/session/start",
+      api_path: "/ziiagentmemory/session/start",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -647,7 +647,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::session::end",
     config: {
-      api_path: "/agentmemory/session/end",
+      api_path: "/ziiagentmemory/session/end",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -670,7 +670,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::summarize",
     config: {
-      api_path: "/agentmemory/summarize",
+      api_path: "/ziiagentmemory/summarize",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -736,7 +736,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::session::commit",
     config: {
-      api_path: "/agentmemory/session/commit",
+      api_path: "/ziiagentmemory/session/commit",
       http_method: "POST",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -771,7 +771,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::session::by-commit",
     config: {
-      api_path: "/agentmemory/session/by-commit",
+      api_path: "/ziiagentmemory/session/by-commit",
       http_method: "GET",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -798,7 +798,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::commits",
     config: {
-      api_path: "/agentmemory/commits",
+      api_path: "/ziiagentmemory/commits",
       http_method: "GET",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -837,7 +837,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::sessions",
-    config: { api_path: "/agentmemory/sessions", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/sessions", http_method: "GET" },
   });
 
   sdk.registerFunction("api::observations",
@@ -870,7 +870,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::observations",
-    config: { api_path: "/agentmemory/observations", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/observations", http_method: "GET" },
   });
 
   sdk.registerFunction("api::file-context", 
@@ -886,7 +886,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::file-context",
-    config: { api_path: "/agentmemory/file-context", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/file-context", http_method: "POST" },
   });
 
   sdk.registerFunction("api::enrich",
@@ -950,7 +950,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::enrich",
-    config: { api_path: "/agentmemory/enrich", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/enrich", http_method: "POST" },
   });
 
   sdk.registerFunction("api::remember",
@@ -998,7 +998,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::remember",
-    config: { api_path: "/agentmemory/remember", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/remember", http_method: "POST" },
   });
 
   sdk.registerFunction("api::forget", 
@@ -1024,7 +1024,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::forget",
-    config: { api_path: "/agentmemory/forget", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/forget", http_method: "POST" },
   });
 
   sdk.registerFunction("api::consolidate", 
@@ -1040,7 +1040,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::consolidate",
-    config: { api_path: "/agentmemory/consolidate", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/consolidate", http_method: "POST" },
   });
 
   sdk.registerFunction("api::patterns", 
@@ -1054,7 +1054,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::patterns",
-    config: { api_path: "/agentmemory/patterns", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/patterns", http_method: "POST" },
   });
 
   sdk.registerFunction("api::generate-rules", 
@@ -1068,7 +1068,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::generate-rules",
-    config: { api_path: "/agentmemory/generate-rules", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/generate-rules", http_method: "POST" },
   });
 
   sdk.registerFunction("api::migrate",
@@ -1101,7 +1101,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::migrate",
-    config: { api_path: "/agentmemory/migrate", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/migrate", http_method: "POST" },
   });
 
   sdk.registerFunction("api::evict", 
@@ -1117,7 +1117,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::evict",
-    config: { api_path: "/agentmemory/evict", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/evict", http_method: "POST" },
   });
 
   sdk.registerFunction("api::smart-search",
@@ -1148,7 +1148,7 @@ export function registerApiTriggers(
       // the followup-rate diagnostic can skip viewer-originated calls.
       // Body wins if both are set (advanced callers explicitly override).
       const headers = (req.headers || {}) as Record<string, string | string[] | undefined>;
-      const sourceHeader = headers["x-agentmemory-source"] ?? headers["X-Agentmemory-Source"];
+      const sourceHeader = headers["x-ZiiAgentMemory-source"] ?? headers["X-Agentmemory-Source"];
       const sourceFromHeader = Array.isArray(sourceHeader) ? sourceHeader[0] : sourceHeader;
       // Whitelist payload fields explicitly — REST endpoints never pass
       // the raw request body through to sdk.trigger (AGENTS.md security
@@ -1171,7 +1171,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::smart-search",
-    config: { api_path: "/agentmemory/smart-search", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/smart-search", http_method: "POST" },
   });
 
   // #771: read-back endpoint for the followup-rate diagnostic. Returns
@@ -1191,7 +1191,7 @@ export function registerApiTriggers(
           ...(result as Record<string, unknown>),
           caveat:
             "Directional signal: overcounts on legitimate query refinement. " +
-            "Tune via AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS.",
+            "Tune via ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS.",
         },
       };
     },
@@ -1200,7 +1200,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::diagnostic-followup",
     config: {
-      api_path: "/agentmemory/diagnostics/followup",
+      api_path: "/ziiagentmemory/diagnostics/followup",
       http_method: "GET",
       middleware_function_ids: ["middleware::api-auth"],
     },
@@ -1227,7 +1227,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::timeline",
-    config: { api_path: "/agentmemory/timeline", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/timeline", http_method: "POST" },
   });
 
   sdk.registerFunction("api::profile", 
@@ -1248,7 +1248,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::profile",
-    config: { api_path: "/agentmemory/profile", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/profile", http_method: "GET" },
   });
 
   sdk.registerFunction("api::export",
@@ -1258,7 +1258,7 @@ export function registerApiTriggers(
       // mem::export already supports maxSessions/offset internally,
       // but the HTTP endpoint hardcoded an empty payload — so /export on a
       // real corpus (40 sessions × 34K observations × 8K memories) hit the
-      // iii engine invocation timeout and `agentmemory status` reported 0.
+      // iii engine invocation timeout and `ziiagentmemory status` reported 0.
       // Pass through the query-string pagination so callers can chunk.
       const rawMax = req.query_params?.["maxSessions"];
       const rawOffset = req.query_params?.["offset"];
@@ -1281,7 +1281,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::export",
-    config: { api_path: "/agentmemory/export", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/export", http_method: "GET" },
   });
 
   sdk.registerFunction("api::import", 
@@ -1303,7 +1303,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::import",
-    config: { api_path: "/agentmemory/import", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/import", http_method: "POST" },
   });
 
   sdk.registerFunction("api::relations", 
@@ -1325,7 +1325,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::relations",
-    config: { api_path: "/agentmemory/relations", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/relations", http_method: "POST" },
   });
 
   sdk.registerFunction("api::evolve", 
@@ -1351,7 +1351,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::evolve",
-    config: { api_path: "/agentmemory/evolve", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/evolve", http_method: "POST" },
   });
 
   sdk.registerFunction("api::auto-forget", 
@@ -1367,7 +1367,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::auto-forget",
-    config: { api_path: "/agentmemory/auto-forget", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/auto-forget", http_method: "POST" },
   });
 
   sdk.registerFunction("api::claude-bridge-read", 
@@ -1388,7 +1388,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::claude-bridge-read",
-    config: { api_path: "/agentmemory/claude-bridge/read", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/claude-bridge/read", http_method: "GET" },
   });
 
   sdk.registerFunction("api::claude-bridge-sync", 
@@ -1410,7 +1410,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::claude-bridge-sync",
     config: {
-      api_path: "/agentmemory/claude-bridge/sync",
+      api_path: "/ziiagentmemory/claude-bridge/sync",
       http_method: "POST",
     },
   });
@@ -1449,7 +1449,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-query",
-    config: { api_path: "/agentmemory/graph/query", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/graph/query", http_method: "POST" },
   });
 
   sdk.registerFunction("api::graph-stats", 
@@ -1467,7 +1467,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-stats",
-    config: { api_path: "/agentmemory/graph/stats", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/graph/stats", http_method: "GET" },
   });
 
   // #814: explicit snapshot rebuild endpoint. Pays the full graph
@@ -1493,7 +1493,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-snapshot-rebuild",
-    config: { api_path: "/agentmemory/graph/snapshot-rebuild", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/graph/snapshot-rebuild", http_method: "POST" },
   });
 
   // #814 v2: clean-restart endpoint for legacy corpora too large for
@@ -1518,7 +1518,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-reset",
-    config: { api_path: "/agentmemory/graph/reset", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/graph/reset", http_method: "POST" },
   });
 
   sdk.registerFunction("api::graph-extract",
@@ -1545,7 +1545,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-extract",
-    config: { api_path: "/agentmemory/graph/extract", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/graph/extract", http_method: "POST" },
   });
 
   // Backfill the knowledge graph from existing compressed observations.
@@ -1610,7 +1610,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::graph-build",
-    config: { api_path: "/agentmemory/graph/build", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/graph/build", http_method: "POST" },
   });
 
   sdk.registerFunction("api::consolidate-pipeline",
@@ -1630,7 +1630,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::consolidate-pipeline",
     config: {
-      api_path: "/agentmemory/consolidate-pipeline",
+      api_path: "/ziiagentmemory/consolidate-pipeline",
       http_method: "POST",
     },
   });
@@ -1658,7 +1658,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::team-share",
-    config: { api_path: "/agentmemory/team/share", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/team/share", http_method: "POST" },
   });
 
   sdk.registerFunction("api::team-feed", 
@@ -1678,7 +1678,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::team-feed",
-    config: { api_path: "/agentmemory/team/feed", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/team/feed", http_method: "GET" },
   });
 
   sdk.registerFunction("api::team-profile", 
@@ -1696,7 +1696,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::team-profile",
-    config: { api_path: "/agentmemory/team/profile", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/team/profile", http_method: "GET" },
   });
 
   sdk.registerFunction("api::audit",
@@ -1714,7 +1714,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::audit",
-    config: { api_path: "/agentmemory/audit", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/audit", http_method: "GET" },
   });
 
   sdk.registerFunction("api::governance-delete", 
@@ -1737,7 +1737,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::governance-delete",
     config: {
-      api_path: "/agentmemory/governance/memories",
+      api_path: "/ziiagentmemory/governance/memories",
       http_method: "DELETE",
     },
   });
@@ -1762,7 +1762,7 @@ export function registerApiTriggers(
     type: "http",
     function_id: "api::governance-bulk",
     config: {
-      api_path: "/agentmemory/governance/bulk-delete",
+      api_path: "/ziiagentmemory/governance/bulk-delete",
       http_method: "POST",
     },
   });
@@ -1782,7 +1782,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::snapshots",
-    config: { api_path: "/agentmemory/snapshots", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/snapshots", http_method: "GET" },
   });
 
   sdk.registerFunction("api::snapshot-create", 
@@ -1801,7 +1801,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::snapshot-create",
-    config: { api_path: "/agentmemory/snapshot/create", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/snapshot/create", http_method: "POST" },
   });
 
   sdk.registerFunction("api::snapshot-restore", 
@@ -1822,7 +1822,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::snapshot-restore",
-    config: { api_path: "/agentmemory/snapshot/restore", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/snapshot/restore", http_method: "POST" },
   });
 
   sdk.registerFunction("api::memories",
@@ -1857,7 +1857,7 @@ export function registerApiTriggers(
         );
       }
 
-      // viewer + `agentmemory status` were hitting this endpoint to
+      // viewer + `ziiagentmemory status` were hitting this endpoint to
       // count memories. On a real corpus (8K+ memories) the unbounded
       // response either timed out at the iii engine boundary ("Invocation
       // stopped") or arrived too large for the viewer to render — so the
@@ -1906,7 +1906,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::memories",
-    config: { api_path: "/agentmemory/memories", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/memories", http_method: "GET" },
   });
 
   sdk.registerFunction("api::memory-by-id",
@@ -1927,7 +1927,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::memory-by-id",
-    config: { api_path: "/agentmemory/memories/:id", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/memories/:id", http_method: "GET" },
   });
 
   sdk.registerFunction("api::semantic-list",
@@ -1941,7 +1941,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::semantic-list",
-    config: { api_path: "/agentmemory/semantic", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/semantic", http_method: "GET" },
   });
 
   sdk.registerFunction("api::procedural-list",
@@ -1955,7 +1955,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::procedural-list",
-    config: { api_path: "/agentmemory/procedural", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/procedural", http_method: "GET" },
   });
 
   sdk.registerFunction("api::relations-list",
@@ -1969,7 +1969,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::relations-list",
-    config: { api_path: "/agentmemory/relations", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/relations", http_method: "GET" },
   });
 
   sdk.registerFunction("api::vision-search",
@@ -2008,7 +2008,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::vision-search",
-    config: { api_path: "/agentmemory/vision-search", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/vision-search", http_method: "POST" },
   });
 
   sdk.registerFunction("api::vision-embed",
@@ -2036,7 +2036,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::vision-embed",
-    config: { api_path: "/agentmemory/vision-embed", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/vision-embed", http_method: "POST" },
   });
 
   sdk.registerFunction("api::slot-list", async (req: ApiRequest): Promise<Response> => {
@@ -2049,7 +2049,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-list",
-    config: { api_path: "/agentmemory/slots", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/slots", http_method: "GET" },
   });
 
   sdk.registerFunction("api::slot-get", async (req: ApiRequest): Promise<Response> => {
@@ -2068,7 +2068,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-get",
-    config: { api_path: "/agentmemory/slot", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/slot", http_method: "GET" },
   });
 
   sdk.registerFunction("api::slot-create", async (req: ApiRequest): Promise<Response> => {
@@ -2118,7 +2118,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-create",
-    config: { api_path: "/agentmemory/slot", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/slot", http_method: "POST" },
   });
 
   sdk.registerFunction("api::slot-append", async (req: ApiRequest): Promise<Response> => {
@@ -2141,7 +2141,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-append",
-    config: { api_path: "/agentmemory/slot/append", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/slot/append", http_method: "POST" },
   });
 
   sdk.registerFunction("api::slot-replace", async (req: ApiRequest): Promise<Response> => {
@@ -2166,7 +2166,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-replace",
-    config: { api_path: "/agentmemory/slot/replace", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/slot/replace", http_method: "POST" },
   });
 
   sdk.registerFunction("api::slot-delete", async (req: ApiRequest): Promise<Response> => {
@@ -2185,7 +2185,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-delete",
-    config: { api_path: "/agentmemory/slot", http_method: "DELETE" },
+    config: { api_path: "/ziiagentmemory/slot", http_method: "DELETE" },
   });
 
   sdk.registerFunction("api::slot-reflect", async (req: ApiRequest): Promise<Response> => {
@@ -2206,7 +2206,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::slot-reflect",
-    config: { api_path: "/agentmemory/slot/reflect", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/slot/reflect", http_method: "POST" },
   });
 
   sdk.registerFunction("api::action-create",
@@ -2234,7 +2234,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::action-create",
-    config: { api_path: "/agentmemory/actions", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/actions", http_method: "POST" },
   });
 
   sdk.registerFunction("api::action-update", 
@@ -2260,7 +2260,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::action-update",
-    config: { api_path: "/agentmemory/actions/update", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/actions/update", http_method: "POST" },
   });
 
   sdk.registerFunction("api::action-list", 
@@ -2278,7 +2278,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::action-list",
-    config: { api_path: "/agentmemory/actions", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/actions", http_method: "GET" },
   });
 
   sdk.registerFunction("api::action-get", 
@@ -2296,7 +2296,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::action-get",
-    config: { api_path: "/agentmemory/actions/get", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/actions/get", http_method: "GET" },
   });
 
   sdk.registerFunction("api::action-edge", 
@@ -2319,7 +2319,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::action-edge",
-    config: { api_path: "/agentmemory/actions/edges", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/actions/edges", http_method: "POST" },
   });
 
   sdk.registerFunction("api::frontier", 
@@ -2338,7 +2338,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::frontier",
-    config: { api_path: "/agentmemory/frontier", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/frontier", http_method: "GET" },
   });
 
   sdk.registerFunction("api::next", 
@@ -2355,7 +2355,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::next",
-    config: { api_path: "/agentmemory/next", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/next", http_method: "GET" },
   });
 
   sdk.registerFunction("api::lease-acquire", 
@@ -2374,7 +2374,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::lease-acquire",
-    config: { api_path: "/agentmemory/leases/acquire", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/leases/acquire", http_method: "POST" },
   });
 
   sdk.registerFunction("api::lease-release", 
@@ -2393,7 +2393,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::lease-release",
-    config: { api_path: "/agentmemory/leases/release", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/leases/release", http_method: "POST" },
   });
 
   sdk.registerFunction("api::lease-renew", 
@@ -2412,7 +2412,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::lease-renew",
-    config: { api_path: "/agentmemory/leases/renew", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/leases/renew", http_method: "POST" },
   });
 
   sdk.registerFunction("api::routine-create",
@@ -2432,7 +2432,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::routine-create",
-    config: { api_path: "/agentmemory/routines", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/routines", http_method: "POST" },
   });
 
   sdk.registerFunction("api::routine-list", 
@@ -2448,7 +2448,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::routine-list",
-    config: { api_path: "/agentmemory/routines", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/routines", http_method: "GET" },
   });
 
   sdk.registerFunction("api::routine-run", 
@@ -2467,7 +2467,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::routine-run",
-    config: { api_path: "/agentmemory/routines/run", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/routines/run", http_method: "POST" },
   });
 
   sdk.registerFunction("api::routine-status", 
@@ -2485,7 +2485,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::routine-status",
-    config: { api_path: "/agentmemory/routines/status", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/routines/status", http_method: "GET" },
   });
 
   sdk.registerFunction("api::signal-send", 
@@ -2510,7 +2510,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::signal-send",
-    config: { api_path: "/agentmemory/signals/send", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/signals/send", http_method: "POST" },
   });
 
   sdk.registerFunction("api::signal-read", 
@@ -2534,7 +2534,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::signal-read",
-    config: { api_path: "/agentmemory/signals", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/signals", http_method: "GET" },
   });
 
   sdk.registerFunction("api::checkpoint-create", 
@@ -2559,7 +2559,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::checkpoint-create",
-    config: { api_path: "/agentmemory/checkpoints", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/checkpoints", http_method: "POST" },
   });
 
   sdk.registerFunction("api::checkpoint-resolve", 
@@ -2583,7 +2583,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::checkpoint-resolve",
-    config: { api_path: "/agentmemory/checkpoints/resolve", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/checkpoints/resolve", http_method: "POST" },
   });
 
   sdk.registerFunction("api::checkpoint-list", 
@@ -2600,7 +2600,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::checkpoint-list",
-    config: { api_path: "/agentmemory/checkpoints", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/checkpoints", http_method: "GET" },
   });
 
   sdk.registerFunction("api::mesh-register", 
@@ -2621,7 +2621,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::mesh-register",
-    config: { api_path: "/agentmemory/mesh/peers", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/mesh/peers", http_method: "POST" },
   });
 
   sdk.registerFunction("api::mesh-list", 
@@ -2637,7 +2637,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::mesh-list",
-    config: { api_path: "/agentmemory/mesh/peers", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/mesh/peers", http_method: "GET" },
   });
 
   sdk.registerFunction("api::mesh-sync", 
@@ -2655,7 +2655,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::mesh-sync",
-    config: { api_path: "/agentmemory/mesh/sync", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/mesh/sync", http_method: "POST" },
   });
 
   sdk.registerFunction("api::mesh-receive", 
@@ -2671,7 +2671,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::mesh-receive",
-    config: { api_path: "/agentmemory/mesh/receive", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/mesh/receive", http_method: "POST" },
   });
 
   sdk.registerFunction("api::mesh-export", 
@@ -2720,7 +2720,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::mesh-export",
-    config: { api_path: "/agentmemory/mesh/export", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/mesh/export", http_method: "GET" },
   });
 
   sdk.registerFunction("api::flow-compress", 
@@ -2747,7 +2747,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::flow-compress",
-    config: { api_path: "/agentmemory/flow/compress", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/flow/compress", http_method: "POST" },
   });
 
   sdk.registerFunction("api::branch-detect", 
@@ -2762,7 +2762,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::branch-detect",
-    config: { api_path: "/agentmemory/branch/detect", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/branch/detect", http_method: "GET" },
   });
 
   sdk.registerFunction("api::branch-worktrees", 
@@ -2777,7 +2777,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::branch-worktrees",
-    config: { api_path: "/agentmemory/branch/worktrees", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/branch/worktrees", http_method: "GET" },
   });
 
   sdk.registerFunction("api::branch-sessions", 
@@ -2792,7 +2792,7 @@ export function registerApiTriggers(
   sdk.registerTrigger({
     type: "http",
     function_id: "api::branch-sessions",
-    config: { api_path: "/agentmemory/branch/sessions", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/branch/sessions", http_method: "GET" },
   });
 
   sdk.registerFunction("api::viewer", 
@@ -2815,14 +2815,14 @@ export function registerApiTriggers(
         headers: {
           "Content-Type": "text/html",
         },
-        body: "<!DOCTYPE html><html><body><h1>agentmemory</h1><p>viewer not found</p></body></html>",
+        body: "<!DOCTYPE html><html><body><h1>ZiiAgentMemory</h1><p>viewer not found</p></body></html>",
       };
     },
   );
   sdk.registerTrigger({
     type: "http",
     function_id: "api::viewer",
-    config: { api_path: "/agentmemory/viewer", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/viewer", http_method: "GET" },
   });
 
   sdk.registerFunction("api::sentinel-create",  async (req: ApiRequest) => {
@@ -2833,7 +2833,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sentinel-create", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-create", config: { api_path: "/agentmemory/sentinels", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-create", config: { api_path: "/ziiagentmemory/sentinels", http_method: "POST" } });
 
   sdk.registerFunction("api::sentinel-trigger",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2843,7 +2843,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sentinel-trigger", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-trigger", config: { api_path: "/agentmemory/sentinels/trigger", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-trigger", config: { api_path: "/ziiagentmemory/sentinels/trigger", http_method: "POST" } });
 
   sdk.registerFunction("api::sentinel-check",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2851,7 +2851,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sentinel-check", payload: {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-check", config: { api_path: "/agentmemory/sentinels/check", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-check", config: { api_path: "/ziiagentmemory/sentinels/check", http_method: "POST" } });
 
   sdk.registerFunction("api::sentinel-cancel",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2861,7 +2861,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sentinel-cancel", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-cancel", config: { api_path: "/agentmemory/sentinels/cancel", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-cancel", config: { api_path: "/ziiagentmemory/sentinels/cancel", http_method: "POST" } });
 
   sdk.registerFunction("api::sentinel-list",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2870,7 +2870,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sentinel-list", payload: { status: params.status, type: params.type } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-list", config: { api_path: "/agentmemory/sentinels", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sentinel-list", config: { api_path: "/ziiagentmemory/sentinels", http_method: "GET" } });
 
   sdk.registerFunction("api::sketch-create",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2880,7 +2880,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-create", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-create", config: { api_path: "/agentmemory/sketches", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-create", config: { api_path: "/ziiagentmemory/sketches", http_method: "POST" } });
 
   sdk.registerFunction("api::sketch-add",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2890,7 +2890,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-add", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-add", config: { api_path: "/agentmemory/sketches/add", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-add", config: { api_path: "/ziiagentmemory/sketches/add", http_method: "POST" } });
 
   sdk.registerFunction("api::sketch-promote",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2900,7 +2900,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-promote", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-promote", config: { api_path: "/agentmemory/sketches/promote", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-promote", config: { api_path: "/ziiagentmemory/sketches/promote", http_method: "POST" } });
 
   sdk.registerFunction("api::sketch-discard",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2910,7 +2910,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-discard", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-discard", config: { api_path: "/agentmemory/sketches/discard", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-discard", config: { api_path: "/ziiagentmemory/sketches/discard", http_method: "POST" } });
 
   sdk.registerFunction("api::sketch-list",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2919,7 +2919,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-list", payload: { status: params.status, project: params.project } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-list", config: { api_path: "/agentmemory/sketches", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-list", config: { api_path: "/ziiagentmemory/sketches", http_method: "GET" } });
 
   sdk.registerFunction("api::sketch-gc",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2927,7 +2927,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::sketch-gc", payload: {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::sketch-gc", config: { api_path: "/agentmemory/sketches/gc", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::sketch-gc", config: { api_path: "/ziiagentmemory/sketches/gc", http_method: "POST" } });
 
   sdk.registerFunction("api::crystallize",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2937,7 +2937,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::crystallize", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::crystallize", config: { api_path: "/agentmemory/crystals/create", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::crystallize", config: { api_path: "/ziiagentmemory/crystals/create", http_method: "POST" } });
 
   sdk.registerFunction("api::crystal-list",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2953,7 +2953,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::crystal-list", payload: { project: params.project, sessionId: params.sessionId, limit } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::crystal-list", config: { api_path: "/agentmemory/crystals", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::crystal-list", config: { api_path: "/ziiagentmemory/crystals", http_method: "GET" } });
 
   sdk.registerFunction("api::auto-crystallize",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2962,7 +2962,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::auto-crystallize", payload: body || {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::auto-crystallize", config: { api_path: "/agentmemory/crystals/auto", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::auto-crystallize", config: { api_path: "/ziiagentmemory/crystals/auto", http_method: "POST" } });
 
   sdk.registerFunction("api::diagnose",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2971,7 +2971,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::diagnose", payload: body || {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::diagnose", config: { api_path: "/agentmemory/diagnostics", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::diagnose", config: { api_path: "/ziiagentmemory/diagnostics", http_method: "POST" } });
 
   sdk.registerFunction("api::heal",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2980,7 +2980,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::heal", payload: body || {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::heal", config: { api_path: "/agentmemory/diagnostics/heal", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::heal", config: { api_path: "/ziiagentmemory/diagnostics/heal", http_method: "POST" } });
 
   sdk.registerFunction("api::facet-tag",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -2990,7 +2990,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::facet-tag", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::facet-tag", config: { api_path: "/agentmemory/facets", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::facet-tag", config: { api_path: "/ziiagentmemory/facets", http_method: "POST" } });
 
   sdk.registerFunction("api::facet-untag",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3000,7 +3000,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::facet-untag", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::facet-untag", config: { api_path: "/agentmemory/facets/remove", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::facet-untag", config: { api_path: "/ziiagentmemory/facets/remove", http_method: "POST" } });
 
   sdk.registerFunction("api::facet-query",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3009,7 +3009,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::facet-query", payload: body || {} });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::facet-query", config: { api_path: "/agentmemory/facets/query", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::facet-query", config: { api_path: "/ziiagentmemory/facets/query", http_method: "POST" } });
 
   sdk.registerFunction("api::facet-get",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3019,7 +3019,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::facet-get", payload: { targetId: params.targetId } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::facet-get", config: { api_path: "/agentmemory/facets", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::facet-get", config: { api_path: "/ziiagentmemory/facets", http_method: "GET" } });
 
   sdk.registerFunction("api::facet-stats",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3028,7 +3028,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::facet-stats", payload: { targetType: params.targetType } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::facet-stats", config: { api_path: "/agentmemory/facets/stats", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::facet-stats", config: { api_path: "/ziiagentmemory/facets/stats", http_method: "GET" } });
 
   sdk.registerFunction("api::verify",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3038,7 +3038,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::verify", payload: { id: body.id } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::verify", config: { api_path: "/agentmemory/verify", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::verify", config: { api_path: "/ziiagentmemory/verify", http_method: "POST" } });
 
   sdk.registerFunction("api::cascade-update",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3050,7 +3050,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::cascade-update", payload: { supersededMemoryId: body.supersededMemoryId } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::cascade-update", config: { api_path: "/agentmemory/cascade-update", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::cascade-update", config: { api_path: "/ziiagentmemory/cascade-update", http_method: "POST" } });
 
   sdk.registerFunction("api::lesson-save",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3072,7 +3072,7 @@ export function registerApiTriggers(
     const statusCode = result?.action === "created" ? 201 : 200;
     return { status_code: statusCode, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::lesson-save", config: { api_path: "/agentmemory/lessons", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::lesson-save", config: { api_path: "/ziiagentmemory/lessons", http_method: "POST" } });
 
   sdk.registerFunction("api::lesson-list",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3100,7 +3100,7 @@ export function registerApiTriggers(
     } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::lesson-list", config: { api_path: "/agentmemory/lessons", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::lesson-list", config: { api_path: "/ziiagentmemory/lessons", http_method: "GET" } });
 
   sdk.registerFunction("api::lesson-search",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3110,7 +3110,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::lesson-recall", payload: body });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::lesson-search", config: { api_path: "/agentmemory/lessons/search", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::lesson-search", config: { api_path: "/ziiagentmemory/lessons/search", http_method: "POST" } });
 
   sdk.registerFunction("api::lesson-strengthen",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3120,7 +3120,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::lesson-strengthen", payload: { lessonId: body.lessonId } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::lesson-strengthen", config: { api_path: "/agentmemory/lessons/strengthen", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::lesson-strengthen", config: { api_path: "/ziiagentmemory/lessons/strengthen", http_method: "POST" } });
 
   sdk.registerFunction("api::obsidian-export", async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3137,7 +3137,7 @@ export function registerApiTriggers(
     const result = await sdk.trigger({ function_id: "mem::obsidian-export", payload: { vaultDir, types } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::obsidian-export", config: { api_path: "/agentmemory/obsidian/export", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::obsidian-export", config: { api_path: "/ziiagentmemory/obsidian/export", http_method: "POST" } });
 
   sdk.registerFunction("api::reflect",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3149,7 +3149,7 @@ export function registerApiTriggers(
     } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::reflect", config: { api_path: "/agentmemory/reflect", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::reflect", config: { api_path: "/ziiagentmemory/reflect", http_method: "POST" } });
 
   sdk.registerFunction("api::insight-list",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3176,7 +3176,7 @@ export function registerApiTriggers(
     } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::insight-list", config: { api_path: "/agentmemory/insights", http_method: "GET" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::insight-list", config: { api_path: "/ziiagentmemory/insights", http_method: "GET" } });
 
   sdk.registerFunction("api::insight-search",  async (req: ApiRequest) => {
     const denied = checkAuth(req, secret);
@@ -3191,5 +3191,5 @@ export function registerApiTriggers(
     } });
     return { status_code: 200, body: result };
   });
-  sdk.registerTrigger({ type: "http", function_id: "api::insight-search", config: { api_path: "/agentmemory/insights/search", http_method: "POST" } });
+  sdk.registerTrigger({ type: "http", function_id: "api::insight-search", config: { api_path: "/ziiagentmemory/insights/search", http_method: "POST" } });
 }

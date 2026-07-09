@@ -1,4 +1,4 @@
-# agentmemory hooks reference
+# ZiiAgentMemory hooks reference
 
 Generated from `plugin/hooks/hooks.json`. Do not edit the block below by hand; run `npm run skills:gen` after changing the hook registration.
 

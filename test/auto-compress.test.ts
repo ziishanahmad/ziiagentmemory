@@ -75,17 +75,17 @@ function validPayload(overrides: Partial<Record<string, unknown>> = {}) {
 describe("mem::observe auto-compress gate (#138)", () => {
   beforeEach(() => {
     // Reset module cache so observe.js re-imports config.js with the
-    // fresh AGENTMEMORY_AUTO_COMPRESS env state. Without this, a later
+    // fresh ZIIAGENTMEMORY_AUTO_COMPRESS env state. Without this, a later
     // test that sets the env var can be undermined by cached module
     // state from an earlier test (and vice versa).
     vi.resetModules();
-    delete process.env["AGENTMEMORY_AUTO_COMPRESS"];
+    delete process.env["ZIIAGENTMEMORY_AUTO_COMPRESS"];
   });
   afterEach(() => {
-    delete process.env["AGENTMEMORY_AUTO_COMPRESS"];
+    delete process.env["ZIIAGENTMEMORY_AUTO_COMPRESS"];
   });
 
-  it("default (AGENTMEMORY_AUTO_COMPRESS unset): does NOT fire mem::compress", async () => {
+  it("default (ZIIAGENTMEMORY_AUTO_COMPRESS unset): does NOT fire mem::compress", async () => {
     const { registerObserveFunction } = await import(
       "../src/functions/observe.js"
     );
@@ -131,8 +131,8 @@ describe("mem::observe auto-compress gate (#138)", () => {
     expect(obs.confidence).toBe(0.3);
   });
 
-  it("AGENTMEMORY_AUTO_COMPRESS=true: fires mem::compress exactly once", async () => {
-    process.env["AGENTMEMORY_AUTO_COMPRESS"] = "true";
+  it("ZIIAGENTMEMORY_AUTO_COMPRESS=true: fires mem::compress exactly once", async () => {
+    process.env["ZIIAGENTMEMORY_AUTO_COMPRESS"] = "true";
     const { registerObserveFunction } = await import(
       "../src/functions/observe.js"
     );
@@ -146,8 +146,8 @@ describe("mem::observe auto-compress gate (#138)", () => {
     expect(compressCalls).toHaveLength(1);
   });
 
-  it("AGENTMEMORY_AUTO_COMPRESS=false explicitly: does NOT fire mem::compress", async () => {
-    process.env["AGENTMEMORY_AUTO_COMPRESS"] = "false";
+  it("ZIIAGENTMEMORY_AUTO_COMPRESS=false explicitly: does NOT fire mem::compress", async () => {
+    process.env["ZIIAGENTMEMORY_AUTO_COMPRESS"] = "false";
     const { registerObserveFunction } = await import(
       "../src/functions/observe.js"
     );

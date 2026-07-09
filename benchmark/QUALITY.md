@@ -1,4 +1,4 @@
-# agentmemory v0.6.0 — Search Quality Evaluation (Internal Dataset)
+# ZiiAgentMemory v0.6.0 — Search Quality Evaluation (Internal Dataset)
 
 > For results on the academic LongMemEval-S benchmark (ICLR 2025, 500 questions), see [`LONGMEMEVAL.md`](LONGMEMEVAL.md) — **95.2% R@5, 98.6% R@10**.
 
@@ -19,8 +19,8 @@
 
 ## Why This Matters
 
-**Recall improvement:** agentmemory triple-stream finds 58.0% of relevant memories at K=10 vs 55.8% for keyword grep (+4%)
-**Token savings:** agentmemory returns only the top 10 results (3,142 tokens) vs loading everything into context (22,610 tokens) — 86% reduction
+**Recall improvement:** ZiiAgentMemory triple-stream finds 58.0% of relevant memories at K=10 vs 55.8% for keyword grep (+4%)
+**Token savings:** ZiiAgentMemory returns only the top 10 results (3,142 tokens) vs loading everything into context (22,610 tokens) — 86% reduction
 **200-line cap:** Claude Code's MEMORY.md is capped at 200 lines. With 240 observations, 37.8% recall at K=10 — memories from later sessions are simply invisible.
 
 ## Per-Query Breakdown (Triple-Stream)
@@ -61,14 +61,14 @@
 
 The fundamental problem with built-in agent memory:
 
-| Observations | MEMORY.md tokens | agentmemory tokens (top 10) | Savings | MEMORY.md reachable |
+| Observations | MEMORY.md tokens | ZiiAgentMemory tokens (top 10) | Savings | MEMORY.md reachable |
 |-------------|-----------------|---------------------------|---------|-------------------|
 | 240 | 12,000 | 3,142 | 74% | 83% |
 | 500 | 25,000 | 3,142 | 87% | 40% |
 | 1,000 | 50,000 | 3,142 | 94% | 20% |
 | 5,000 | 250,000 | 3,142 | 99% | 4% |
 
-At 240 observations (our dataset), MEMORY.md already hits its 200-line cap and loses access to the most recent 40 observations. At 1,000 observations, 80% of memories are invisible. agentmemory always searches the full corpus.
+At 240 observations (our dataset), MEMORY.md already hits its 200-line cap and loses access to the most recent 40 observations. At 1,000 observations, 80% of memories are invisible. ZiiAgentMemory always searches the full corpus.
 
 ---
 

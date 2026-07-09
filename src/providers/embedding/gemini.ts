@@ -66,7 +66,7 @@ function l2Normalize(vec: Float32Array): Float32Array {
     if (!zeroNormWarned) {
       zeroNormWarned = true;
       process.stderr.write(
-        `[agentmemory] warn: gemini-embedding-001 returned a zero-norm ` +
+        `[ZiiAgentMemory] warn: gemini-embedding-001 returned a zero-norm ` +
           `embedding (length=${vec.length}); leaving it un-normalized. ` +
           `Subsequent zero-norm vectors will not be reported.\n`,
       );

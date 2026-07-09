@@ -71,11 +71,11 @@ const IS_WINDOWS = platform() === "win32";
 const IS_VERBOSE =
   args.includes("--verbose") ||
   args.includes("-v") ||
-  process.env["AGENTMEMORY_VERBOSE"] === "1" ||
-  process.env["AGENTMEMORY_VERBOSE"] === "true";
+  process.env["ZIIAGENTMEMORY_VERBOSE"] === "1" ||
+  process.env["ZIIAGENTMEMORY_VERBOSE"] === "true";
 
 // Propagate the resolved verbosity to the worker's boot logger so the
-// 25-line `[agentmemory] X registered` stream is either dropped or
+// 25-line `[ZiiAgentMemory] X registered` stream is either dropped or
 // printed verbatim. Without this the worker's default (env-only) would
 // disagree with the CLI flag.
 setBootVerbose(IS_VERBOSE);
@@ -91,17 +91,17 @@ if (args.includes("--version") || args.includes("-V")) {
 }
 
 // Pinned iii-engine version. The unpinned `install.iii.dev/iii/main/install.sh`
-// script tracks `latest`, which made every fresh agentmemory install pull
+// script tracks `latest`, which made every fresh ZiiAgentMemory install pull
 // engine 0.11.6 — and 0.11.6 introduces a new sandbox-everything-via-
-// `iii worker add` worker model that agentmemory hasn't been refactored
+// `iii worker add` worker model that ZiiAgentMemory hasn't been refactored
 // for yet (we still use the old `iii-exec watch` config-file model). The
 // architectural mismatch surfaces as EPIPE reconnect loops and empty
 // search results after save. Pin to v0.11.2 — the last engine that runs
-// agentmemory's current worker model cleanly — until the refactor lands.
-// Override env var AGENTMEMORY_III_VERSION lets users on the sandbox
+// ZiiAgentMemory's current worker model cleanly — until the refactor lands.
+// Override env var ZIIAGENTMEMORY_III_VERSION lets users on the sandbox
 // model already point at a newer engine without us cutting a release.
 const IIPINNED_VERSION =
-  process.env["AGENTMEMORY_III_VERSION"] || "0.11.2";
+  process.env["ZIIAGENTMEMORY_III_VERSION"] || "0.11.2";
 
 // Map Node platform/arch → the asset name iii-hq/iii ships under
 // https://github.com/iii-hq/iii/releases/download/iii/v<version>/<asset>
@@ -155,14 +155,14 @@ function wrapList(items: readonly string[], indent: number, width = 78): string 
 
 if (args.includes("--help") || args.includes("-h")) {
   console.log(`
-agentmemory — persistent memory for AI coding agents
+ZiiAgentMemory — persistent memory for AI coding agents
 
-Usage: agentmemory [command] [options]
+Usage: ZiiAgentMemory [command] [options]
 
 Commands:
-  (default)          Start agentmemory worker
-  init               Copy bundled .env.example to ~/.agentmemory/.env if absent
-  connect [agent]    Wire agentmemory into an installed agent
+  (default)          Start ZiiAgentMemory worker
+  init               Copy bundled .env.example to ~/.ziiagentmemory/.env if absent
+  connect [agent]    Wire ZiiAgentMemory into an installed agent
                      (${wrapList(knownAgents(), 21)}).
                      No arg = interactive picker. --all wires every detected agent.
                      --dry-run shows what would change. --force re-installs.
@@ -170,7 +170,7 @@ Commands:
   doctor             Interactive diagnostic + fixer. [F]ix · [S]kip · [?]more · [Q]uit
                      --all: apply every fix without prompting (CI)
                      --dry-run: show what each fix would do, don't execute
-  remove             Cleanly uninstall agentmemory (pidfile, state, .env, binaries).
+  remove             Cleanly uninstall ZiiAgentMemory (pidfile, state, .env, binaries).
                      --force: skip confirmations · --keep-data: keep memory data
   demo [--serve]     Seed sample sessions and show recall in action.
                      --serve boots the server, runs the demo, and stops it
@@ -189,7 +189,7 @@ Commands:
 Options:
   --help, -h         Show this help
   --verbose, -v      Show engine stderr, boot log, and diagnostic info
-  --reset            Wipe ~/.agentmemory/preferences.json and re-run onboarding
+  --reset            Wipe ~/.ziiagentmemory/preferences.json and re-run onboarding
   --tools all|core   Tool visibility (default: all = ${ALL_TOOLS_COUNT} tools; core = ${CORE_TOOLS_COUNT} essentials)
   --no-engine        Skip auto-starting iii-engine
   --port <N>         Override REST port (default: 3111). Streams (N+1), viewer
@@ -200,23 +200,23 @@ Options:
                      --instance 1 -> 3211/3212/3213/49234, etc. (max N=50)
 
 Environment:
-  AGENTMEMORY_URL              Full REST base URL (e.g. http://localhost:3111).
+  ZIIAGENTMEMORY_URL              Full REST base URL (e.g. http://localhost:3111).
                                Honored by status, doctor, and MCP shim commands.
-  AGENTMEMORY_USE_DOCKER=1     Prefer the bundled docker-compose path over the
+  ZIIAGENTMEMORY_USE_DOCKER=1     Prefer the bundled docker-compose path over the
                                native iii-engine binary on first run.
-  AGENTMEMORY_III_VERSION      Override pinned iii-engine version (default ${IIPINNED_VERSION}).
-  AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS
+  ZIIAGENTMEMORY_III_VERSION      Override pinned iii-engine version (default ${IIPINNED_VERSION}).
+  ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS
                                Window (seconds) for the smart-search follow-up diagnostic
                                (default 30). Long values overcount, short values undercount.
 
 Quick start:
-  npx @agentmemory/agentmemory          # start with local iii-engine or Docker
-  npx @agentmemory/agentmemory demo     # see semantic recall in 30 seconds
-  npx @agentmemory/agentmemory doctor   # diagnose config + feature flags
-  npx @agentmemory/agentmemory status   # health + memory count + flags
-  npx @agentmemory/agentmemory upgrade  # upgrade agentmemory + iii runtime
-  npx @agentmemory/agentmemory mcp      # standalone MCP server (no engine)
-  npx @agentmemory/mcp                  # same as above (shim package)
+  npx ziiagentmemory          # start with local iii-engine or Docker
+  npx ziiagentmemory demo     # see semantic recall in 30 seconds
+  npx ziiagentmemory doctor   # diagnose config + feature flags
+  npx ziiagentmemory status   # health + memory count + flags
+  npx ziiagentmemory upgrade  # upgrade ZiiAgentMemory + iii runtime
+  npx ziiagentmemory mcp      # standalone MCP server (no engine)
+  npx ziiagentmemory                  # same as above (shim package)
 `);
   process.exit(0);
 }
@@ -229,7 +229,7 @@ if (toolsIdx !== -1 && args[toolsIdx + 1]) {
       `Unknown --tools value "${toolsMode}" (valid: all, core); falling back to all.`,
     );
   }
-  process.env["AGENTMEMORY_TOOLS"] = toolsMode;
+  process.env["ZIIAGENTMEMORY_TOOLS"] = toolsMode;
 }
 
 const portIdx = args.indexOf("--port");
@@ -238,7 +238,7 @@ if (portIdx !== -1 && args[portIdx + 1]) {
 }
 
 // `--instance N` picks a 100-port block off the 3111 base so multiple
-// agentmemory daemons can coexist on one host without env-var
+// ZiiAgentMemory daemons can coexist on one host without env-var
 // gymnastics. `--instance 0` keeps the canonical 3111/3112/3113/49134
 // quartet; `--instance 1` → 3211/3212/3213/49234; etc. REST acts as the
 // anchor — streams/viewer/engine derive from it via fixed offsets below
@@ -257,7 +257,7 @@ if (instanceIdx !== -1 && args[instanceIdx + 1]) {
 const skipEngine = args.includes("--no-engine");
 
 function getRestPort(): number {
-  const url = process.env["AGENTMEMORY_URL"];
+  const url = process.env["ZIIAGENTMEMORY_URL"];
   if (url) {
     try {
       const parsed = new URL(url).port;
@@ -268,7 +268,7 @@ function getRestPort(): number {
 }
 
 function getBaseUrl(): string {
-  const url = process.env["AGENTMEMORY_URL"];
+  const url = process.env["ZIIAGENTMEMORY_URL"];
   if (url) return url.replace(/\/+$/, "");
   return `http://localhost:${getRestPort()}`;
 }
@@ -278,7 +278,7 @@ let discoveredViewerPort: number | null = null;
 export async function discoverViewerPort(): Promise<void> {
   if (discoveredViewerPort !== null) return;
   try {
-    const res = await fetch(`${getBaseUrl()}/agentmemory/livez`, {
+    const res = await fetch(`${getBaseUrl()}/ziiagentmemory/livez`, {
       signal: AbortSignal.timeout(1000),
     });
     if (res.ok) {
@@ -291,7 +291,7 @@ export async function discoverViewerPort(): Promise<void> {
 }
 
 function getViewerUrl(): string {
-  const envUrl = process.env["AGENTMEMORY_VIEWER_URL"];
+  const envUrl = process.env["ZIIAGENTMEMORY_VIEWER_URL"];
   if (envUrl) return envUrl.replace(/\/+$/, "");
   
   if (discoveredViewerPort !== null) {
@@ -362,7 +362,7 @@ async function isEngineRunning(): Promise<boolean> {
 
 async function isAgentmemoryReady(): Promise<boolean> {
   try {
-    const res = await fetch(`${getBaseUrl()}/agentmemory/livez`, {
+    const res = await fetch(`${getBaseUrl()}/ziiagentmemory/livez`, {
       signal: AbortSignal.timeout(2000),
     });
     if (!res.ok) return false;
@@ -384,15 +384,15 @@ async function isAgentmemoryReady(): Promise<boolean> {
 
 function findIiiConfig(): string {
   // Precedence (user-overridable wins): explicit env > project cwd >
-  // ~/.agentmemory/ > bundled. The bundled config used to win
+  // ~/.ziiagentmemory/ > bundled. The bundled config used to win
   // unconditionally, so users hitting the observability log-feedback
   // loop had no way to drop a tamer config in place without
   // editing node_modules.
-  const envPath = process.env["AGENTMEMORY_III_CONFIG"];
+  const envPath = process.env["ZIIAGENTMEMORY_III_CONFIG"];
   const candidates = [
     ...(envPath ? [envPath] : []),
     join(process.cwd(), "iii-config.yaml"),
-    join(homedir(), ".agentmemory", "iii-config.yaml"),
+    join(homedir(), ".ziiagentmemory", "iii-config.yaml"),
     join(__dirname, "iii-config.yaml"),
     join(__dirname, "..", "iii-config.yaml"),
   ];
@@ -419,8 +419,8 @@ function whichBinary(name: string): string | null {
   }
 }
 
-// Private install location agentmemory manages itself. Sits under the
-// agentmemory state dir (~/.agentmemory/bin) so the pinned engine stays
+// Private install location ZiiAgentMemory manages itself. Sits under the
+// ZiiAgentMemory state dir (~/.ziiagentmemory/bin) so the pinned engine stays
 // isolated from a user-managed iii on PATH or in ~/.local/bin. A
 // fresh box with iii 0.16.1 already on PATH refused to boot because the
 // hard-pin enforcer told users to overwrite their global install with
@@ -429,10 +429,10 @@ function whichBinary(name: string): string | null {
 function agentmemoryBinDir(): string {
   if (IS_WINDOWS) {
     const userProfile = process.env["USERPROFILE"];
-    if (!userProfile) return join(homedir(), ".agentmemory", "bin");
-    return join(userProfile, ".agentmemory", "bin");
+    if (!userProfile) return join(homedir(), ".ziiagentmemory", "bin");
+    return join(userProfile, ".ziiagentmemory", "bin");
   }
-  return join(homedir(), ".agentmemory", "bin");
+  return join(homedir(), ".ziiagentmemory", "bin");
 }
 
 function privateIiiPath(): string {
@@ -480,12 +480,12 @@ function iiiBinVersion(binPath: string): string | null {
 // runtime (state::list-not-found on v0.13.0+, sandbox-everything trap on
 // v0.11.6+). Hard-pin without a fallback leaves the user stuck — they
 // either downgrade their global iii (breaking other consumers) or set
-// AGENTMEMORY_III_VERSION and hope it works.
+// ZIIAGENTMEMORY_III_VERSION and hope it works.
 //
 // Instead: when the candidate iii on PATH is the wrong version, prefer
-// the private install under ~/.agentmemory/bin/iii. If the private copy
+// the private install under ~/.ziiagentmemory/bin/iii. If the private copy
 // is missing or also mismatched, the caller installs the pinned version
-// there before retrying. AGENTMEMORY_III_VERSION still overrides
+// there before retrying. ZIIAGENTMEMORY_III_VERSION still overrides
 // IIPINNED_VERSION upstream so users who knowingly want a different
 // engine can opt in.
 function resolveCompatibleIii(iiiBinPath: string | null | undefined): string | null {
@@ -509,11 +509,11 @@ function resolveCompatibleIii(iiiBinPath: string | null | undefined): string | n
 }
 
 function enginePidfilePath(): string {
-  return join(homedir(), ".agentmemory", "iii.pid");
+  return join(homedir(), ".ziiagentmemory", "iii.pid");
 }
 
 function engineStatePath(): string {
-  return join(homedir(), ".agentmemory", "engine-state.json");
+  return join(homedir(), ".ziiagentmemory", "engine-state.json");
 }
 
 type EngineState =
@@ -546,15 +546,15 @@ function clearEnginePidfile(): void {
   } catch {}
 }
 
-// Worker pidfile: the agentmemory worker process
+// Worker pidfile: the ZiiAgentMemory worker process
 // (`node dist/index.mjs`) is spawned by iii-exec inside the engine. When
-// `agentmemory stop` kills only the engine pid, the worker can survive
+// `ziiagentmemory stop` kills only the engine pid, the worker can survive
 // (detached spawn, signal not propagated, or kept alive by a wrapper
 // script). On the next start, the orphaned worker reconnects to the new
 // engine and shows up as a duplicate registration. We write the worker
 // pid from src/index.ts on boot so stop can find and reap it.
 function workerPidfilePath(): string {
-  return join(homedir(), ".agentmemory", "worker.pid");
+  return join(homedir(), ".ziiagentmemory", "worker.pid");
 }
 
 function readWorkerPidfile(): number | null {
@@ -621,7 +621,7 @@ function isInvokedViaNpx(): boolean {
 }
 
 // First-run global-install prompt. Replaces the previous passive
-// `p.log.info` hint that users ignored — typing `agentmemory stop`
+// `p.log.info` hint that users ignored — typing `ziiagentmemory stop`
 // in a new shell would then 404 with `command not found`. We now
 // ask once, persist the answer in preferences, and never ask again.
 async function maybeOfferGlobalInstall(): Promise<void> {
@@ -633,7 +633,7 @@ async function maybeOfferGlobalInstall(): Promise<void> {
 
   const answer = await p.confirm({
     message:
-      "Install agentmemory globally so the bare `agentmemory` command works in any shell? [Y/n]",
+      "Install ZiiAgentMemory globally so the bare `ziiagentmemory` command works in any shell? [Y/n]",
     initialValue: true,
   });
   if (p.isCancel(answer)) {
@@ -643,7 +643,7 @@ async function maybeOfferGlobalInstall(): Promise<void> {
   if (answer === false) {
     writePrefs({ skipGlobalInstall: true });
     p.log.info(
-      "Skipped. Re-run via `npx @agentmemory/agentmemory` or install later with: npm install -g @agentmemory/agentmemory",
+      "Skipped. Re-run via `npx ziiagentmemory` or install later with: npm install -g ziiagentmemory",
     );
     return;
   }
@@ -651,25 +651,25 @@ async function maybeOfferGlobalInstall(): Promise<void> {
   const npmBin = whichBinary("npm");
   if (!npmBin) {
     p.log.warn(
-      "npm not found on PATH. Install manually: npm install -g @agentmemory/agentmemory",
+      "npm not found on PATH. Install manually: npm install -g ziiagentmemory",
     );
     return;
   }
   const ok = runCommand(
     npmBin,
-    ["install", "-g", `@agentmemory/agentmemory@${VERSION}`],
-    { label: `Installing @agentmemory/agentmemory@${VERSION} globally` },
+    ["install", "-g", `ziiagentmemory@${VERSION}`],
+    { label: `Installing ziiagentmemory@${VERSION} globally` },
   );
   if (ok) {
     p.log.success(
-      "Installed globally. `agentmemory stop` etc. will now work in new shells.",
+      "Installed globally. `ziiagentmemory stop` etc. will now work in new shells.",
     );
     // Persist so we never re-prompt even if the user happens to npx
     // again from a CI-less TTY.
     writePrefs({ skipGlobalInstall: true });
   } else {
     p.log.warn(
-      "Global install failed. Try manually: npm install -g @agentmemory/agentmemory",
+      "Global install failed. Try manually: npm install -g ziiagentmemory",
     );
   }
 }
@@ -679,7 +679,7 @@ async function maybeOfferGlobalInstall(): Promise<void> {
 //   "missing"   — binary not found anywhere we look
 // We deliberately do NOT probe the console's HTTP port: the binary
 // being on disk is the signal we care about (it's not auto-started by
-// agentmemory and its default port 3113 collides with our viewer, so
+// ZiiAgentMemory and its default port 3113 collides with our viewer, so
 // "is it listening?" is the wrong question at boot time).
 type IiiConsoleState =
   | { kind: "installed"; binPath: string }
@@ -968,8 +968,8 @@ async function startEngine(): Promise<boolean> {
   vlog(`docker-compose.yml: ${composeFile ?? "(not found)"}`);
 
   const dockerOptIn =
-    process.env["AGENTMEMORY_USE_DOCKER"] === "1" ||
-    process.env["AGENTMEMORY_USE_DOCKER"] === "true";
+    process.env["ZIIAGENTMEMORY_USE_DOCKER"] === "1" ||
+    process.env["ZIIAGENTMEMORY_USE_DOCKER"] === "true";
   const interactive = !!process.stdin.isTTY && !process.env["CI"];
 
   type Choice = "install" | "docker" | "manual";
@@ -986,8 +986,8 @@ async function startEngine(): Promise<boolean> {
     choice = "install";
     const detected = iiiBinVersion(pathIii!);
     p.log.info(
-      `iii on PATH is v${detected ?? "unknown"} but agentmemory pins v${IIPINNED_VERSION}. ` +
-        `Installing pinned engine to ~/.agentmemory/bin (leaves your existing iii untouched).`,
+      `iii on PATH is v${detected ?? "unknown"} but ZiiAgentMemory pins v${IIPINNED_VERSION}. ` +
+        `Installing pinned engine to ~/.ziiagentmemory/bin (leaves your existing iii untouched).`,
     );
   } else if (!interactive) {
     choice = "install";
@@ -997,7 +997,7 @@ async function startEngine(): Promise<boolean> {
     const options: { value: Choice; label: string; hint?: string }[] = [
       {
         value: "install",
-        label: `Install iii v${IIPINNED_VERSION} to ~/.agentmemory/bin (~6MB, ~5s)`,
+        label: `Install iii v${IIPINNED_VERSION} to ~/.ziiagentmemory/bin (~6MB, ~5s)`,
         hint: "recommended",
       },
     ];
@@ -1080,35 +1080,35 @@ function installInstructions(): string[] {
   const releaseUrl = iiiReleaseUrl();
   if (IS_WINDOWS) {
     return [
-      `agentmemory needs iii-engine v${IIPINNED_VERSION}. Pick one:`,
+      `ZiiAgentMemory needs iii-engine v${IIPINNED_VERSION}. Pick one:`,
       "",
       "  A) Download the prebuilt Windows binary:",
       `     1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv${IIPINNED_VERSION}`,
       `     2. Download iii-x86_64-pc-windows-msvc.zip (or iii-aarch64-pc-windows-msvc.zip on ARM)`,
       "     3. Extract iii.exe to %USERPROFILE%\\.local\\bin\\iii.exe (or add to PATH)",
-      "     4. Re-run: npx @agentmemory/agentmemory",
+      "     4. Re-run: npx ziiagentmemory",
       "",
       `  B) Docker: docker pull iiidev/iii:${IIPINNED_VERSION}`,
-      "     Re-run with AGENTMEMORY_USE_DOCKER=1 npx @agentmemory/agentmemory",
+      "     Re-run with ZIIAGENTMEMORY_USE_DOCKER=1 npx ziiagentmemory",
       "",
-      "Or skip the engine entirely (standalone MCP):  npx @agentmemory/agentmemory mcp",
+      "Or skip the engine entirely (standalone MCP):  npx ziiagentmemory mcp",
       "",
       "Docs: https://iii.dev/docs",
     ];
   }
   const linuxInstall = releaseUrl
-    ? `  A) mkdir -p ~/.agentmemory/bin && curl -fsSL "${releaseUrl}" | tar -xz -C ~/.agentmemory/bin && chmod +x ~/.agentmemory/bin/iii`
+    ? `  A) mkdir -p ~/.ziiagentmemory/bin && curl -fsSL "${releaseUrl}" | tar -xz -C ~/.ziiagentmemory/bin && chmod +x ~/.ziiagentmemory/bin/iii`
     : `  A) Manual download: https://github.com/iii-hq/iii/releases/tag/iii%2Fv${IIPINNED_VERSION}`;
   return [
-    `agentmemory needs iii-engine v${IIPINNED_VERSION}. Pick one:`,
+    `ZiiAgentMemory needs iii-engine v${IIPINNED_VERSION}. Pick one:`,
     "",
     linuxInstall,
-    "     Then re-run: npx @agentmemory/agentmemory",
+    "     Then re-run: npx ziiagentmemory",
     "",
     `  B) Docker: docker pull iiidev/iii:${IIPINNED_VERSION}`,
-    "     Re-run with AGENTMEMORY_USE_DOCKER=1 npx @agentmemory/agentmemory",
+    "     Re-run with ZIIAGENTMEMORY_USE_DOCKER=1 npx ziiagentmemory",
     "",
-    "Or skip the engine entirely (standalone MCP):  npx @agentmemory/agentmemory mcp",
+    "Or skip the engine entirely (standalone MCP):  npx ziiagentmemory mcp",
     "",
     "Docs: https://iii.dev/docs",
   ];
@@ -1131,11 +1131,11 @@ async function waitForAgentmemoryReady(timeoutMs: number): Promise<boolean> {
 
 // Derive a host string for the streams/engine WebSocket lines from
 // the configured engine URL (`III_ENGINE_URL`) or REST base
-// (`AGENTMEMORY_URL`) so a remote-bind setup like
+// (`ZIIAGENTMEMORY_URL`) so a remote-bind setup like
 // `III_ENGINE_URL=ws://my-host:49134` doesn't print misleading
 // localhost addresses. Falls back to localhost.
 function getEngineHost(): string {
-  for (const envKey of ["III_ENGINE_URL", "AGENTMEMORY_URL"]) {
+  for (const envKey of ["III_ENGINE_URL", "ZIIAGENTMEMORY_URL"]) {
     const raw = process.env[envKey];
     if (!raw) continue;
     try {
@@ -1147,7 +1147,7 @@ function getEngineHost(): string {
 }
 
 function printReadyHint(consoleState: IiiConsoleState): void {
-  // REST goes through getBaseUrl which already honors AGENTMEMORY_URL
+  // REST goes through getBaseUrl which already honors ZIIAGENTMEMORY_URL
   // for full host+protocol overrides. Streams/Engine are derived from
   // III_ENGINE_URL so a remote bind reads correctly in the panel.
   const restUrl = getBaseUrl();
@@ -1177,16 +1177,16 @@ function printReadyHint(consoleState: IiiConsoleState): void {
   // p.note renders a bordered panel with a title — same affordance
   // used elsewhere in this CLI for "Troubleshooting" / "Setup
   // required" blocks, so the visual language stays consistent.
-  p.note(lines.join("\n"), `agentmemory v${c.accent(VERSION)}`);
+  p.note(lines.join("\n"), `ZiiAgentMemory v${c.accent(VERSION)}`);
 
   // Pick a runnable form for the suggested next-step. Users invoked
-  // via `npx` don't have the bare `agentmemory` command on PATH yet
+  // via `npx` don't have the bare `ziiagentmemory` command on PATH yet
   // (unless they accepted the global-install prompt and the npm bin
   // dir was already on PATH in this shell), so we suggest the npx
   // form for them; everyone else gets the global form.
   const demoCommand = isInvokedViaNpx()
-    ? "npx @agentmemory/agentmemory demo"
-    : "agentmemory demo";
+    ? "npx ziiagentmemory demo"
+    : "ziiagentmemory demo";
   process.stdout.write(`\n${c.dim("Try:")} ${c.cmd(demoCommand)}\n`);
 }
 
@@ -1226,7 +1226,7 @@ async function main() {
     if (IS_VERBOSE) p.log.success("iii-engine is running");
     // Prefer the binary path persisted at launch time over whatever's on
     // PATH now. PATH lookups misfire when a global iii install gets added
-    // after agentmemory started (or when the running engine was launched
+    // after ZiiAgentMemory started (or when the running engine was launched
     // from a path that's no longer first on PATH).
     const persisted = readEngineState();
     const persistedBin =
@@ -1264,23 +1264,23 @@ async function main() {
     // with the simplest honest remedy. A normal user has no other engine and
     // never sees this; only someone running their own iii does, and for them
     // "stop it, then run normally" is the fix. We do not suggest a different
-    // engine version: agentmemory only supports v${IIPINNED_VERSION}.
-    const base = isInvokedViaNpx() ? "npx @agentmemory/agentmemory" : "agentmemory";
+    // engine version: ZiiAgentMemory only supports v${IIPINNED_VERSION}.
+    const base = isInvokedViaNpx() ? "npx ziiagentmemory" : "ZiiAgentMemory";
     p.log.error(
-      `Another iii-engine (${detectedLabel}) is running on port ${getEnginePort()}, and agentmemory needs its own pinned v${IIPINNED_VERSION}.`,
+      `Another iii-engine (${detectedLabel}) is running on port ${getEnginePort()}, and ZiiAgentMemory needs its own pinned v${IIPINNED_VERSION}.`,
     );
     p.note(
       [
-        `agentmemory only supports iii-engine v${IIPINNED_VERSION}. It will not adopt or change the running engine (${detectedLabel}).`,
+        `ZiiAgentMemory only supports iii-engine v${IIPINNED_VERSION}. It will not adopt or change the running engine (${detectedLabel}).`,
         "",
         c.label("Switch to the pinned engine in two steps:"),
         "",
         `  1. Stop the running engine:`,
         `       ${c.cmd(`${base} stop --force`)}`,
-        `     ${c.dim(`(or stop your own iii however you started it — agentmemory leaves your global iii untouched)`)}`,
+        `     ${c.dim(`(or stop your own iii however you started it — ZiiAgentMemory leaves your global iii untouched)`)}`,
         "",
-        `  2. Start agentmemory. It downloads and runs the pinned`,
-        `     v${IIPINNED_VERSION} into ~/.agentmemory/bin automatically:`,
+        `  2. Start ZiiAgentMemory. It downloads and runs the pinned`,
+        `     v${IIPINNED_VERSION} into ~/.ziiagentmemory/bin automatically:`,
         `       ${c.cmd(base)}`,
         "",
         c.dim(`Step 2 needs no manual install. To install iii v${IIPINNED_VERSION} yourself (replaces your global iii), curl:`),
@@ -1299,7 +1299,7 @@ async function main() {
     if (startupFailure?.kind === "no-docker-compose") {
       lines.unshift(
         "Docker is installed but docker-compose.yml is missing from this",
-        "install. Re-install with: npm install -g @agentmemory/agentmemory",
+        "install. Re-install with: npm install -g ziiagentmemory",
         "",
       );
     }
@@ -1344,7 +1344,7 @@ async function main() {
           `Check whether port ${port} is already bound by another process:`,
           portInUseDiagnostic(port),
           "",
-          "If it is, free the port or override: agentmemory --port <N>",
+          "If it is, free the port or override: ZiiAgentMemory --port <N>",
           "",
           "If it isn't, a firewall may be blocking 127.0.0.1:" + port + ".",
           "Re-run with --verbose to see engine stderr.",
@@ -1370,9 +1370,9 @@ async function main() {
 async function apiFetch<T = unknown>(base: string, path: string, timeoutMs = 5000): Promise<T | null> {
   try {
     const headers: Record<string, string> = {};
-    const secret = process.env["AGENTMEMORY_SECRET"];
+    const secret = process.env["ZIIAGENTMEMORY_SECRET"];
     if (secret) headers["Authorization"] = `Bearer ${secret}`;
-    const res = await fetch(`${base}/agentmemory/${path}`, {
+    const res = await fetch(`${base}/ziiagentmemory/${path}`, {
       signal: AbortSignal.timeout(timeoutMs),
       headers,
     });
@@ -1385,12 +1385,12 @@ async function apiFetch<T = unknown>(base: string, path: string, timeoutMs = 500
 async function runStatus() {
   const port = getRestPort();
   const base = getBaseUrl();
-  p.intro("agentmemory status");
+  p.intro("ziiagentmemory status");
 
   const up = await isEngineRunning();
   if (!up) {
     p.log.error(`Not running — no response at ${base}`);
-    p.log.info("Start with: npx @agentmemory/agentmemory");
+    p.log.info("Start with: npx ziiagentmemory");
     process.exit(1);
   }
 
@@ -1472,7 +1472,7 @@ async function runStatus() {
       );
     }
 
-    p.note(lines.join("\n"), "agentmemory");
+    p.note(lines.join("\n"), "ZiiAgentMemory");
   } catch (err) {
     p.log.error(err instanceof Error ? err.message : String(err));
     process.exit(1);
@@ -1529,10 +1529,10 @@ function checkClaudeCodeHooks(): CCHooksCheck {
   }
 
   const match = content.match(
-    /Loaded hooks from standard location for plugin agentmemory:\s*(\S+)/
+    /Loaded hooks from standard location for plugin ZiiAgentMemory:\s*(\S+)/
   );
   if (match) return { state: "loaded", manifestPath: match[1] };
-  if (content.includes("Loading hooks from plugin: agentmemory")) return { state: "loaded" };
+  if (content.includes("Loading hooks from plugin: ZiiAgentMemory")) return { state: "loaded" };
   return { state: "not-loaded" };
 }
 
@@ -1550,7 +1550,7 @@ function buildDoctorContext(): DoctorContext {
   return {
     baseUrl: getBaseUrl(),
     viewerUrl: getViewerUrl(),
-    envPath: join(homedir(), ".agentmemory", ".env"),
+    envPath: join(homedir(), ".ziiagentmemory", ".env"),
     pidfilePath: enginePidfilePath(),
     enginePath: engineStatePath(),
     pinnedVersion: IIPINNED_VERSION,
@@ -1559,11 +1559,11 @@ function buildDoctorContext(): DoctorContext {
 
 function buildDoctorEffects(): DoctorEffects {
   return {
-    envFileExists: () => existsSync(join(homedir(), ".agentmemory", ".env")),
+    envFileExists: () => existsSync(join(homedir(), ".ziiagentmemory", ".env")),
     readEnvFile: () => {
       try {
         return parseEnvFile(
-          readFileSync(join(homedir(), ".agentmemory", ".env"), "utf-8"),
+          readFileSync(join(homedir(), ".ziiagentmemory", ".env"), "utf-8"),
         );
       } catch {
         return {};
@@ -1592,7 +1592,7 @@ function buildDoctorEffects(): DoctorEffects {
     runInit: async () => {
       try {
         await runInit();
-        return { ok: true, message: "Wrote ~/.agentmemory/.env" };
+        return { ok: true, message: "Wrote ~/.ziiagentmemory/.env" };
       } catch (err) {
         return {
           ok: false,
@@ -1701,7 +1701,7 @@ async function passiveServerChecks(): Promise<DoctorCheck[]> {
     ok: serverUp,
     hint: serverUp
       ? undefined
-      : `Start with: npx @agentmemory/agentmemory (tried ${base})`,
+      : `Start with: npx ziiagentmemory (tried ${base})`,
   });
   if (!serverUp) return checks;
 
@@ -1730,7 +1730,7 @@ async function passiveServerChecks(): Promise<DoctorCheck[]> {
     {
       name: "LLM provider",
       ok: hasLlm,
-      hint: hasLlm ? undefined : "set ANTHROPIC_API_KEY (or GEMINI/OPENROUTER/MINIMAX) in ~/.agentmemory/.env",
+      hint: hasLlm ? undefined : "set ANTHROPIC_API_KEY (or GEMINI/OPENROUTER/MINIMAX) in ~/.ziiagentmemory/.env",
     },
     {
       name: "Embedding provider",
@@ -1765,7 +1765,7 @@ async function passiveServerChecks(): Promise<DoctorCheck[]> {
         return {
           ok: false,
           hint:
-            "Plugin enabled but hooks not loaded by Claude Code. Try: /plugin uninstall agentmemory@agentmemory && /plugin install agentmemory@agentmemory, then restart the session.",
+            "Plugin enabled but hooks not loaded by Claude Code. Try: /plugin uninstall ZiiAgentMemory@ZiiAgentMemory && /plugin install ZiiAgentMemory@ZiiAgentMemory, then restart the session.",
         };
       case "no-debug-log":
         return {
@@ -1826,7 +1826,7 @@ async function applyFixWithReport(
 }
 
 async function runDoctor() {
-  p.intro("agentmemory doctor");
+  p.intro("ziiagentmemory doctor");
   const applyAll = args.includes("--all");
   const dryRun = args.includes("--dry-run");
   if (applyAll && dryRun) {
@@ -1921,7 +1921,7 @@ async function runDoctor() {
     process.exit(1);
   }
   if (failed === 0) {
-    p.outro("All diagnostics passing. agentmemory is healthy.");
+    p.outro("All diagnostics passing. ZiiAgentMemory is healthy.");
     return;
   }
   if (failed - fixed === 0) {
@@ -2047,7 +2047,7 @@ async function seedDemoSession(
   project: string,
   session: DemoSession,
 ): Promise<number> {
-  await postJsonStrict(`${base}/agentmemory/session/start`, {
+  await postJsonStrict(`${base}/ziiagentmemory/session/start`, {
     sessionId: session.id,
     project,
     cwd: project,
@@ -2055,7 +2055,7 @@ async function seedDemoSession(
 
   let stored = 0;
   for (const obs of session.observations) {
-    const url = `${base}/agentmemory/observe`;
+    const url = `${base}/ziiagentmemory/observe`;
     const payload = {
       hookType: "post_tool_use",
       sessionId: session.id,
@@ -2091,13 +2091,13 @@ async function seedDemoSession(
     }
   }
 
-  await postJsonStrict(`${base}/agentmemory/session/end`, { sessionId: session.id });
+  await postJsonStrict(`${base}/ziiagentmemory/session/end`, { sessionId: session.id });
   return stored;
 }
 
 async function runDemoSearch(base: string, query: string): Promise<SearchResult> {
   const data = await postJson<{ results?: Array<{ title?: string }> }>(
-    `${base}/agentmemory/smart-search`,
+    `${base}/ziiagentmemory/smart-search`,
     { query, limit: 5 },
     10000,
   );
@@ -2124,12 +2124,12 @@ function findEnvExample(): string | null {
 }
 
 async function runInit() {
-  p.intro("agentmemory init");
-  const target = join(homedir(), ".agentmemory", ".env");
+  p.intro("ziiagentmemory init");
+  const target = join(homedir(), ".ziiagentmemory", ".env");
   const template = findEnvExample();
   if (!template) {
     p.log.error(
-      "Could not locate .env.example in the package. Re-install with: npm i -g @agentmemory/agentmemory",
+      "Could not locate .env.example in the package. Re-install with: npm i -g ziiagentmemory",
     );
     process.exit(1);
   }
@@ -2140,7 +2140,7 @@ async function runInit() {
     await mkdir(dir, { recursive: true });
     // COPYFILE_EXCL collapses the exists-check + copy into one syscall —
     // an existsSync(target) + copyFile() pair races with a parallel init
-    // (or any other process touching ~/.agentmemory/.env between the two
+    // (or any other process touching ~/.ziiagentmemory/.env between the two
     // calls) and would silently overwrite a config the operator just
     // wrote. EEXIST out of copyFile is the only "already configured"
     // signal we trust.
@@ -2166,8 +2166,8 @@ async function runInit() {
       "",
       "Common next steps:",
       "  1. Pick an LLM provider key (ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY / etc.)",
-      "  2. Run `npx @agentmemory/agentmemory doctor` to verify the daemon sees them",
-      "  3. Run `npx @agentmemory/agentmemory` to start the worker",
+      "  2. Run `npx ziiagentmemory doctor` to verify the daemon sees them",
+      "  3. Run `npx ziiagentmemory` to start the worker",
     ].join("\n"),
     "Next steps",
   );
@@ -2195,7 +2195,7 @@ async function startServerForDemo(): Promise<() => Promise<void>> {
 
   await import("./index.js");
   if (!(await waitForAgentmemoryReady(15000))) {
-    p.log.error("agentmemory worker did not become ready within 15s.");
+    p.log.error("ZiiAgentMemory worker did not become ready within 15s.");
     process.exit(1);
   }
 
@@ -2222,7 +2222,7 @@ async function startServerForDemo(): Promise<() => Promise<void>> {
 async function runDemo() {
   const port = getRestPort();
   const base = `http://localhost:${port}`;
-  p.intro("agentmemory demo");
+  p.intro("ziiagentmemory demo");
 
   const serve = args.includes("--serve");
   let teardown: () => Promise<void> = async () => {};
@@ -2231,10 +2231,10 @@ async function runDemo() {
     teardown = await startServerForDemo();
   } else if (!(await isAgentmemoryReady())) {
     p.log.error(
-      `agentmemory worker not reachable on port ${port} (livez probe failed). Something may be on the port but it isn't serving /agentmemory/*.`,
+      `ZiiAgentMemory worker not reachable on port ${port} (livez probe failed). Something may be on the port but it isn't serving /ziiagentmemory/*.`,
     );
-    p.log.info("Start it with: npx @agentmemory/agentmemory");
-    p.log.info("Or run a one-command demo with: npx @agentmemory/agentmemory demo --serve");
+    p.log.info("Start it with: npx ziiagentmemory");
+    p.log.info("Or run a one-command demo with: npx ziiagentmemory demo --serve");
     process.exit(1);
   }
 
@@ -2250,7 +2250,7 @@ async function runDemo() {
 }
 
 async function runDemoBody(base: string) {
-  const demoProject = "/tmp/agentmemory-demo";
+  const demoProject = "/tmp/ZiiAgentMemory-demo";
   const sessions = buildDemoSessions();
 
   const sSeed = p.spinner();
@@ -2293,11 +2293,11 @@ async function runDemoBody(base: string) {
     c.accent(`found the N+1 query fix — keyword matching can't do that.`),
     "",
     `Viewer:        ${c.url(getViewerUrl())}`,
-    `Clean up with: ${c.dim(`curl -X DELETE "${base}/agentmemory/sessions?project=${demoProject}"`)}`,
+    `Clean up with: ${c.dim(`curl -X DELETE "${base}/ziiagentmemory/sessions?project=${demoProject}"`)}`,
   ];
 
   p.note(lines.join("\n"), "demo complete");
-  p.log.success("agentmemory is working. Point your agent at it and get back to coding.");
+  p.log.success("ZiiAgentMemory is working. Point your agent at it and get back to coding.");
 }
 
 function runCommand(
@@ -2334,7 +2334,7 @@ function runCommand(
 }
 
 async function runUpgrade() {
-  p.intro("agentmemory upgrade");
+  p.intro("ziiagentmemory upgrade");
 
   const cwd = process.cwd();
   const hasPackageJson = existsSync(join(cwd, "package.json"));
@@ -2407,11 +2407,11 @@ async function runUpgrade() {
       "Upgrade flow completed.",
       "",
       "Recommended next steps:",
-      "  1) agentmemory status",
+      "  1) ziiagentmemory status",
       "  2) npm/pnpm test",
-      "  3) restart agentmemory process",
+      "  3) restart ZiiAgentMemory process",
     ].join("\n"),
-    "agentmemory upgrade",
+    "ziiagentmemory upgrade",
   );
 }
 
@@ -2464,7 +2464,7 @@ function findEnginePidsByPort(port: number): number[] {
   if (!lsof) return [];
   // -sTCP:LISTEN restricts to listening server sockets only. Without
   // this, lsof also returns client-side PIDs (any process with an
-  // active TCP connection to :port), which includes the agentmemory
+  // active TCP connection to :port), which includes the ZiiAgentMemory
   // CLI itself thanks to the keep-alive fetch in isEngineRunning().
   // signalAndWait would then SIGKILL its own parent — exit code 137.
   const selfPid = process.pid;
@@ -2509,11 +2509,11 @@ async function stopDockerEngine(composeFile: string, port: number): Promise<void
     );
     process.exit(1);
   }
-  p.outro("Stopped. Memories persisted to disk; restart anytime with: npx @agentmemory/agentmemory");
+  p.outro("Stopped. Memories persisted to disk; restart anytime with: npx ziiagentmemory");
 }
 
 async function runStop(): Promise<void> {
-  p.intro("agentmemory stop");
+  p.intro("ziiagentmemory stop");
   const port = getRestPort();
   const state = readEngineState();
   const running = await isEngineRunning();
@@ -2551,7 +2551,7 @@ async function runStop(): Promise<void> {
       // Engine already gone but worker is lingering — reap it directly
       // instead of preserving for manual cleanup.
       const s = p.spinner();
-      s.start(`Stopping orphaned agentmemory worker (pid ${workerPid})...`);
+      s.start(`Stopping orphaned ZiiAgentMemory worker (pid ${workerPid})...`);
       const ok = await signalAndWait(workerPid, "SIGTERM", 3000);
       s.stop(ok ? `Stopped worker pid ${workerPid}` : `Failed to stop worker pid ${workerPid}`);
       clearEnginePidfile();
@@ -2571,7 +2571,7 @@ async function runStop(): Promise<void> {
       `Engine not responding on :${port}, but ${survivors.size} process(es) still hold the port or pidfile: ${[...survivors].join(", ")}`,
     );
     p.log.info(
-      `Preserving ~/.agentmemory/iii.pid + worker.pid. Investigate before manual cleanup:\n  ps -p ${[...survivors].join(",")} -o pid,ppid,comm,etime\n  ${IS_WINDOWS ? "netstat -ano | findstr :" + port : "lsof -i :" + port}`,
+      `Preserving ~/.ziiagentmemory/iii.pid + worker.pid. Investigate before manual cleanup:\n  ps -p ${[...survivors].join(",")} -o pid,ppid,comm,etime\n  ${IS_WINDOWS ? "netstat -ano | findstr :" + port : "lsof -i :" + port}`,
     );
     process.exit(1);
   }
@@ -2585,7 +2585,7 @@ async function runStop(): Promise<void> {
         );
       } else {
         p.log.error(
-          `Engine is running on :${port} but no pidfile or state file is present. It may have been started via Docker compose by a different shell. Refusing to signal host PIDs.\n\nStop it with:\n  docker compose -f ${compose} down\n\nOr re-run with --force to signal whatever lsof finds on :${port}, or AGENTMEMORY_USE_DOCKER=1 to record state next time.`,
+          `Engine is running on :${port} but no pidfile or state file is present. It may have been started via Docker compose by a different shell. Refusing to signal host PIDs.\n\nStop it with:\n  docker compose -f ${compose} down\n\nOr re-run with --force to signal whatever lsof finds on :${port}, or ZIIAGENTMEMORY_USE_DOCKER=1 to record state next time.`,
         );
         process.exit(1);
       }
@@ -2596,7 +2596,7 @@ async function runStop(): Promise<void> {
   if (pidfilePid) candidates.add(pidfilePid);
   for (const pid of portPids) candidates.add(pid);
 
-  // stop must also reap the agentmemory worker process
+  // stop must also reap the ZiiAgentMemory worker process
   // (`node dist/index.mjs`). If only the engine is killed, the worker can
   // survive (detached spawn / signal not propagated) and reconnect to the
   // next engine as a duplicate registration. workerPid was read above so
@@ -2621,7 +2621,7 @@ async function runStop(): Promise<void> {
   // index a real chance to commit before the engine goes away.
   for (const pid of workerCandidates) {
     const s = p.spinner();
-    s.start(`Stopping agentmemory worker (pid ${pid})... [flushing state]`);
+    s.start(`Stopping ZiiAgentMemory worker (pid ${pid})... [flushing state]`);
     const ok = await signalAndWait(pid, "SIGTERM", 5000);
     s.stop(ok ? `Stopped worker pid ${pid}` : `Failed to stop worker pid ${pid}`);
     if (!ok) allStopped = false;
@@ -2642,7 +2642,7 @@ async function runStop(): Promise<void> {
     p.log.error("One or more processes survived SIGKILL. Investigate with `ps`.");
     process.exit(1);
   }
-  p.outro("Stopped. Memories persisted to disk; restart anytime with: npx @agentmemory/agentmemory");
+  p.outro("Stopped. Memories persisted to disk; restart anytime with: npx ziiagentmemory");
 }
 
 async function runMcp(): Promise<void> {
@@ -2701,7 +2701,7 @@ async function runImportJsonl(): Promise<void> {
   let probeOk = false;
   let probeDetail = "";
   try {
-    const probe = await fetch(`${base}/agentmemory/livez`, {
+    const probe = await fetch(`${base}/ziiagentmemory/livez`, {
       signal: AbortSignal.timeout(2000),
     });
     probeOk = probe.ok;
@@ -2716,7 +2716,7 @@ async function runImportJsonl(): Promise<void> {
   }
   if (!probeOk) {
     p.log.error(
-      `agentmemory livez probe failed on port ${port}: ${probeDetail}. Start it with \`npx @agentmemory/agentmemory\` in another terminal, then re-run this command.`,
+      `ZiiAgentMemory livez probe failed on port ${port}: ${probeDetail}. Start it with \`npx ziiagentmemory\` in another terminal, then re-run this command.`,
     );
     process.exit(1);
   }
@@ -2726,7 +2726,7 @@ async function runImportJsonl(): Promise<void> {
   if (maxFiles !== undefined) body["maxFiles"] = maxFiles;
 
   const headers: Record<string, string> = { "content-type": "application/json" };
-  const secret = process.env["AGENTMEMORY_SECRET"];
+  const secret = process.env["ZIIAGENTMEMORY_SECRET"];
   if (secret) headers["authorization"] = `Bearer ${secret}`;
 
   p.log.info(`Importing JSONL from ${pathArg || "~/.claude/projects"}…`);
@@ -2734,7 +2734,7 @@ async function runImportJsonl(): Promise<void> {
   spinner.start("scanning files");
 
   try {
-    const res = await fetch(`${base}/agentmemory/replay/import-jsonl`, {
+    const res = await fetch(`${base}/ziiagentmemory/replay/import-jsonl`, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
@@ -2775,11 +2775,11 @@ async function runImportJsonl(): Promise<void> {
             : `HTTP ${res.status}`);
       if (res.status === 401) {
         p.log.error(
-          `${detail}. Set AGENTMEMORY_SECRET to match the server's secret and re-run.`,
+          `${detail}. Set ZIIAGENTMEMORY_SECRET to match the server's secret and re-run.`,
         );
       } else if (res.status === 404) {
         p.log.error(
-          `${detail}. The running agentmemory server does not expose /agentmemory/replay/import-jsonl — upgrade to v0.8.13 or later.`,
+          `${detail}. The running ziiagentmemory server does not expose /ziiagentmemory/replay/import-jsonl — upgrade to v0.8.13 or later.`,
         );
       } else {
         p.log.error(detail);
@@ -2831,14 +2831,14 @@ async function runImportJsonl(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// `agentmemory remove` — clean uninstall.
+// `ziiagentmemory remove` — clean uninstall.
 //
 // Planning logic lives in src/cli/remove-plan.ts so it's testable without
 // touching $HOME. This function loads the manifest, builds the plan,
 // double-confirms, then executes step by step.
 
 function loadConnectManifest(home: string): ConnectManifest | null {
-  const path = join(home, ".agentmemory", "backups", "connect-manifest.json");
+  const path = join(home, ".ziiagentmemory", "backups", "connect-manifest.json");
   try {
     const raw = readFileSync(path, "utf-8");
     const parsed = JSON.parse(raw) as Partial<ConnectManifest>;
@@ -2876,7 +2876,7 @@ function safeDelete(path: string): { ok: boolean; message: string } {
 }
 
 async function runRemove(): Promise<void> {
-  p.intro("agentmemory remove");
+  p.intro("ziiagentmemory remove");
   const force = args.includes("--force");
   const keepData = args.includes("--keep-data");
 
@@ -2897,7 +2897,7 @@ async function runRemove(): Promise<void> {
 
   const applicable = plan.filter((it) => it.applicable);
   if (applicable.length === 0) {
-    p.outro("Nothing to remove. agentmemory is already gone.");
+    p.outro("Nothing to remove. ZiiAgentMemory is already gone.");
     return;
   }
 
@@ -2968,7 +2968,7 @@ async function runRemove(): Promise<void> {
   }
 
   p.outro(
-    "Done. agentmemory cleanly removed. The npm package itself: npm uninstall -g @agentmemory/agentmemory",
+    "Done. ZiiAgentMemory cleanly removed. The npm package itself: npm uninstall -g ziiagentmemory",
   );
 }
 

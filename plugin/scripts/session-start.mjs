@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
 import { basename } from "node:path";
-
 //#region src/hooks/_project.ts
 function resolveProject(cwd) {
-	const explicit = process.env["AGENTMEMORY_PROJECT_NAME"];
+	const explicit = process.env["ZIIAGENTMEMORY_PROJECT_NAME"];
 	if (explicit && explicit.trim()) return explicit.trim();
 	const dir = cwd && cwd.trim() ? cwd : process.cwd();
 	try {
@@ -21,17 +20,16 @@ function resolveProject(cwd) {
 	} catch {}
 	return basename(dir);
 }
-
 //#endregion
 //#region src/hooks/session-start.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const INJECT_CONTEXT = process.env["AGENTMEMORY_INJECT_CONTEXT"] === "true";
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const INJECT_CONTEXT = process.env["ZIIAGENTMEMORY_INJECT_CONTEXT"] === "true";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 const INJECT_TIMEOUT_MS = 1500;
 const REGISTER_TIMEOUT_MS = 800;
 function authHeaders() {
@@ -52,7 +50,7 @@ async function main() {
 	const sessionId = data.session_id || data.sessionId || `ses_${Date.now().toString(36)}`;
 	const cwd = data.cwd || process.cwd();
 	const project = resolveProject(data.cwd);
-	const url = `${REST_URL}/agentmemory/session/start`;
+	const url = `${REST_URL}/ziiagentmemory/session/start`;
 	const init = {
 		method: "POST",
 		headers: authHeaders(),
@@ -81,7 +79,7 @@ async function main() {
 	} catch {}
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=session-start.mjs.map

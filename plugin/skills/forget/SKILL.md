@@ -1,11 +1,11 @@
 ---
 name: forget
-description: Delete specific observations from agentmemory after showing them and getting explicit confirmation. Use when the user says "forget this", "delete memory", "remove that note", or wants to scrub specific data for privacy.
+description: Delete specific observations from ZiiAgentMemory after showing them and getting explicit confirmation. Use when the user says "forget this", "delete memory", "remove that note", or wants to scrub specific data for privacy.
 argument-hint: "[what to forget - session ID, file path, or search term]"
 user-invocable: true
 ---
 
-The user wants to remove data from agentmemory: $ARGUMENTS
+The user wants to remove data from ZiiAgentMemory: $ARGUMENTS
 
 ## Quick start
 

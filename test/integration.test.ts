@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 
-const BASE_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const BASE_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 
 const SESSION_ID = `test_${Date.now()}`;
 const PROJECT = "/tmp/test-project";
@@ -29,29 +29,29 @@ async function json(res: Response): Promise<unknown> {
   }
 }
 
-describe("agentmemory integration", () => {
+describe("ZiiAgentMemory integration", () => {
   beforeAll(async () => {
-    const res = await fetch(url("/agentmemory/health")).catch(() => null);
+    const res = await fetch(url("/ziiagentmemory/health")).catch(() => null);
     if (!res || !res.ok) {
       throw new Error(
-        `agentmemory is not running at ${BASE_URL}. Start it with: docker compose up -d && npm start`,
+        `ZiiAgentMemory is not running at ${BASE_URL}. Start it with: docker compose up -d && npm start`,
       );
     }
   });
 
   describe("health", () => {
     it("returns ok", async () => {
-      const res = await fetch(url("/agentmemory/health"));
+      const res = await fetch(url("/ziiagentmemory/health"));
       expect(res.status).toBe(200);
       const body = (await json(res)) as { status: string; service: string };
       expect(["ok", "healthy"]).toContain(body.status);
-      expect(body.service).toBe("agentmemory");
+      expect(body.service).toBe("ZiiAgentMemory");
     });
   });
 
   describe("session lifecycle", () => {
     it("starts a session", async () => {
-      const res = await fetch(url("/agentmemory/session/start"), {
+      const res = await fetch(url("/ziiagentmemory/session/start"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -71,7 +71,7 @@ describe("agentmemory integration", () => {
     });
 
     it("lists sessions including the new one", async () => {
-      const res = await fetch(url("/agentmemory/sessions"));
+      const res = await fetch(url("/ziiagentmemory/sessions"));
       expect(res.status).toBe(200);
       const body = (await json(res)) as {
         sessions: Array<{ id: string }>;
@@ -82,7 +82,7 @@ describe("agentmemory integration", () => {
     });
 
     it("ends the session", async () => {
-      const res = await fetch(url("/agentmemory/session/end"), {
+      const res = await fetch(url("/ziiagentmemory/session/end"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ sessionId: SESSION_ID }),
@@ -93,7 +93,7 @@ describe("agentmemory integration", () => {
     });
 
     it("session is marked completed", async () => {
-      const res = await fetch(url("/agentmemory/sessions"));
+      const res = await fetch(url("/ziiagentmemory/sessions"));
       const body = (await json(res)) as {
         sessions: Array<{ id: string; status: string; endedAt?: string }>;
       };
@@ -108,7 +108,7 @@ describe("agentmemory integration", () => {
     const OBS_SESSION = `test_obs_${Date.now()}`;
 
     beforeAll(async () => {
-      await fetch(url("/agentmemory/session/start"), {
+      await fetch(url("/ziiagentmemory/session/start"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -120,7 +120,7 @@ describe("agentmemory integration", () => {
     });
 
     afterAll(async () => {
-      await fetch(url("/agentmemory/session/end"), {
+      await fetch(url("/ziiagentmemory/session/end"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ sessionId: OBS_SESSION }),
@@ -128,7 +128,7 @@ describe("agentmemory integration", () => {
     });
 
     it("captures an observation", async () => {
-      const res = await fetch(url("/agentmemory/observe"), {
+      const res = await fetch(url("/ziiagentmemory/observe"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -148,7 +148,7 @@ describe("agentmemory integration", () => {
     });
 
     it("captures a second observation", async () => {
-      const res = await fetch(url("/agentmemory/observe"), {
+      const res = await fetch(url("/ziiagentmemory/observe"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -169,7 +169,7 @@ describe("agentmemory integration", () => {
 
     it("lists observations for the session", async () => {
       const res = await fetch(
-        url(`/agentmemory/observations?sessionId=${OBS_SESSION}`),
+        url(`/ziiagentmemory/observations?sessionId=${OBS_SESSION}`),
       );
       expect(res.status).toBe(200);
       const body = (await json(res)) as {
@@ -179,7 +179,7 @@ describe("agentmemory integration", () => {
     });
 
     it("returns 400 without sessionId", async () => {
-      const res = await fetch(url("/agentmemory/observations"));
+      const res = await fetch(url("/ziiagentmemory/observations"));
       expect(res.status).toBe(400);
       const body = (await json(res)) as { error: string };
       expect(body.error).toBe("sessionId required");
@@ -188,7 +188,7 @@ describe("agentmemory integration", () => {
 
   describe("search", () => {
     it("searches observations", async () => {
-      const res = await fetch(url("/agentmemory/search"), {
+      const res = await fetch(url("/ziiagentmemory/search"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ query: "auth", limit: 5 }),
@@ -199,7 +199,7 @@ describe("agentmemory integration", () => {
     });
 
     it("returns results for empty limit", async () => {
-      const res = await fetch(url("/agentmemory/search"), {
+      const res = await fetch(url("/ziiagentmemory/search"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ query: "test" }),
@@ -210,7 +210,7 @@ describe("agentmemory integration", () => {
 
   describe("context", () => {
     it("generates context for a project", async () => {
-      const res = await fetch(url("/agentmemory/context"), {
+      const res = await fetch(url("/ziiagentmemory/context"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -226,7 +226,7 @@ describe("agentmemory integration", () => {
 
   describe("viewer", () => {
     it("serves the viewer HTML", async () => {
-      const res = await fetch(url("/agentmemory/viewer"), {
+      const res = await fetch(url("/ziiagentmemory/viewer"), {
         headers: SECRET ? authHeaders() : undefined,
       });
       expect(res.status).toBe(200);
@@ -237,7 +237,7 @@ describe("agentmemory integration", () => {
 
   describe("dashboard list endpoints", () => {
     it("GET /semantic returns { semantic: [...] }", async () => {
-      const res = await fetch(url("/agentmemory/semantic"), {
+      const res = await fetch(url("/ziiagentmemory/semantic"), {
         headers: SECRET ? authHeaders() : undefined,
       });
       expect(res.status).toBe(200);
@@ -246,7 +246,7 @@ describe("agentmemory integration", () => {
     });
 
     it("GET /procedural returns { procedural: [...] }", async () => {
-      const res = await fetch(url("/agentmemory/procedural"), {
+      const res = await fetch(url("/ziiagentmemory/procedural"), {
         headers: SECRET ? authHeaders() : undefined,
       });
       expect(res.status).toBe(200);
@@ -255,7 +255,7 @@ describe("agentmemory integration", () => {
     });
 
     it("GET /relations returns { relations: [...] }", async () => {
-      const res = await fetch(url("/agentmemory/relations"), {
+      const res = await fetch(url("/ziiagentmemory/relations"), {
         headers: SECRET ? authHeaders() : undefined,
       });
       expect(res.status).toBe(200);
@@ -266,13 +266,13 @@ describe("agentmemory integration", () => {
 
   describe("auth", () => {
     it("health endpoint is always public", async () => {
-      const res = await fetch(url("/agentmemory/health"));
+      const res = await fetch(url("/ziiagentmemory/health"));
       expect(res.status).toBe(200);
     });
 
     if (SECRET) {
       it("rejects unauthenticated requests", async () => {
-        const res = await fetch(url("/agentmemory/search"), {
+        const res = await fetch(url("/ziiagentmemory/search"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: "test" }),
@@ -281,7 +281,7 @@ describe("agentmemory integration", () => {
       });
 
       it("rejects wrong bearer token", async () => {
-        const res = await fetch(url("/agentmemory/search"), {
+        const res = await fetch(url("/ziiagentmemory/search"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -293,7 +293,7 @@ describe("agentmemory integration", () => {
       });
 
       it("rejects unauthenticated viewer requests on the API port", async () => {
-        const res = await fetch(url("/agentmemory/viewer"));
+        const res = await fetch(url("/ziiagentmemory/viewer"));
         expect(res.status).toBe(401);
       });
     }

@@ -103,7 +103,7 @@ export function registerEnrichFunction(sdk: ISdk, kv: StateKV): void {
           .join("\n");
         if (observations) {
           parts.push(
-            `<agentmemory-relevant-context>\n${observations}\n</agentmemory-relevant-context>`,
+            `<ZiiAgentMemory-relevant-context>\n${observations}\n</ZiiAgentMemory-relevant-context>`,
           );
         }
       }
@@ -114,7 +114,7 @@ export function registerEnrichFunction(sdk: ISdk, kv: StateKV): void {
           .map((m) => `- ${escapeXml(m.title)}: ${escapeXml(m.content)}`)
           .join("\n");
         parts.push(
-          `<agentmemory-past-errors>\n${bugs}\n</agentmemory-past-errors>`,
+          `<ZiiAgentMemory-past-errors>\n${bugs}\n</ZiiAgentMemory-past-errors>`,
         );
       }
 

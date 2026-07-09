@@ -36,7 +36,7 @@ describe("openclaw plugin — memory capability registration (closes #286 follow
     expect(typeof capability.promptBuilder).toBe("function");
     const lines = capability.promptBuilder?.({ availableTools: new Set() });
     expect(Array.isArray(lines)).toBe(true);
-    expect((lines as string[]).join(" ")).toMatch(/agentmemory/i);
+    expect((lines as string[]).join(" ")).toMatch(/ziiagentmemory/i);
   });
 
   it("still registers hooks and tolerates older OpenClaw builds without registerMemoryCapability", async () => {

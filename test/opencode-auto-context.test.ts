@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 // SessionStart-equivalent behaviour.
 describe("OpenCode plugin auto-context injection (#431)", () => {
   const plugin = readFileSync(
-    "plugin/opencode/agentmemory-capture.ts",
+    "plugin/opencode/ZiiAgentMemory-capture.ts",
     "utf-8",
   );
 

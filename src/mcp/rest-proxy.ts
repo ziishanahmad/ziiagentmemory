@@ -4,14 +4,14 @@ const CALL_TIMEOUT_MS = 15_000;
 const LOCAL_MODE_TTL_MS = 30_000;
 
 function probeTimeoutMs(): number {
-  const raw = process.env["AGENTMEMORY_PROBE_TIMEOUT_MS"];
+  const raw = process.env["ZIIAGENTMEMORY_PROBE_TIMEOUT_MS"];
   if (!raw) return DEFAULT_HEALTH_PROBE_TIMEOUT_MS;
   const n = Number(raw);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : DEFAULT_HEALTH_PROBE_TIMEOUT_MS;
 }
 
 function forceProxy(): boolean {
-  const raw = process.env["AGENTMEMORY_FORCE_PROXY"];
+  const raw = process.env["ZIIAGENTMEMORY_FORCE_PROXY"];
   return raw === "1" || raw === "true";
 }
 
@@ -33,9 +33,9 @@ let probeInFlight: Promise<Handle> | null = null;
 
 // `${VAR}`-style placeholders ship in plugin/.mcp.json so MCP hosts that
 // expand them (Claude Code, Cursor) substitute the user's shell value.
-// Hosts that DON'T expand pass the literal string `"${AGENTMEMORY_URL}"`
+// Hosts that DON'T expand pass the literal string `"${ZIIAGENTMEMORY_URL}"`
 // through to our subprocess — that string is truthy, defeats the `||`
-// fallback, and would have us POST to `${AGENTMEMORY_URL}/agentmemory/...`
+// fallback, and would have us POST to `${ZIIAGENTMEMORY_URL}/ziiagentmemory/...`
 // (DNS failure). Strip any literal placeholder we see so the fallback
 // engages instead.
 export function resolveEnvOrEmpty(name: string): string {
@@ -46,16 +46,16 @@ export function resolveEnvOrEmpty(name: string): string {
 }
 
 function baseUrl(): string {
-  return (resolveEnvOrEmpty("AGENTMEMORY_URL") || DEFAULT_URL).replace(/\/+$/, "");
+  return (resolveEnvOrEmpty("ZIIAGENTMEMORY_URL") || DEFAULT_URL).replace(/\/+$/, "");
 }
 
 function authHeader(): Record<string, string> {
-  const secret = resolveEnvOrEmpty("AGENTMEMORY_SECRET");
+  const secret = resolveEnvOrEmpty("ZIIAGENTMEMORY_SECRET");
   return secret ? { authorization: `Bearer ${secret}` } : {};
 }
 
 /**
- * Probes the agentmemory server's livez endpoint. Returns a Response-shaped
+ * Probes the ziiagentmemory server's livez endpoint. Returns a Response-shaped
  * object whose `ok` flag drives the proxy/local-fallback decision.
  *
  * Tests can swap this via {@link setLivezProbe} to avoid the real 2s
@@ -69,7 +69,7 @@ export type LivezProbe = (
 ) => Promise<{ ok: boolean; status?: number; statusText?: string }>;
 
 const defaultLivezProbe: LivezProbe = async (url, timeoutMs, headers) => {
-  const res = await fetch(`${url}/agentmemory/livez`, {
+  const res = await fetch(`${url}/ziiagentmemory/livez`, {
     method: "GET",
     headers,
     signal: AbortSignal.timeout(timeoutMs),
@@ -95,13 +95,13 @@ async function probe(url: string): Promise<boolean> {
     const res = await livezProbe(url, timeout, authHeader());
     if (!res.ok) {
       process.stderr.write(
-        `[@agentmemory/mcp] livez probe ${url}/agentmemory/livez -> ${res.status ?? "?"} ${res.statusText ?? ""}; falling back to local InMemoryKV (set AGENTMEMORY_FORCE_PROXY=1 to skip the probe)\n`,
+        `[ziiagentmemory] livez probe ${url}/ziiagentmemory/livez -> ${res.status ?? "?"} ${res.statusText ?? ""}; falling back to local InMemoryKV (set ZIIAGENTMEMORY_FORCE_PROXY=1 to skip the probe)\n`,
       );
     }
     return res.ok;
   } catch (err) {
     process.stderr.write(
-      `[@agentmemory/mcp] livez probe ${url}/agentmemory/livez failed in ${timeout}ms: ${err instanceof Error ? err.message : String(err)}; falling back to local InMemoryKV (set AGENTMEMORY_FORCE_PROXY=1 to skip the probe, or raise AGENTMEMORY_PROBE_TIMEOUT_MS)\n`,
+      `[ziiagentmemory] livez probe ${url}/ziiagentmemory/livez failed in ${timeout}ms: ${err instanceof Error ? err.message : String(err)}; falling back to local InMemoryKV (set ZIIAGENTMEMORY_FORCE_PROXY=1 to skip the probe, or raise ZIIAGENTMEMORY_PROBE_TIMEOUT_MS)\n`,
     );
     return false;
   }
@@ -129,7 +129,7 @@ export async function resolveHandle(): Promise<Handle> {
     const up = skipProbe ? true : await probe(url);
     if (skipProbe) {
       process.stderr.write(
-        `[@agentmemory/mcp] AGENTMEMORY_FORCE_PROXY set; skipping livez probe and trusting ${url}\n`,
+        `[ziiagentmemory] ZIIAGENTMEMORY_FORCE_PROXY set; skipping livez probe and trusting ${url}\n`,
       );
     }
     if (up) {

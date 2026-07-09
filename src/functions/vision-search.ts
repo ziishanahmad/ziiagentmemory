@@ -29,7 +29,7 @@ export function registerVisionSearchFunctions(
       observationId?: string;
     }) => {
       if (!imageProvider?.embedImage) {
-        return { success: false, error: "image embeddings disabled (set AGENTMEMORY_IMAGE_EMBEDDINGS=true)" };
+        return { success: false, error: "image embeddings disabled (set ZIIAGENTMEMORY_IMAGE_EMBEDDINGS=true)" };
       }
       if (!data?.imageRef || typeof data.imageRef !== "string") {
         return { success: false, error: "imageRef required" };
@@ -78,7 +78,7 @@ export function registerVisionSearchFunctions(
       sessionId?: string;
     }) => {
       if (!imageProvider?.embedImage) {
-        return { success: false, error: "image embeddings disabled (set AGENTMEMORY_IMAGE_EMBEDDINGS=true)" };
+        return { success: false, error: "image embeddings disabled (set ZIIAGENTMEMORY_IMAGE_EMBEDDINGS=true)" };
       }
       const requestedTopK =
         typeof data?.topK === "number" && Number.isFinite(data.topK)

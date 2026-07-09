@@ -4,7 +4,7 @@ import { join } from "node:path";
 import * as p from "@clack/prompts";
 import type { ConnectAdapter, ConnectOptions, ConnectResult } from "./types.js";
 import {
-  AGENTMEMORY_MCP_BLOCK,
+  ZIIAGENTMEMORY_MCP_BLOCK,
   backupFile,
   logAlreadyWired,
   logBackup,
@@ -22,7 +22,7 @@ const CLAUDE_DIR = join(homedir(), ".claude");
 const CLAUDE_JSON = join(homedir(), ".claude.json");
 const CLAUDE_SETTINGS = join(CLAUDE_DIR, "settings.json");
 
-type ClaudeMcpEntry = typeof AGENTMEMORY_MCP_BLOCK;
+type ClaudeMcpEntry = typeof ZIIAGENTMEMORY_MCP_BLOCK;
 type ClaudeConfig = {
   mcpServers?: Record<string, ClaudeMcpEntry>;
   [key: string]: unknown;
@@ -33,16 +33,16 @@ function entryMatches(entry: unknown): boolean {
   const e = entry as Record<string, unknown>;
   if (e["command"] !== "npx") return false;
   const args = Array.isArray(e["args"]) ? (e["args"] as string[]) : [];
-  return args.includes("@agentmemory/mcp");
+  return args.includes("ziiagentmemory");
 }
 
 export const adapter: ConnectAdapter = {
   name: "claude-code",
   displayName: "Claude Code",
   category: "native",
-  docs: "https://github.com/rohitg00/agentmemory#claude-code-one-block-paste-it",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#claude-code-one-block-paste-it",
   protocolNote:
-    "→ Using MCP. Hooks are also available — see https://github.com/rohitg00/agentmemory#claude-code-one-block-paste-it.",
+    "→ Using MCP. Hooks are also available — see https://github.com/rohitg00/ZiiAgentMemory#claude-code-one-block-paste-it.",
 
   detect(): boolean {
     return existsSync(CLAUDE_DIR);
@@ -55,7 +55,7 @@ export const adapter: ConnectAdapter = {
       ...((next.mcpServers as Record<string, ClaudeMcpEntry>) ?? {}),
     };
 
-    const alreadyHas = entryMatches(servers["agentmemory"]);
+    const alreadyHas = entryMatches(servers["ZiiAgentMemory"]);
     if (alreadyHas && !opts.force) {
       logAlreadyWired("Claude Code", CLAUDE_JSON);
       // --with-hooks is independent of MCP wiring (issue #508). Run the
@@ -74,7 +74,7 @@ export const adapter: ConnectAdapter = {
 
     if (opts.dryRun) {
       p.log.info(
-        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers.agentmemory in ${CLAUDE_JSON}`,
+        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers.ZiiAgentMemory in ${CLAUDE_JSON}`,
       );
       return { kind: "installed", mutatedPath: CLAUDE_JSON };
     }
@@ -88,14 +88,14 @@ export const adapter: ConnectAdapter = {
       writeFileSync(CLAUDE_JSON, "{}\n", "utf-8");
     }
 
-    servers["agentmemory"] = AGENTMEMORY_MCP_BLOCK;
+    servers["ZiiAgentMemory"] = ZIIAGENTMEMORY_MCP_BLOCK;
     next.mcpServers = servers;
     writeJsonAtomic(CLAUDE_JSON, next);
 
     const verify = readJsonSafe<ClaudeConfig>(CLAUDE_JSON);
-    if (!entryMatches(verify?.mcpServers?.["agentmemory"])) {
+    if (!entryMatches(verify?.mcpServers?.["ZiiAgentMemory"])) {
       p.log.error(
-        `Verification failed: ${CLAUDE_JSON} did not contain mcpServers.agentmemory after write.`,
+        `Verification failed: ${CLAUDE_JSON} did not contain mcpServers.ZiiAgentMemory after write.`,
       );
       return { kind: "skipped", reason: "verification-failed" };
     }
@@ -121,7 +121,7 @@ export const adapter: ConnectAdapter = {
 /**
  * Merge the bundled `plugin/hooks/hooks.json` into
  * `~/.claude/settings.json`'s top-level `hooks` field with absolute
- * script paths. Use this when agentmemory is NOT installed through
+ * script paths. Use this when ZiiAgentMemory is NOT installed through
  * `/plugin marketplace add` (e.g. MCP standalone wiring), so the
  * hook scripts survive version bumps without `${CLAUDE_PLUGIN_ROOT}`
  * expansion (issue #508).
@@ -149,7 +149,7 @@ function installClaudeHooks(opts: ConnectOptions): ConnectResult {
 
   if (opts.dryRun) {
     p.log.info(
-      `[dry-run] Would merge agentmemory hook entries into ${CLAUDE_SETTINGS} (${Object.keys(merged.hooks).length} event(s))`,
+      `[dry-run] Would merge ZiiAgentMemory hook entries into ${CLAUDE_SETTINGS} (${Object.keys(merged.hooks).length} event(s))`,
     );
     return { kind: "installed", mutatedPath: CLAUDE_SETTINGS };
   }
@@ -167,7 +167,7 @@ function installClaudeHooks(opts: ConnectOptions): ConnectResult {
 
   logInstalled("Claude Code hooks (workaround for #508)", CLAUDE_SETTINGS);
   p.log.info(
-    "User-scope hook entries reference absolute paths under the bundled plugin/ dir. Re-run `agentmemory connect claude-code --with-hooks` after upgrading agentmemory to refresh them.",
+    "User-scope hook entries reference absolute paths under the bundled plugin/ dir. Re-run `ziiagentmemory connect claude-code --with-hooks` after upgrading ZiiAgentMemory to refresh them.",
   );
 
   return {

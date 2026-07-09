@@ -38,7 +38,7 @@ workers:
   - name: iii-observability
     config:
       enabled: true
-      service_name: agentmemory
+      service_name: ZiiAgentMemory
       exporter: memory
       # 0.1 instead of 1.0: at full sampling under sustained load the
       # log subscriber falls behind, the worker emits a "Log trigger

@@ -76,10 +76,10 @@ describe("buildMergedHooks", () => {
     const ours = sessionStart.find((e) =>
       e.hooks.some((h) => h.command.includes(`${PLUGIN_ROOT}/scripts/session-start.mjs`)),
     );
-    expect(ours, "agentmemory SessionStart hook should be appended").toBeDefined();
+    expect(ours, "ZiiAgentMemory SessionStart hook should be appended").toBeDefined();
   });
 
-  it("re-install strips previous agentmemory entries (idempotent by script path)", () => {
+  it("re-install strips previous ZiiAgentMemory entries (idempotent by script path)", () => {
     const first = buildMergedHooks(null, PLUGIN_ROOT);
     const second = buildMergedHooks(first, PLUGIN_ROOT);
     for (const event of Object.keys(first.hooks)) {
@@ -122,7 +122,7 @@ describe("buildMergedHooks", () => {
 
 describe("buildMergedHooks file round-trip", () => {
   it("produces JSON that parses back to a structurally equivalent manifest", () => {
-    const dir = join(tmpdir(), `agentmemory-codex-hooks-${process.pid}-${Date.now()}`);
+    const dir = join(tmpdir(), `ZiiAgentMemory-codex-hooks-${process.pid}-${Date.now()}`);
     mkdirSync(dir, { recursive: true });
     const path = join(dir, "hooks.json");
     try {

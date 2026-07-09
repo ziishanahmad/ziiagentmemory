@@ -1,11 +1,11 @@
 <h1 align="center">
   <img src="https://github.com/opencode-ai.png?size=80" alt="OpenCode" width="28" height="28" align="center" />
-  &nbsp;agentmemory for OpenCode
+  &nbsp;ZiiAgentMemory for OpenCode
 </h1>
 
 <p align="center">
   <strong>Your OpenCode agents remember everything. No more re-explaining.</strong><br/>
-  <sub>Persistent cross-session memory via <a href="https://github.com/rohitg00/agentmemory">agentmemory</a> — 95.2% retrieval accuracy on <a href="https://arxiv.org/abs/2410.10813">LongMemEval-S</a>.</sub>
+  <sub>Persistent cross-session memory via <a href="https://github.com/ziishanahmad/ziiagentmemory">ZiiAgentMemory</a> — 95.2% retrieval accuracy on <a href="https://arxiv.org/abs/2410.10813">LongMemEval-S</a>.</sub>
 </p>
 
 <p align="center">
@@ -19,10 +19,10 @@
 
 ## Quick start
 
-### 1. Start the agentmemory server
+### 1. Start the ziiagentmemory server
 
 ```bash
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 ```
 
 The server starts on `http://localhost:3111`.
@@ -34,9 +34,9 @@ Add to `~/.config/opencode/opencode.json` or your project's `.opencode/opencode.
 ```json
 {
   "mcp": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["npx", "-y", "ziiagentmemory"],
       "enabled": true
     }
   }
@@ -49,7 +49,7 @@ Add to `~/.config/opencode/opencode.json`:
 
 ```json
 {
-  "plugin": ["./plugins/agentmemory-capture.ts"]
+  "plugin": ["./plugins/ZiiAgentMemory-capture.ts"]
 }
 ```
 
@@ -57,7 +57,7 @@ Copy the plugin file from this repo:
 
 ```bash
 mkdir -p ~/.config/opencode/plugins
-cp plugin/opencode/agentmemory-capture.ts ~/.config/opencode/plugins/
+cp plugin/opencode/ZiiAgentMemory-capture.ts ~/.config/opencode/plugins/
 ```
 
 ### 4. Add the slash commands
@@ -76,7 +76,7 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 ### Session lifecycle
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | Session start | `session.created` | POST /session/start |
 | Idle → summarize | `session.idle` + `session.status` (idle) | POST /summarize |
@@ -89,7 +89,7 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 ### Messages & prompts
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | User prompt (rich) | `chat.message` | POST /observe |
 | User prompt metadata | `message.updated` (user) | POST /observe |
@@ -98,7 +98,7 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 ### Parts & steps
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | Subagent start | `message.part.updated` (subtask) | POST /observe |
 | Tool completed | `message.part.updated` (tool completed) | POST /observe |
@@ -112,7 +112,7 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 ### File enrichment pipeline
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | File tool params | `tool.execute.before` → stash paths | — |
 | File edited | `file.edited` → stash paths | — |
@@ -122,21 +122,21 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 ### Permissions
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | Permission prompt | `permission.updated` | POST /observe |
 | Permission reply | `permission.replied` | POST /observe |
 
 ### Tasks & commands
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | Task tracking (w/ priority) | `todo.updated` | POST /observe |
 | Command executed | `command.executed` | POST /observe |
 
 ### Model & config
 
-| Event | Hook | agentmemory API |
+| Event | Hook | ZiiAgentMemory API |
 |---|---|---|
 | LLM parameters | `chat.params` | POST /observe |
 | Config loaded | `config` | POST /observe |
@@ -146,9 +146,9 @@ Restart OpenCode or open a new session. The plugin auto-captures everything.
 
 `experimental.chat.system.transform` fires before every LLM call and injects two layers of context:
 
-1. **Memory context** (once per session): calls `/agentmemory/context` and injects project profile, recent session summaries, and important past observations into the system prompt. This is the OpenCode equivalent of Claude's MEMORY.md bridge — instead of syncing to a markdown file, context is injected directly into the system prompt.
+1. **Memory context** (once per session): calls `/ziiagentmemory/context` and injects project profile, recent session summaries, and important past observations into the system prompt. This is the OpenCode equivalent of Claude's MEMORY.md bridge — instead of syncing to a markdown file, context is injected directly into the system prompt.
 
-2. **File enrichment** (every turn with stashed files): calls `/agentmemory/enrich` with files stashed by `tool.execute.before`, `file.edited`, and `message.part.updated` (file parts). File-specific context (past observations, related bugs, semantic search) is injected into the system prompt.
+2. **File enrichment** (every turn with stashed files): calls `/ziiagentmemory/enrich` with files stashed by `tool.execute.before`, `file.edited`, and `message.part.updated` (file parts). File-specific context (past observations, related bugs, semantic search) is injected into the system prompt.
 
 ```text
 System prompt = [OpenCode instructions] + [memory context] + [file enrichment] + [user message]
@@ -164,7 +164,7 @@ System prompt = [OpenCode instructions] + [memory context] + [file enrichment] +
 | Timing | Same turn (parallel with tool) | Next turn (before next LLM call) |
 | File set | Per-tool (immediate) | Batched (all files since last enrichment) |
 | Coverage | Edit/Write/Read/Glob/Grep only | Edit/Write/Read/Glob/Grep only |
-| What gets injected | `<agentmemory-file-context>` + bug memories | Identical `/enrich` response |
+| What gets injected | `<ZiiAgentMemory-file-context>` + bug memories | Identical `/enrich` response |
 
 ## MEMORY.md vs AGENTS.md: how context flows
 
@@ -173,10 +173,10 @@ Claude Code and OpenCode take fundamentally different approaches to injecting me
 ### Claude Code: file-backed bridge (two-hop)
 
 ```
-agentmemory  ──write──▶  MEMORY.md  ──read──▶  Claude system prompt
+ZiiAgentMemory  ──write──▶  MEMORY.md  ──read──▶  Claude system prompt
 ```
 
-- The `claude-bridge/sync` endpoint serializes agentmemory observations into a `MEMORY.md` file in the project root
+- The `claude-bridge/sync` endpoint serializes ZiiAgentMemory observations into a `MEMORY.md` file in the project root
 - Claude Code reads `MEMORY.md` on session start and prepends it to the system prompt
 - **Sync is periodic** — sessions only get fresh context when the bridge last ran (session end, pre-compact)
 - **Coupling**: memory data lives in a git-trackable file, visible to CI, team members, and other tools
@@ -184,13 +184,13 @@ agentmemory  ──write──▶  MEMORY.md  ──read──▶  Claude system
 ### OpenCode: direct injection (one-hop)
 
 ```
-agentmemory  ──push──▶  OpenCode system prompt
+ZiiAgentMemory  ──push──▶  OpenCode system prompt
 ```
 
 - `experimental.chat.system.transform` calls `/context` at runtime and pushes the response directly into `output.system[]`
 - **Always current** — context is fetched at session start (once) and before file-touching turns (per-batch)
 - **No file intermediary** — no stale copies, no merge conflicts, no disk I/O
-- `AGENTS.md` is a static instruction file for project conventions, coding standards, and tool guidance — agentmemory does not read or write it
+- `AGENTS.md` is a static instruction file for project conventions, coding standards, and tool guidance — ZiiAgentMemory does not read or write it
 
 ### Tradeoffs
 
@@ -199,12 +199,12 @@ agentmemory  ──push──▶  OpenCode system prompt
 | Freshness | Stale between syncs | Always current (fetched at call time) |
 | Visibility | Human-readable file in repo | In-memory injection only |
 | Simplicity | Two moving parts (bridge + file) | One step (API → system prompt) |
-| Team sharing | File is git-trackable, CI-friendly | Memory shared via agentmemory server API |
+| Team sharing | File is git-trackable, CI-friendly | Memory shared via ziiagentmemory server API |
 | Integration | Any tool can read MEMORY.md | Requires OpenCode plugin SDK |
 
 ### Why OpenCode goes direct
 
-agentmemory already persists everything in SQLite (`data/state_store.db`). Adding an intermediate MEMORY.md file would duplicate data, introduce sync lag, and require the model to re-parse structured context from markdown. Direct injection delivers the same data with lower latency and zero staleness — the agent always sees what agentmemory knows right now.
+ZiiAgentMemory already persists everything in SQLite (`data/state_store.db`). Adding an intermediate MEMORY.md file would duplicate data, introduce sync lag, and require the model to re-parse structured context from markdown. Direct injection delivers the same data with lower latency and zero staleness — the agent always sees what ZiiAgentMemory knows right now.
 
 ## Slash commands
 

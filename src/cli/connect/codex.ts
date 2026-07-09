@@ -21,15 +21,15 @@ const CODEX_DIR = join(homedir(), ".codex");
 const CODEX_TOML = join(CODEX_DIR, "config.toml");
 const CODEX_HOOKS = join(CODEX_DIR, "hooks.json");
 
-const TOML_BLOCK = `[mcp_servers.agentmemory]
+const TOML_BLOCK = `[mcp_servers.ZiiAgentMemory]
 command = "npx"
-args = ["-y", "@agentmemory/mcp"]
+args = ["-y", "ziiagentmemory"]
 
-[mcp_servers.agentmemory.env]
-AGENTMEMORY_URL = "http://localhost:3111"
+[mcp_servers.ZiiAgentMemory.env]
+ZIIAGENTMEMORY_URL = "http://localhost:3111"
 `;
 
-const SECTION_HEADER = "[mcp_servers.agentmemory]";
+const SECTION_HEADER = "[mcp_servers.ZiiAgentMemory]";
 
 function isWiredText(toml: string): boolean {
   return toml.includes(SECTION_HEADER);
@@ -43,7 +43,7 @@ function stripExistingBlock(toml: string): string {
     const trimmed = line.trim();
     if (
       trimmed === SECTION_HEADER ||
-      trimmed === "[mcp_servers.agentmemory.env]"
+      trimmed === "[mcp_servers.ZiiAgentMemory.env]"
     ) {
       skipping = true;
       continue;
@@ -51,7 +51,7 @@ function stripExistingBlock(toml: string): string {
     if (
       skipping &&
       trimmed.startsWith("[") &&
-      trimmed !== "[mcp_servers.agentmemory.env]"
+      trimmed !== "[mcp_servers.ZiiAgentMemory.env]"
     ) {
       skipping = false;
     }
@@ -64,7 +64,7 @@ export const adapter: ConnectAdapter = {
   name: "codex",
   displayName: "Codex CLI",
   category: "native",
-  docs: "https://github.com/rohitg00/agentmemory#codex-cli-codex-plugin-platform",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#codex-cli-codex-plugin-platform",
   protocolNote:
     "→ Using MCP. Hooks ship via the Codex plugin; on Codex Desktop, also pass --with-hooks to install the global hooks.json workaround for openai/codex#16430.",
 
@@ -84,7 +84,7 @@ export const adapter: ConnectAdapter = {
 
     if (opts.dryRun) {
       p.log.info(
-        `[dry-run] Would ${wired ? "rewrite" : "append"} [mcp_servers.agentmemory] in ${CODEX_TOML}`,
+        `[dry-run] Would ${wired ? "rewrite" : "append"} [mcp_servers.ZiiAgentMemory] in ${CODEX_TOML}`,
       );
       if (opts.withHooks) installCodexHooks(opts);
       return { kind: "installed", mutatedPath: CODEX_TOML };
@@ -113,7 +113,7 @@ export const adapter: ConnectAdapter = {
 
     logInstalled("Codex CLI", CODEX_TOML);
     p.log.info(
-      "Codex picks up MCP servers on next launch. For the deeper plugin install, run: codex plugin marketplace add rohitg00/agentmemory && codex plugin add agentmemory@agentmemory",
+      "Codex picks up MCP servers on next launch. For the deeper plugin install, run: codex plugin marketplace add ziishanahmad/ziiagentmemory && codex plugin add ZiiAgentMemory@ZiiAgentMemory",
     );
 
     if (opts.withHooks) {
@@ -170,7 +170,7 @@ function installCodexHooks(opts: ConnectOptions): ConnectResult {
 
   logInstalled("Codex hooks (workaround for openai/codex#16430)", CODEX_HOOKS);
   p.log.info(
-    "User-scope hooks reference absolute paths under the bundled plugin/ dir. Re-run `agentmemory connect codex --with-hooks` after upgrading agentmemory to refresh them.",
+    "User-scope hooks reference absolute paths under the bundled plugin/ dir. Re-run `ziiagentmemory connect codex --with-hooks` after upgrading ZiiAgentMemory to refresh them.",
   );
 
   return {

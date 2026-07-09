@@ -184,7 +184,7 @@ describe("mem::search agent-scope isolation (#817 follow-up)", () => {
 
     await expect(
       sdk.trigger("mem::search", { query: "SECRET_MARKER", limit: 10 }),
-    ).rejects.toThrow(/AGENTMEMORY_AGENT_SCOPE=isolated/);
+    ).rejects.toThrow(/ZIIAGENTMEMORY_AGENT_SCOPE=isolated/);
   });
 
   it("non-isolated mode (default) returns all rows regardless of agentId", async () => {

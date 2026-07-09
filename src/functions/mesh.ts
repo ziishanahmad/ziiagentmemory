@@ -198,7 +198,7 @@ export function registerMeshFunction(
       if (!meshAuthToken) {
         return {
           success: false,
-          error: "mesh sync requires AGENTMEMORY_SECRET",
+          error: "mesh sync requires ZIIAGENTMEMORY_SECRET",
         };
       }
       if (!data || typeof data !== "object") {
@@ -259,7 +259,7 @@ export function registerMeshFunction(
           if (direction === "push" || direction === "both") {
             const pushData = await collectSyncData(kv, scopes, peer.lastSyncAt, peer.syncFilter);
             try {
-              const response = await fetch(`${peer.url}/agentmemory/mesh/receive`, {
+              const response = await fetch(`${peer.url}/ziiagentmemory/mesh/receive`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -283,7 +283,7 @@ export function registerMeshFunction(
           if (direction === "pull" || direction === "both") {
             try {
               const response = await fetch(
-                `${peer.url}/agentmemory/mesh/export?since=${peer.lastSyncAt || ""}`,
+                `${peer.url}/ziiagentmemory/mesh/export?since=${peer.lastSyncAt || ""}`,
                 {
                   headers: {
                     Authorization: `Bearer ${meshAuthToken}`,

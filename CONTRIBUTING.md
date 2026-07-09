@@ -1,4 +1,4 @@
-# Contributing to agentmemory
+# Contributing to ZiiAgentMemory
 
 Thanks for taking an interest. This file is the short path from "I have an idea" to "it's in main."
 
@@ -13,10 +13,10 @@ Thanks for taking an interest. This file is the short path from "I have an idea"
 
 Search existing issues first:
 
-- [open issues](https://github.com/rohitg00/agentmemory/issues?q=is%3Aissue+is%3Aopen)
-- [closed issues](https://github.com/rohitg00/agentmemory/issues?q=is%3Aissue+is%3Aclosed)
+- [open issues](https://github.com/ziishanahmad/ziiagentmemory/issues?q=is%3Aissue+is%3Aopen)
+- [closed issues](https://github.com/ziishanahmad/ziiagentmemory/issues?q=is%3Aissue+is%3Aclosed)
 
-If it's a bug: provide the repro steps, your Node version, OS, agentmemory version (`npm view @agentmemory/agentmemory version`), and what you expected vs. what you saw.
+If it's a bug: provide the repro steps, your Node version, OS, ziiagentmemory version (`npm view ziiagentmemory version`), and what you expected vs. what you saw.
 
 If it's a feature: describe the user problem before the implementation. "I couldn't X because Y" beats "please add X."
 
@@ -64,14 +64,14 @@ PRs with commits lacking sign-off will not merge.
 
 | Directory | What lives here |
 |-|-|
-| `src/triggers/api.ts` | Every HTTP endpoint under `/agentmemory/*`. Adding an MCP tool? Add the REST twin here too. |
-| `src/mcp/` | Standalone MCP server (`@agentmemory/mcp`), tools registry, transport, in-memory KV. |
+| `src/triggers/api.ts` | Every HTTP endpoint under `/ziiagentmemory/*`. Adding an MCP tool? Add the REST twin here too. |
+| `src/mcp/` | Standalone MCP server (`ziiagentmemory`), tools registry, transport, in-memory KV. |
 | `src/functions/` | Core memory operations — observe, compress, consolidate, retention, forget, graph, smart-search, export-import, governance. |
 | `src/hooks/` | The 12 auto-hooks that capture sessions in agents. |
 | `src/health/` | Liveness + readiness + alert thresholds. |
 | `src/state/` | KV schema, keyed mutex, access log. |
 | `integrations/` | First-party plugins: `hermes/`, `openclaw/`, `filesystem-watcher/`. |
-| `plugin/` | Claude Code plugin (`agentmemory@agentmemory`). |
+| `plugin/` | Claude Code plugin (`ZiiAgentMemory@ZiiAgentMemory`). |
 | `website/` | Marketing site (Next.js 16). |
 | `test/` | Vitest test suite. |
 
@@ -103,7 +103,7 @@ Maintainers cut releases. Every bump touches 8 files in lockstep:
 7. `src/functions/export-import.ts` (`supportedVersions` Set)
 8. `test/export-import.test.ts` (assertion)
 
-Then: CHANGELOG section, PR, merge, tag, GitHub release. The `Publish to npm` workflow picks up the release trigger and publishes `@agentmemory/agentmemory`, `@agentmemory/mcp`, and `@agentmemory/fs-watcher` to npm with provenance.
+Then: CHANGELOG section, PR, merge, tag, GitHub release. The `Publish to npm` workflow picks up the release trigger and publishes `ziiagentmemory`, `ziiagentmemory`, and `@ZiiAgentMemory/fs-watcher` to npm with provenance.
 
 ## Security issues
 

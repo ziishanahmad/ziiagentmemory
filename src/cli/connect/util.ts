@@ -11,7 +11,7 @@ import { homedir } from "node:os";
 import * as p from "@clack/prompts";
 
 // Env values use ${VAR:-default} expansion so the wired MCP entry
-// inherits AGENTMEMORY_URL / AGENTMEMORY_SECRET / AGENTMEMORY_TOOLS
+// inherits ZIIAGENTMEMORY_URL / ZIIAGENTMEMORY_SECRET / ZIIAGENTMEMORY_TOOLS
 // from the user's shell, but never fails parse when the var is unset
 // (#510). Earlier `${VAR}` form caused Claude Code to silently drop the
 // server when no shell-level export existed — per the Claude Code MCP
@@ -22,13 +22,13 @@ import * as p from "@clack/prompts";
 // tools). One wired entry now serves local AND remote (Kubernetes /
 // reverse-proxied) deployments without doctor-warning duplicates (#375)
 // AND fresh installs that haven't exported envs (#510).
-export const AGENTMEMORY_MCP_BLOCK = {
+export const ZIIAGENTMEMORY_MCP_BLOCK = {
   command: "npx",
-  args: ["-y", "@agentmemory/mcp"],
+  args: ["-y", "ziiagentmemory"],
   env: {
-    AGENTMEMORY_URL: "${AGENTMEMORY_URL:-http://localhost:3111}",
-    AGENTMEMORY_SECRET: "${AGENTMEMORY_SECRET:-}",
-    AGENTMEMORY_TOOLS: "${AGENTMEMORY_TOOLS:-all}",
+    ZIIAGENTMEMORY_URL: "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
+    ZIIAGENTMEMORY_SECRET: "${ZIIAGENTMEMORY_SECRET:-}",
+    ZIIAGENTMEMORY_TOOLS: "${ZIIAGENTMEMORY_TOOLS:-all}",
   },
 };
 
@@ -36,26 +36,26 @@ const COPILOT_MCP_COMMAND =
   process.platform === "win32"
     ? {
         command: process.env["ComSpec"] || process.env["COMSPEC"] || "cmd.exe",
-        args: ["/d", "/s", "/c", "npx", "-y", "@agentmemory/mcp"],
+        args: ["/d", "/s", "/c", "npx", "-y", "ziiagentmemory"],
       }
     : {
         command: "npx",
-        args: ["-y", "@agentmemory/mcp"],
+        args: ["-y", "ziiagentmemory"],
       };
 
-export const AGENTMEMORY_COPILOT_MCP_BLOCK = {
+export const ZIIAGENTMEMORY_COPILOT_MCP_BLOCK = {
   type: "local" as const,
   ...COPILOT_MCP_COMMAND,
   env: {
-    AGENTMEMORY_URL: "${AGENTMEMORY_URL:-http://localhost:3111}",
-    AGENTMEMORY_SECRET: "${AGENTMEMORY_SECRET:-}",
-    AGENTMEMORY_TOOLS: "${AGENTMEMORY_TOOLS:-all}",
+    ZIIAGENTMEMORY_URL: "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
+    ZIIAGENTMEMORY_SECRET: "${ZIIAGENTMEMORY_SECRET:-}",
+    ZIIAGENTMEMORY_TOOLS: "${ZIIAGENTMEMORY_TOOLS:-all}",
   },
   tools: ["*"],
 };
 
 export function backupsDir(): string {
-  return join(homedir(), ".agentmemory", "backups");
+  return join(homedir(), ".ziiagentmemory", "backups");
 }
 
 export function ensureBackupsDir(): string {

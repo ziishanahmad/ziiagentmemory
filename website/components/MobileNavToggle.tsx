@@ -64,7 +64,7 @@ export function MobileNavToggle({
         </ul>
         <div className={styles.foot}>
           <a
-            href="https://github.com/rohitg00/agentmemory"
+            href="https://github.com/ziishanahmad/ziiagentmemory"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
@@ -72,7 +72,7 @@ export function MobileNavToggle({
             GITHUB · {formatCompact(stars)}★
           </a>
           <a
-            href="https://www.npmjs.com/package/@agentmemory/agentmemory"
+            href="https://www.npmjs.com/package/ziiagentmemory"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
@@ -80,7 +80,7 @@ export function MobileNavToggle({
             NPM
           </a>
           <a
-            href="https://github.com/rohitg00/agentmemory/blob/main/CHANGELOG.md"
+            href="https://github.com/ziishanahmad/ziiagentmemory/blob/main/CHANGELOG.md"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}

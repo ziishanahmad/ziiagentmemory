@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 //#region src/hooks/session-end.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
 	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
@@ -23,20 +23,20 @@ async function main() {
 	}
 	if (isSdkChildContext(data)) return;
 	const sessionId = data.session_id || data.sessionId || "unknown";
-	fetch(`${REST_URL}/agentmemory/session/end`, {
+	fetch(`${REST_URL}/ziiagentmemory/session/end`, {
 		method: "POST",
 		headers: authHeaders(),
 		body: JSON.stringify({ sessionId }),
 		signal: AbortSignal.timeout(3e4)
 	}).catch(() => {});
 	if (process.env["CONSOLIDATION_ENABLED"] === "true") {
-		fetch(`${REST_URL}/agentmemory/crystals/auto`, {
+		fetch(`${REST_URL}/ziiagentmemory/crystals/auto`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify({ olderThanDays: 0 }),
 			signal: AbortSignal.timeout(6e4)
 		}).catch(() => {});
-		fetch(`${REST_URL}/agentmemory/consolidate-pipeline`, {
+		fetch(`${REST_URL}/ziiagentmemory/consolidate-pipeline`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify({
@@ -46,7 +46,7 @@ async function main() {
 			signal: AbortSignal.timeout(12e4)
 		}).catch(() => {});
 	}
-	if (process.env["CLAUDE_MEMORY_BRIDGE"] === "true") fetch(`${REST_URL}/agentmemory/claude-bridge/sync`, {
+	if (process.env["CLAUDE_MEMORY_BRIDGE"] === "true") fetch(`${REST_URL}/ziiagentmemory/claude-bridge/sync`, {
 		method: "POST",
 		headers: authHeaders(),
 		signal: AbortSignal.timeout(3e4)
@@ -54,7 +54,7 @@ async function main() {
 	setTimeout(() => process.exit(0), 1500).unref();
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=session-end.mjs.map

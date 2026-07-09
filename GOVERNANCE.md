@@ -1,6 +1,6 @@
 # Governance
 
-This document describes how decisions are made in the agentmemory project.
+This document describes how decisions are made in the ZiiAgentMemory project.
 
 The model here is a near-copy of the [Linux Foundation Minimum Viable Governance (MVG)](https://github.com/todogroup/ospolog/blob/main/governance/minimum-viable-governance.md) pattern, scoped to the project's current single-maintainer reality with a concrete plan to diversify maintainership over the next two release cycles.
 
@@ -17,7 +17,7 @@ Ship a persistent, local-first memory runtime for AI coding agents that:
 
 ### Users
 
-Anyone who runs agentmemory. No process obligation beyond the license. Feedback via [GitHub issues](https://github.com/rohitg00/agentmemory/issues) and [discussions](https://github.com/rohitg00/agentmemory/discussions) is the input channel.
+Anyone who runs ZiiAgentMemory. No process obligation beyond the license. Feedback via [GitHub issues](https://github.com/ziishanahmad/ziiagentmemory/issues) and [discussions](https://github.com/ziishanahmad/ziiagentmemory/discussions) is the input channel.
 
 ### Contributors
 
@@ -72,7 +72,7 @@ Releases follow [Semantic Versioning](https://semver.org). See the [release proc
 
 ## Conflicts of interest
 
-Maintainers employed by a company that sells a product competing with agentmemory, or by a company whose business depends on agentmemory's roadmap, should disclose that relationship in `MAINTAINERS.md` next to their name. Nothing prohibits such maintainership; transparency is the requirement.
+Maintainers employed by a company that sells a product competing with ZiiAgentMemory, or by a company whose business depends on ZiiAgentMemory's roadmap, should disclose that relationship in `MAINTAINERS.md` next to their name. Nothing prohibits such maintainership; transparency is the requirement.
 
 ## Amending this document
 

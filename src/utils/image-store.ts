@@ -4,12 +4,12 @@ import { existsSync } from "node:fs";
 import { mkdir, writeFile, unlink, utimes, stat } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
-export const IMAGES_DIR = join(homedir(), ".agentmemory", "images");
+export const IMAGES_DIR = join(homedir(), ".ziiagentmemory", "images");
 
 const DEFAULT_MAX_BYTES = 500 * 1024 * 1024;
 
 export function getMaxBytes(): number {
-  return Number(process.env.AGENTMEMORY_IMAGE_STORE_MAX_BYTES) || DEFAULT_MAX_BYTES;
+  return Number(process.env.ZIIAGENTMEMORY_IMAGE_STORE_MAX_BYTES) || DEFAULT_MAX_BYTES;
 }
 
 export function isManagedImagePath(filePath: string): boolean {
@@ -71,7 +71,7 @@ export async function deleteImage(filePath: string | undefined): Promise<{ delet
       return { deletedBytes: size };
     }
   } catch (err) {
-    console.error("[agentmemory] Failed to delete image context:", err);
+    console.error("[ZiiAgentMemory] Failed to delete image context:", err);
   }
   return { deletedBytes: 0 };
 }

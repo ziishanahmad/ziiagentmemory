@@ -262,17 +262,17 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   const lines: string[] = [];
   const w = (s: string) => lines.push(s);
 
-  w("# agentmemory v0.6.0 — Scale & Cross-Session Evaluation");
+  w("# ZiiAgentMemory v0.6.0 — Scale & Cross-Session Evaluation");
   w("");
   w(`**Date:** ${new Date().toISOString()}`);
   w(`**Platform:** ${process.platform} ${process.arch}, Node ${process.version}`);
   w("");
 
-  w("## 1. Scale: agentmemory vs Built-in Memory");
+  w("## 1. Scale: ZiiAgentMemory vs Built-in Memory");
   w("");
-  w("Every built-in agent memory (CLAUDE.md, .cursorrules, Cline's memory-bank) loads ALL memory into context every session. agentmemory searches and returns only relevant results.");
+  w("Every built-in agent memory (CLAUDE.md, .cursorrules, Cline's memory-bank) loads ALL memory into context every session. ZiiAgentMemory searches and returns only relevant results.");
   w("");
-  w("| Observations | Sessions | Index Build | BM25 Search | Hybrid Search | Heap | Context Tokens (built-in) | Context Tokens (agentmemory) | Savings | Built-in Unreachable |");
+  w("| Observations | Sessions | Index Build | BM25 Search | Hybrid Search | Heap | Context Tokens (built-in) | Context Tokens (ZiiAgentMemory) | Savings | Built-in Unreachable |");
   w("|-------------|----------|------------|-------------|---------------|------|--------------------------|-----------------------------|---------|--------------------|");
 
   for (const r of scale) {
@@ -284,7 +284,7 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   w("");
   w("**Context Tokens (built-in):** How many tokens Claude Code/Cursor/Cline would consume loading ALL memory into the context window. At 5,000 observations, this is ~250K tokens — exceeding most context windows entirely.");
   w("");
-  w("**Context Tokens (agentmemory):** How many tokens the top-10 search results consume. Stays constant regardless of corpus size.");
+  w("**Context Tokens (ZiiAgentMemory):** How many tokens the top-10 search results consume. Stays constant regardless of corpus size.");
   w("");
   w("**Built-in Unreachable:** Percentage of memories that built-in systems CANNOT access because they exceed the 200-line MEMORY.md cap or context window limits. At 1,000 observations, 80% of your project history is invisible.");
   w("");
@@ -315,7 +315,7 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   const builtinFound = cross.filter(r => r.builtin_found).length;
 
   w("");
-  w(`**Summary:** agentmemory BM25 found ${bm25Found}/${cross.length} cross-session queries. Hybrid found ${hybridFound}/${cross.length}. Built-in memory (200-line cap) could only reach ${builtinFound}/${cross.length}.`);
+  w(`**Summary:** ZiiAgentMemory BM25 found ${bm25Found}/${cross.length} cross-session queries. Hybrid found ${hybridFound}/${cross.length}. Built-in memory (200-line cap) could only reach ${builtinFound}/${cross.length}.`);
 
   w("");
   w("## 3. The Context Window Problem");
@@ -331,14 +331,14 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   w("  1,000 observations =  50,000 tokens  (33% of available budget)");
   w("  5,000 observations = 250,000 tokens  (EXCEEDS total context window)");
   w("");
-  w("agentmemory top-10 results:");
+  w("ZiiAgentMemory top-10 results:");
   w(`  Any corpus size     =  ~${scale[0]?.agentmemory_tokens.toLocaleString() || "500"} tokens  (0.3% of budget)`);
   w("```");
   w("");
 
   w("## 4. What Built-in Memory Cannot Do");
   w("");
-  w("| Capability | Built-in (CLAUDE.md) | agentmemory |");
+  w("| Capability | Built-in (CLAUDE.md) | ZiiAgentMemory |");
   w("|-----------|---------------------|-------------|");
   w("| Semantic search | No (keyword grep only) | BM25 + vector + graph |");
   w("| Scale beyond 200 lines | No (hard cap) | Unlimited |");
@@ -362,7 +362,7 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   w("- Preferences and quick facts only");
   w("- Zero setup is the priority");
   w("");
-  w("**Use agentmemory when:**");
+  w("**Use ZiiAgentMemory when:**");
   w("- Project history exceeds 200 observations");
   w("- You need to recall specific incidents from weeks ago");
   w("- Multiple agents work on the same codebase");
@@ -370,7 +370,7 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
   w("- You need to track memory quality, decay, and lifecycle");
   w("- You want a shared memory layer across Claude Code, Cursor, Windsurf, etc.");
   w("");
-  w("Built-in memory is your sticky notes. agentmemory is the searchable database behind them.");
+  w("Built-in memory is your sticky notes. ZiiAgentMemory is the searchable database behind them.");
   w("");
 
   w("---");
@@ -380,7 +380,7 @@ function generateReport(scale: ScaleResult[], cross: CrossSessionResult[]): stri
 }
 
 async function main() {
-  console.log("=== agentmemory Scale & Cross-Session Evaluation ===\n");
+  console.log("=== ZiiAgentMemory Scale & Cross-Session Evaluation ===\n");
 
   console.log("1. Scale benchmarks...");
   const scaleResults = await benchmarkScale([240, 1_000, 5_000, 10_000, 50_000]);

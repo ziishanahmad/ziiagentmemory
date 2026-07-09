@@ -38,7 +38,7 @@ workers:
   - name: iii-observability
     config:
       enabled: true
-      service_name: agentmemory
+      service_name: ZiiAgentMemory
       exporter: memory
       # See iii-config.yaml for the rationale on 0.1 / console-off (#519).
       sampling_ratio: 0.1

@@ -41,11 +41,11 @@ describe("AgentSDKProvider recursion guard (#781)", () => {
   beforeEach(() => {
     state.queryCalls.length = 0;
     state.mockResult = "<result>ok</result>";
-    delete process.env.AGENTMEMORY_SDK_CHILD;
+    delete process.env.ZIIAGENTMEMORY_SDK_CHILD;
   });
 
   afterEach(() => {
-    delete process.env.AGENTMEMORY_SDK_CHILD;
+    delete process.env.ZIIAGENTMEMORY_SDK_CHILD;
   });
 
   it("concurrent summarize calls each return the SDK result (no empty siblings)", async () => {
@@ -88,31 +88,31 @@ describe("AgentSDKProvider recursion guard (#781)", () => {
     expect(state.queryCalls.length).toBe(3);
   });
 
-  it("sets AGENTMEMORY_SDK_CHILD=1 while inside the SDK call (so spawned subprocesses inherit it)", async () => {
+  it("sets ZIIAGENTMEMORY_SDK_CHILD=1 while inside the SDK call (so spawned subprocesses inherit it)", async () => {
     const provider = new AgentSDKProvider();
     let observedEnv: string | undefined;
 
     state.mockResult = (sysPrompt, _userPrompt) => {
-      observedEnv = process.env.AGENTMEMORY_SDK_CHILD;
+      observedEnv = process.env.ZIIAGENTMEMORY_SDK_CHILD;
       return `<result>${sysPrompt}</result>`;
     };
 
-    expect(process.env.AGENTMEMORY_SDK_CHILD).toBeUndefined();
+    expect(process.env.ZIIAGENTMEMORY_SDK_CHILD).toBeUndefined();
     await provider.summarize("sys", "user");
     expect(observedEnv).toBe("1");
-    expect(process.env.AGENTMEMORY_SDK_CHILD).toBeUndefined();
+    expect(process.env.ZIIAGENTMEMORY_SDK_CHILD).toBeUndefined();
   });
 
-  it("restores AGENTMEMORY_SDK_CHILD to its prior value after the call", async () => {
+  it("restores ZIIAGENTMEMORY_SDK_CHILD to its prior value after the call", async () => {
     const provider = new AgentSDKProvider();
-    process.env.AGENTMEMORY_SDK_CHILD = "prev-value";
+    process.env.ZIIAGENTMEMORY_SDK_CHILD = "prev-value";
 
     await provider.summarize("sys", "user");
 
-    expect(process.env.AGENTMEMORY_SDK_CHILD).toBe("prev-value");
+    expect(process.env.ZIIAGENTMEMORY_SDK_CHILD).toBe("prev-value");
   });
 
-  it("keeps AGENTMEMORY_SDK_CHILD=1 for the full overlap of concurrent calls", async () => {
+  it("keeps ZIIAGENTMEMORY_SDK_CHILD=1 for the full overlap of concurrent calls", async () => {
     const provider = new AgentSDKProvider();
     // Allow the calls to overlap: each call records the env value it
     // saw, then a tick later records it again. With a refcounted guard
@@ -122,9 +122,9 @@ describe("AgentSDKProvider recursion guard (#781)", () => {
     const observations: Array<{ id: string; phase: string; env: string | undefined }> = [];
 
     state.mockResult = async (sysPrompt, _user) => {
-      observations.push({ id: sysPrompt, phase: "enter", env: process.env.AGENTMEMORY_SDK_CHILD });
+      observations.push({ id: sysPrompt, phase: "enter", env: process.env.ZIIAGENTMEMORY_SDK_CHILD });
       await new Promise((resolve) => setTimeout(resolve, 5));
-      observations.push({ id: sysPrompt, phase: "exit", env: process.env.AGENTMEMORY_SDK_CHILD });
+      observations.push({ id: sysPrompt, phase: "exit", env: process.env.ZIIAGENTMEMORY_SDK_CHILD });
       return `<result>${sysPrompt}</result>`;
     };
 
@@ -138,7 +138,7 @@ describe("AgentSDKProvider recursion guard (#781)", () => {
     for (const o of observations) {
       expect(o.env).toBe("1");
     }
-    expect(process.env.AGENTMEMORY_SDK_CHILD).toBeUndefined();
+    expect(process.env.ZIIAGENTMEMORY_SDK_CHILD).toBeUndefined();
   });
 
   it("genuine re-entry (an inner call inside the same async tree) still degrades to empty", async () => {

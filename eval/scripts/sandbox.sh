@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Boot a sandboxed agentmemory + iii-engine on alt ports with a clean data dir,
-# so eval runs aren't polluted by (and don't pollute) your real ~/.agentmemory.
+# Boot a sandboxed ZiiAgentMemory + iii-engine on alt ports with a clean data dir,
+# so eval runs aren't polluted by (and don't pollute) your real ~/.ziiagentmemory.
 # Source it: `source eval/scripts/sandbox.sh` then run eval scripts;
 # the sandbox is torn down on EXIT.
 
 set -euo pipefail
 
-SANDBOX_ROOT="${SANDBOX_ROOT:-/tmp/agentmemory-eval-sandbox}"
+SANDBOX_ROOT="${SANDBOX_ROOT:-/tmp/ZiiAgentMemory-eval-sandbox}"
 SANDBOX_PORT="${SANDBOX_PORT:-3411}"
 SANDBOX_STREAM_PORT="${SANDBOX_STREAM_PORT:-3412}"
 
@@ -20,7 +20,7 @@ fi
 
 iii_ver=$(iii --version 2>&1 | head -1)
 if [[ "$iii_ver" != "0.11.2" ]]; then
-  echo "warning: iii version on PATH is $iii_ver; agentmemory pins 0.11.2"
+  echo "warning: iii version on PATH is $iii_ver; ZiiAgentMemory pins 0.11.2"
 fi
 
 if [[ ! -f "$REPO_ROOT/dist/index.mjs" ]]; then
@@ -33,7 +33,7 @@ if [[ -z "${SANDBOX_ROOT:-}" || "$SANDBOX_ROOT" == "/" || "$SANDBOX_ROOT" != /tm
   exit 1
 fi
 rm -rf "$SANDBOX_ROOT"
-mkdir -p "$SANDBOX_ROOT/data" "$SANDBOX_ROOT/.agentmemory"
+mkdir -p "$SANDBOX_ROOT/data" "$SANDBOX_ROOT/.ziiagentmemory"
 
 cat > "$SANDBOX_ROOT/iii-config.yaml" <<EOF
 workers:
@@ -76,7 +76,7 @@ workers:
   - name: iii-observability
     config:
       enabled: true
-      service_name: agentmemory-eval
+      service_name: ZiiAgentMemory-eval
       exporter: memory
       sampling_ratio: 1.0
       metrics_enabled: true
@@ -102,9 +102,9 @@ trap cleanup EXIT
 
 # wait for livez
 for i in $(seq 1 30); do
-  if curl -sS --max-time 1 "http://localhost:$SANDBOX_PORT/agentmemory/livez" 2>/dev/null | grep -q '"status":"ok"'; then
-    export AGENTMEMORY_BASE_URL="http://localhost:$SANDBOX_PORT"
-    echo "sandbox ready: $AGENTMEMORY_BASE_URL"
+  if curl -sS --max-time 1 "http://localhost:$SANDBOX_PORT/ziiagentmemory/livez" 2>/dev/null | grep -q '"status":"ok"'; then
+    export ZIIAGENTMEMORY_BASE_URL="http://localhost:$SANDBOX_PORT"
+    echo "sandbox ready: $ZIIAGENTMEMORY_BASE_URL"
     echo "  state: $SANDBOX_ROOT/data/"
     echo "  logs:  $SANDBOX_ROOT/iii.log"
     return 0 2>/dev/null || exit 0

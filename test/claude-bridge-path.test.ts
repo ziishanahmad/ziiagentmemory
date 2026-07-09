@@ -30,10 +30,10 @@ describe("loadClaudeBridgeConfig path (#625)", () => {
 
   it("writes MEMORY.md directly under the slug dir, no memory/ subdir", () => {
     process.env["CLAUDE_MEMORY_BRIDGE"] = "true";
-    process.env["CLAUDE_PROJECT_PATH"] = "/Users/x/agentmemory";
+    process.env["CLAUDE_PROJECT_PATH"] = "/Users/x/ziiagentmemory";
     const cfg = loadClaudeBridgeConfig();
     expect(cfg.memoryFilePath).not.toMatch(/[/\\]memory[/\\]MEMORY\.md$/);
-    expect(cfg.memoryFilePath).toMatch(/-Users-x-agentmemory[/\\]MEMORY\.md$/);
+    expect(cfg.memoryFilePath).toMatch(/-Users-x-ZiiAgentMemory[/\\]MEMORY\.md$/);
   });
 
   it("returns empty memoryFilePath when bridge disabled", () => {

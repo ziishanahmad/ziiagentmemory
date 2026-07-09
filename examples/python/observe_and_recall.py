@@ -1,11 +1,11 @@
 """Observation ingest + context rendering at a token budget.
 
 Pattern: send hook-style observations during a coding session, then ask
-agentmemory to render the most relevant context back at a fixed token budget.
+ZiiAgentMemory to render the most relevant context back at a fixed token budget.
 
 Prerequisites:
     pip install iii-sdk
-    npx -y @agentmemory/agentmemory
+    npx -y ziiagentmemory
 
 Run:
     python examples/python/observe_and_recall.py

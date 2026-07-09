@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>agentmemory viewer</title>
+  <title>ZiiAgentMemory viewer</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <!-- Removed Google Fonts <link> in #323: the viewer CSP is strict
        (default-src 'none', style-src 'unsafe-inline', font-src 'self')
@@ -977,7 +977,7 @@
 <body>
   <div class="app-header">
     <a class="brand" href="#dashboard" data-tab-link="dashboard" aria-label="Open dashboard">
-      <h1>agentmemory</h1>
+      <h1>ZiiAgentMemory</h1>
       <span class="version">v__AGENTMEMORY_VERSION__</span>
     </a>
     <div class="header-right">
@@ -1023,11 +1023,11 @@
   </div>
 
   <footer id="viewer-footer" class="viewer-footer">
-    <span>agentmemory viewer · <span id="footer-version">loading...</span></span>
+    <span>ZiiAgentMemory viewer · <span id="footer-version">loading...</span></span>
     <span class="footer-sep">·</span>
-    <a href="https://github.com/rohitg00/agentmemory" target="_blank" rel="noopener">github</a>
+    <a href="https://github.com/ziishanahmad/ziiagentmemory" target="_blank" rel="noopener">github</a>
     <span class="footer-sep">·</span>
-    <a href="https://github.com/rohitg00/agentmemory#readme" target="_blank" rel="noopener">docs</a>
+    <a href="https://github.com/rohitg00/ZiiAgentMemory#readme" target="_blank" rel="noopener">docs</a>
     <span class="footer-sep">·</span>
     <a id="footer-feedback" href="#" target="_blank" rel="noopener">report issue &rarr;</a>
   </footer>
@@ -1067,10 +1067,10 @@
       document.documentElement.dataset.theme = dark ? 'dark' : 'light';
       var btn = document.getElementById('theme-toggle');
       if (btn) btn.textContent = dark ? 'LIGHT' : 'DARK';
-      if (persist) localStorage.setItem('agentmemory-theme', dark ? 'dark' : 'light');
+      if (persist) localStorage.setItem('ZiiAgentMemory-theme', dark ? 'dark' : 'light');
     }
     window.toggleTheme = function() { applyTheme(!isDarkMode(), true); };
-    var savedTheme = localStorage.getItem('agentmemory-theme');
+    var savedTheme = localStorage.getItem('ZiiAgentMemory-theme');
     if (savedTheme) {
       applyTheme(savedTheme === 'dark', false);
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -1106,7 +1106,7 @@
     };
     var CB_STATE_COLORS = { closed: 'badge-green', open: 'badge-red', 'half-open': 'badge-yellow' };
     var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay'];
-    var VIEWER_TOKEN_STORAGE_KEY = 'agentmemory-viewer-token';
+    var VIEWER_TOKEN_STORAGE_KEY = 'ZiiAgentMemory-viewer-token';
 
     var state = {
       activeTab: 'dashboard',
@@ -1220,9 +1220,9 @@
         '<div class="viewer-auth-panel">' +
           '<div>' +
             '<div class="viewer-auth-title">Viewer authorization required</div>' +
-            '<div id="viewer-auth-desc" class="viewer-auth-desc">Enter <code>AGENTMEMORY_SECRET</code> to unlock viewer API access.</div>' +
+            '<div id="viewer-auth-desc" class="viewer-auth-desc">Enter <code>ZIIAGENTMEMORY_SECRET</code> to unlock viewer API access.</div>' +
           '</div>' +
-          '<input id="viewer-auth-token" type="password" autocomplete="off" spellcheck="false" aria-label="AGENTMEMORY_SECRET" aria-describedby="viewer-auth-desc" placeholder="AGENTMEMORY_SECRET" />' +
+          '<input id="viewer-auth-token" type="password" autocomplete="off" spellcheck="false" aria-label="ZIIAGENTMEMORY_SECRET" aria-describedby="viewer-auth-desc" placeholder="ZIIAGENTMEMORY_SECRET" />' +
           '<button class="btn" data-action="save-viewer-token">Unlock</button>' +
         '</div>';
       var input = document.getElementById('viewer-auth-token');
@@ -1237,7 +1237,7 @@
 
     async function api(path, opts) {
       try {
-        var url = REST + '/agentmemory/' + path;
+        var url = REST + '/ziiagentmemory/' + path;
         var headers = Object.assign({ 'Cache-Control': 'no-cache' }, (opts && opts.headers) || {});
         var viewerToken = getViewerToken();
         if (viewerToken && !headers.Authorization && !headers.authorization) {
@@ -1382,7 +1382,7 @@
           'Dashboard failed to load: ' + msg +
           '<br><br><span style="font-size:12px;color:var(--ink-muted);">' +
           'Check the browser console for the full error. If you see CSP ' +
-          'violations, please open an issue with the agentmemory version ' +
+          'violations, please open an issue with the ziiagentmemory version ' +
           '(top-right of the viewer) and the violation text.' +
           '</span></div>';
       }
@@ -1409,9 +1409,9 @@
         html += '<div class="card" style="margin-bottom:14px;padding:24px 28px;background:var(--bg-subtle);border-left:3px solid var(--accent);">' +
           '<div style="font-family:var(--font-ui);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;">First run &rarr; magical moment in 10 seconds</div>' +
           '<div style="font-family:var(--font-display,Lora,Georgia,serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px;">Seed sample data + prove semantic recall works</div>' +
-          '<div style="font-size:13px;color:var(--ink-muted);margin-bottom:12px;line-height:1.5;max-width:640px;">agentmemory is running but hasn&rsquo;t seen any sessions yet. Run the demo command in a second terminal: it seeds 3 realistic coding sessions and proves the hybrid search finds semantically-related memories that keyword search would miss.</div>' +
-          '<pre style="display:inline-block;margin:0;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);">npx @agentmemory/agentmemory demo</pre>' +
-          '<div style="margin-top:10px;"><a class="empty-link" href="https://github.com/rohitg00/agentmemory#quick-start" target="_blank" rel="noopener" style="font-size:12px;">Or: wire up your real agent &rarr;</a></div>' +
+          '<div style="font-size:13px;color:var(--ink-muted);margin-bottom:12px;line-height:1.5;max-width:640px;">ZiiAgentMemory is running but hasn&rsquo;t seen any sessions yet. Run the demo command in a second terminal: it seeds 3 realistic coding sessions and proves the hybrid search finds semantically-related memories that keyword search would miss.</div>' +
+          '<pre style="display:inline-block;margin:0;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-family:var(--font-mono);font-size:12px;color:var(--ink);">npx ziiagentmemory demo</pre>' +
+          '<div style="margin-top:10px;"><a class="empty-link" href="https://github.com/rohitg00/ZiiAgentMemory#quick-start" target="_blank" rel="noopener" style="font-size:12px;">Or: wire up your real agent &rarr;</a></div>' +
           '</div>';
       }
       html += '<div class="stats-grid">';
@@ -1500,7 +1500,7 @@
 
       html += '<div class="card"><div class="card-title">Recent Sessions</div>';
       if (d.sessions.length === 0) {
-        html += '<div class="empty-state"><p>No sessions yet. Start a coding session with agentmemory hooks enabled.</p></div>';
+        html += '<div class="empty-state"><p>No sessions yet. Start a coding session with ZiiAgentMemory hooks enabled.</p></div>';
       } else {
         var recent = d.sessions.slice().sort(function(a, b) { return (b.startedAt || '').localeCompare(a.startedAt || ''); }).slice(0, 5);
         html += '<table><tr><th>Project</th><th>Status</th><th>Obs</th><th>Started</th></tr>';
@@ -2443,7 +2443,7 @@
 
       var html = '<div class="card" style="margin-bottom:12px;padding:12px;background:var(--bg-subtle);">';
       html += '<div style="font-size:13px;color:var(--ink-muted);line-height:1.5;">';
-      html += '<strong>Memories</strong> are durable facts, architecture notes, conventions, and lessons saved via <code>memory_remember</code> MCP tool or the <code>/agentmemory/remember</code> endpoint. They survive across sessions and supersede each other as v1, v2, etc. ';
+      html += '<strong>Memories</strong> are durable facts, architecture notes, conventions, and lessons saved via <code>memory_remember</code> MCP tool or the <code>/ziiagentmemory/remember</code> endpoint. They survive across sessions and supersede each other as v1, v2, etc. ';
       html += '<span style="color:var(--ink-faint);">Shown: ' + items.length + ' total.</span>';
       html += '</div></div>';
 
@@ -2459,9 +2459,9 @@
         html += '<div class="empty-state">' +
           '<div class="empty-icon">&#128218;</div>' +
           '<div class="empty-title">No memories yet</div>' +
-          '<div class="empty-lead">Memories are the distilled facts agentmemory keeps across sessions &mdash; things like file paths, architectural decisions, and user preferences. Hooks capture them automatically during coding sessions; you can also save one directly.</div>' +
+          '<div class="empty-lead">Memories are the distilled facts ZiiAgentMemory keeps across sessions &mdash; things like file paths, architectural decisions, and user preferences. Hooks capture them automatically during coding sessions; you can also save one directly.</div>' +
           '<pre class="empty-cmd">memory_remember {\n  title: "auth uses jose middleware",\n  content: "src/middleware/auth.ts handles JWT validation",\n  type: "architecture"\n}</pre>' +
-          '<div><a class="empty-link" href="https://github.com/rohitg00/agentmemory#memories" target="_blank" rel="noopener">Memory types &rarr;</a></div>' +
+          '<div><a class="empty-link" href="https://github.com/rohitg00/ZiiAgentMemory#memories" target="_blank" rel="noopener">Memory types &rarr;</a></div>' +
           '</div>';
       } else {
         html += '<table><tr><th>Title</th><th>Type</th><th>Strength</th><th>Version</th><th>Updated</th><th>Actions</th></tr>';
@@ -3097,7 +3097,7 @@
           '<div class="empty-title">No lessons yet</div>' +
           '<div class="empty-lead">Lessons are confidence-scored pattern observations &mdash; things you corrected once that the agent should never do again. They persist across projects.</div>' +
           '<pre class="empty-cmd"># Save a lesson explicitly\nmemory_lesson_save { rule, reason, confidence }\n\n# Or: Replay tab &rarr; Import JSONL auto-extracts lessons\n# from your past Claude Code sessions</pre>' +
-          '<div><a class="empty-link" href="https://github.com/rohitg00/agentmemory#lessons" target="_blank" rel="noopener">Lesson decay &amp; scoring &rarr;</a></div>' +
+          '<div><a class="empty-link" href="https://github.com/rohitg00/ZiiAgentMemory#lessons" target="_blank" rel="noopener">Lesson decay &amp; scoring &rarr;</a></div>' +
           '</div>';
       } else {
         html += '<table><thead><tr><th>Lesson</th><th>Confidence</th><th>Reinforcements</th><th>Source</th><th>Project</th><th>Updated</th></tr></thead><tbody>';
@@ -3166,8 +3166,8 @@
           '<div class="empty-title">No actions tracked yet</div>' +
           '<div class="empty-lead">Actions are follow-ups the agent surfaced during a session: <em>decisions to revisit</em>, <em>files to inspect</em>, <em>tasks blocked on input</em>. They show up here with status pending &rarr; active &rarr; done/blocked so nothing slips through between sessions.</div>' +
           '<div class="empty-lead" style="margin-top:0;">Three ways to create them:</div>' +
-          '<pre class="empty-cmd"># 1. MCP tool (from any agent)\nmemory_action_create { title, description, priority }\n\n# 2. Curl\ncurl -X POST http://localhost:3111/agentmemory/actions \\\n  -H \'Content-Type: application/json\' \\\n  -d \'{"title":"ship v1","priority":"high"}\'\n\n# 3. Hooks auto-extract from long session bodies</pre>' +
-          '<div><a class="empty-link" href="https://github.com/rohitg00/agentmemory#actions" target="_blank" rel="noopener">Action lifecycle docs &rarr;</a></div>' +
+          '<pre class="empty-cmd"># 1. MCP tool (from any agent)\nmemory_action_create { title, description, priority }\n\n# 2. Curl\ncurl -X POST http://localhost:3111/ziiagentmemory/actions \\\n  -H \'Content-Type: application/json\' \\\n  -d \'{"title":"ship v1","priority":"high"}\'\n\n# 3. Hooks auto-extract from long session bodies</pre>' +
+          '<div><a class="empty-link" href="https://github.com/rohitg00/ZiiAgentMemory#actions" target="_blank" rel="noopener">Action lifecycle docs &rarr;</a></div>' +
           '</div>';
       } else {
         html += '<table><thead><tr><th>Title</th><th>Status</th><th>Priority</th><th>Tags</th><th>Frontier</th><th>Updated</th></tr></thead><tbody>';
@@ -3253,7 +3253,7 @@
           '<div class="empty-title">No crystals yet</div>' +
           '<div class="empty-lead">Crystals are compressed action digests &mdash; the 3-line summary of what happened in a session. Generated from long conversations to give the next session fast context without re-reading everything.</div>' +
           '<pre class="empty-cmd"># Auto: import a JSONL transcript\n#   Replay tab &rarr; Import JSONL\n\n# Manual: crystallize a specific session\nmemory_crystallize { sessionId }</pre>' +
-          '<div><a class="empty-link" href="https://github.com/rohitg00/agentmemory#crystals" target="_blank" rel="noopener">Crystal pipeline &rarr;</a></div>' +
+          '<div><a class="empty-link" href="https://github.com/rohitg00/ZiiAgentMemory#crystals" target="_blank" rel="noopener">Crystal pipeline &rarr;</a></div>' +
           '</div>';
       } else {
         items.forEach(function(c) {
@@ -3749,8 +3749,8 @@
           title: 'No LLM provider key set',
           keyLabel: 'ANTHROPIC_API_KEY',
           desc: 'Compression, summarization, and graph extraction stay disabled until a key is provided.',
-          enable: 'export ANTHROPIC_API_KEY=sk-ant-...\n# then restart: npx @agentmemory/agentmemory',
-          docs: 'https://github.com/rohitg00/agentmemory#quick-start',
+          enable: 'export ANTHROPIC_API_KEY=sk-ant-...\n# then restart: npx ziiagentmemory',
+          docs: 'https://github.com/rohitg00/ZiiAgentMemory#quick-start',
           dismissKey: '__provider_noop',
         });
       }
@@ -3762,7 +3762,7 @@
           keyLabel: 'OPENAI_API_KEY',
           desc: 'Semantic vector search is off. BM25 keyword search is active and good for exact matches.',
           enable: 'export OPENAI_API_KEY=sk-...\n# or VOYAGE_API_KEY, COHERE_API_KEY, OLLAMA_HOST',
-          docs: 'https://github.com/rohitg00/agentmemory#embedding-providers',
+          docs: 'https://github.com/rohitg00/ZiiAgentMemory#embedding-providers',
           dismissKey: '__embedding_none',
         });
       }
@@ -3822,7 +3822,7 @@
           '### Steps to reproduce\n\n' +
           '1. \n2. \n3. \n'
         );
-        fbEl.href = 'https://github.com/rohitg00/agentmemory/issues/new?title=' +
+        fbEl.href = 'https://github.com/ziishanahmad/ziiagentmemory/issues/new?title=' +
           encodeURIComponent('[viewer] ') + '&body=' + body;
       }
     }

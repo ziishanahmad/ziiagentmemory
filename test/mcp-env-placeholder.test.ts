@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
 import { resolveEnvOrEmpty } from "../src/mcp/rest-proxy.js";
 
-const VAR = "AGENTMEMORY_TEST_URL";
+const VAR = "ZIIAGENTMEMORY_TEST_URL";
 
 describe("resolveEnvOrEmpty — guards against literal ${VAR} placeholders", () => {
   let original: string | undefined;
@@ -26,7 +26,7 @@ describe("resolveEnvOrEmpty — guards against literal ${VAR} placeholders", () 
   });
 
   it("returns '' when env var is literal ${VAR} placeholder", () => {
-    process.env[VAR] = "${AGENTMEMORY_TEST_URL}";
+    process.env[VAR] = "${ZIIAGENTMEMORY_TEST_URL}";
     expect(resolveEnvOrEmpty(VAR)).toBe("");
   });
 
@@ -51,7 +51,7 @@ describe("resolveEnvOrEmpty — guards against literal ${VAR} placeholders", () 
   });
 
   it("does not treat $VAR (no braces) as placeholder", () => {
-    process.env[VAR] = "$AGENTMEMORY_URL";
-    expect(resolveEnvOrEmpty(VAR)).toBe("$AGENTMEMORY_URL");
+    process.env[VAR] = "$ZIIAGENTMEMORY_URL";
+    expect(resolveEnvOrEmpty(VAR)).toBe("$ZIIAGENTMEMORY_URL");
   });
 });

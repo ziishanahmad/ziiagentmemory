@@ -1,21 +1,21 @@
-# Deploy agentmemory on Coolify
+# Deploy ZiiAgentMemory on Coolify
 
 [Coolify](https://coolify.io/self-hosted) is an open-source, self-hosted
 Heroku/Render alternative that you run on your own VPS. This template
-deploys agentmemory as a Coolify *Application* backed by a Docker
+deploys ZiiAgentMemory as a Coolify *Application* backed by a Docker
 Compose stack — Coolify handles TLS termination, persistent volume
 provisioning, log aggregation, and the deploy webhook for you.
 
 ## What you get
 
-- A public HTTPS endpoint serving the agentmemory REST API behind
+- A public HTTPS endpoint serving the ZiiAgentMemory REST API behind
   Coolify's built-in Traefik/Caddy proxy. The container port (`3111`)
   is exposed to the proxy network only — never bound to the host — so
   TLS termination and domain routing stay under proxy control.
 - A persistent Docker volume backing `/data` for memories, BM25 index,
   and stream backlog. Coolify auto-prefixes the volume name with the
   application's UUID so the data survives redeploys.
-- An HTTP health-check at `/agentmemory/livez` declared in the
+- An HTTP health-check at `/ziiagentmemory/livez` declared in the
   Dockerfile (`HEALTHCHECK` directive). Coolify reuses it for
   rolling-deploy decisions.
 
@@ -24,7 +24,7 @@ provisioning, log aggregation, and the deploy webhook for you.
 1. **Open your Coolify dashboard** and click **+ New → Application**.
 2. **Source**: pick *Public Repository*. Paste:
    ```
-   https://github.com/rohitg00/agentmemory
+   https://github.com/ziishanahmad/ziiagentmemory
    ```
    Branch: `main`.
 3. **Build Pack**: select *Docker Compose*.
@@ -37,7 +37,7 @@ provisioning, log aggregation, and the deploy webhook for you.
 7. Click **Deploy**.
 
 That's it. Coolify clones the repo, builds the Dockerfile under
-`deploy/coolify/`, provisions the `agentmemory-data` named volume on
+`deploy/coolify/`, provisions the `ZiiAgentMemory-data` named volume on
 the host, attaches Traefik (or Caddy) for the public domain, and starts
 the service. The container is reachable only through the proxy — there
 is no published host port.
@@ -45,15 +45,15 @@ is no published host port.
 ## Capture the HMAC secret
 
 Once the deploy logs show the service is up, open the application's
-**Logs** tab in Coolify and search for `AGENTMEMORY_SECRET=`. You will
-see exactly one line of the form `AGENTMEMORY_SECRET=<64 hex chars>`.
+**Logs** tab in Coolify and search for `ZIIAGENTMEMORY_SECRET=`. You will
+see exactly one line of the form `ZIIAGENTMEMORY_SECRET=<64 hex chars>`.
 Copy it into your client environment (`~/.bashrc`, Claude Desktop
 config, etc.). The secret is never printed again on subsequent boots.
 
 ## Verify the deployment
 
 ```bash
-curl "https://<your-coolify-domain>/agentmemory/livez"
+curl "https://<your-coolify-domain>/ziiagentmemory/livez"
 # {"status":"ok"}
 ```
 
@@ -73,7 +73,7 @@ access to the underlying VPS. From your laptop:
 ```bash
 ssh -L 3113:127.0.0.1:3113 <user>@<coolify-host>
 # inside the SSH session, find the container:
-docker ps --filter name=agentmemory --format "{{.Names}}"
+docker ps --filter name=ZiiAgentMemory --format "{{.Names}}"
 # tunnel into the container's port from the host:
 docker exec -it <container-name> sh -c "curl http://localhost:3113"
 ```
@@ -109,7 +109,7 @@ feature for Docker volumes.
 
 ## Cost floor and resources
 
-- **Hardware**: the agentmemory container idles at ~150 MB RSS, climbs
+- **Hardware**: the ZiiAgentMemory container idles at ~150 MB RSS, climbs
   to ~400 MB under steady traffic. The bundled iii engine adds another
   ~80 MB. A 1 vCPU / 1 GB VPS is comfortably enough for a personal
   install.
@@ -123,9 +123,9 @@ feature for Docker volumes.
 
 - The Dockerfile builds on the Coolify host on every deploy. First
   deploy takes ~2 minutes; cached layers shrink subsequent rebuilds to
-  under 30 seconds. Pin `AGENTMEMORY_VERSION` and `III_VERSION` in
+  under 30 seconds. Pin `ZIIAGENTMEMORY_VERSION` and `III_VERSION` in
   `docker-compose.yml`'s `build.args` block to lock a specific release.
-- Coolify's *Persistent Storage* tab will show `agentmemory-data` as a
+- Coolify's *Persistent Storage* tab will show `ZiiAgentMemory-data` as a
   managed volume — do not delete it from the dashboard if you want
   your memories to survive a redeploy.
 - arm64 hosts work — the iii binary selection in the Dockerfile uses

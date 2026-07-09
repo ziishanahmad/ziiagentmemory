@@ -91,7 +91,7 @@ describe("mem::enrich — project isolation for bug memories", () => {
       project: "web",
     }) as { context: string };
 
-    expect(result.context).not.toContain("agentmemory-past-errors");
+    expect(result.context).not.toContain("ZiiAgentMemory-past-errors");
     expect(result.context).not.toContain("express-jwt");
   });
 
@@ -104,7 +104,7 @@ describe("mem::enrich — project isolation for bug memories", () => {
       project: "api",
     }) as { context: string };
 
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
     expect(result.context).toContain("express-jwt");
   });
 
@@ -118,7 +118,7 @@ describe("mem::enrich — project isolation for bug memories", () => {
     }) as { context: string };
 
     // Unscoped memories remain visible everywhere for backward-compat
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
     expect(result.context).toContain("express-jwt");
   });
 
@@ -130,7 +130,7 @@ describe("mem::enrich — project isolation for bug memories", () => {
       files: ["src/middleware/auth.ts"],
     }) as { context: string };
 
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
   });
 
   it("surfaces a scoped bug memory when caller provides no project", async () => {
@@ -142,7 +142,7 @@ describe("mem::enrich — project isolation for bug memories", () => {
       files: ["src/middleware/auth.ts"],
     }) as { context: string };
 
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
   });
 
   it("isolates multiple memories from different projects correctly", async () => {

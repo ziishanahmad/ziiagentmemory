@@ -6,7 +6,7 @@ import type { ConnectAdapter, ConnectOptions, ConnectResult } from "./types.js";
 
 const HERMES_DIR = join(homedir(), ".hermes");
 const HERMES_CONFIG = join(HERMES_DIR, "config.yaml");
-const DOCS = "https://github.com/rohitg00/agentmemory/tree/main/integrations/hermes";
+const DOCS = "https://github.com/ziishanahmad/ziiagentmemory/tree/main/integrations/hermes";
 
 export const adapter: ConnectAdapter = {
   name: "hermes",
@@ -14,7 +14,7 @@ export const adapter: ConnectAdapter = {
   category: "native",
   docs: DOCS,
   protocolNote:
-    "→ Using MCP. Hooks are also available — see https://github.com/rohitg00/agentmemory/tree/main/integrations/hermes.",
+    "→ Using MCP. Hooks are also available — see https://github.com/ziishanahmad/ziiagentmemory/tree/main/integrations/hermes.",
 
   detect(): boolean {
     return existsSync(HERMES_DIR);
@@ -29,12 +29,12 @@ export const adapter: ConnectAdapter = {
         `Add to ${HERMES_CONFIG}:`,
         "",
         "  mcp_servers:",
-        "    agentmemory:",
+        "    ZiiAgentMemory:",
         "      command: npx",
-        '      args: ["-y", "@agentmemory/mcp"]',
+        '      args: ["-y", "ziiagentmemory"]',
         "",
         "  memory:",
-        "    provider: agentmemory",
+        "    provider: ZiiAgentMemory",
         "",
         `Full guide: ${DOCS}`,
       ].join("\n"),

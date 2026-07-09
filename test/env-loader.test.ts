@@ -14,18 +14,18 @@ async function freshConfig() {
 }
 
 function writeEnv(contents: string) {
-  const dir = join(sandboxHome, ".agentmemory");
+  const dir = join(sandboxHome, ".ziiagentmemory");
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, ".env"), contents);
 }
 
 describe("loadEnvFile", () => {
   beforeEach(() => {
-    sandboxHome = mkdtempSync(join(tmpdir(), "agentmemory-env-"));
+    sandboxHome = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-env-"));
     process.env["HOME"] = sandboxHome;
     process.env["USERPROFILE"] = sandboxHome;
-    delete process.env["AGENTMEMORY_AUTO_COMPRESS"];
-    delete process.env["AGENTMEMORY_DROP_STALE_INDEX"];
+    delete process.env["ZIIAGENTMEMORY_AUTO_COMPRESS"];
+    delete process.env["ZIIAGENTMEMORY_DROP_STALE_INDEX"];
     delete process.env["CONSOLIDATION_ENABLED"];
     delete process.env["GRAPH_EXTRACTION_ENABLED"];
     delete process.env["TOKEN"];
@@ -43,7 +43,7 @@ describe("loadEnvFile", () => {
   it("strips trailing inline # comments on unquoted values", async () => {
     writeEnv(
       [
-        "AGENTMEMORY_AUTO_COMPRESS=true   # opt in to LLM compression",
+        "ZIIAGENTMEMORY_AUTO_COMPRESS=true   # opt in to LLM compression",
         "CONSOLIDATION_ENABLED=true       # daily summarization",
         "GRAPH_EXTRACTION_ENABLED=true    # entity graph",
       ].join("\n"),
@@ -84,8 +84,8 @@ describe("loadEnvFile", () => {
     expect(cfg.getEnvVar("TOKEN")).toBe("abc");
   });
 
-  it("reads AGENTMEMORY_DROP_STALE_INDEX from the env file", async () => {
-    writeEnv("AGENTMEMORY_DROP_STALE_INDEX=true");
+  it("reads ZIIAGENTMEMORY_DROP_STALE_INDEX from the env file", async () => {
+    writeEnv("ZIIAGENTMEMORY_DROP_STALE_INDEX=true");
     const cfg = await freshConfig();
     expect(cfg.isDropStaleIndexEnabled()).toBe(true);
   });

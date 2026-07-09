@@ -33,7 +33,7 @@ export interface RecentSearch {
 // Module-scope counter mirror so `mem::diagnostic::followup-stats` can
 // read the rate back without going through the OTEL collector. The
 // OTEL counter is still the canonical export; this is an in-process
-// convenience for `agentmemory status` + tests.
+// convenience for `ziiagentmemory status` + tests.
 const followupStats = {
   followupWithinWindow: 0,
   agentInitiatedSearches: 0,
@@ -122,7 +122,7 @@ export function registerSmartSearchFunction(
         !envAgentId
       ) {
         throw new Error(
-          "mem::smart-search: AGENTMEMORY_AGENT_SCOPE=isolated is set but " +
+          "mem::smart-search: ZIIAGENTMEMORY_AGENT_SCOPE=isolated is set but " +
             "no agent id is available (env AGENT_ID unset and no explicit " +
             "agentId in the call). Refusing to read cross-agent rows. " +
             'Pass agentId: "*" to opt in to a wildcard read.',

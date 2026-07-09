@@ -68,9 +68,9 @@ const FEATURED: Agent[] = [
     id: "pi",
     name: "pi",
     from: "pi",
-    logo: "https://raw.githubusercontent.com/rohitg00/agentmemory/main/assets/agents/pi.svg",
+    logo: "https://raw.githubusercontent.com/ziishanahmad/ziiagentmemory/main/assets/agents/pi.svg",
     accent: "#FF6B35",
-    href: "https://github.com/rohitg00/agentmemory/tree/main/integrations/pi",
+    href: "https://github.com/ziishanahmad/ziiagentmemory/tree/main/integrations/pi",
     pitch: "Native plugin + MCP",
     sub: "NATIVE PLUGIN",
   },
@@ -295,7 +295,7 @@ export function Agents() {
         <p className="section-lede">
           NATIVE PLUGINS FOR CLAUDE CODE, COPILOT CLI, CODEX CLI, OPENCLAW,
           HERMES, PI, AND OPENHUMAN. EVERY OTHER MCP CLIENT GETS IT FOR FREE.
-          `agentmemory connect &lt;agent&gt;` AUTO-WIRES THEM ALL.
+          `ziiagentmemory connect &lt;agent&gt;` AUTO-WIRES THEM ALL.
         </p>
       </header>
 

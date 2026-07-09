@@ -14,8 +14,8 @@ _None yet._
 
 ## Maintainer recruitment
 
-agentmemory is actively looking to diversify maintainership. The growth plan in [ROADMAP.md](./ROADMAP.md) commits to adding at least one additional Maintainer from a different organization by the end of the current growth cycle.
+ZiiAgentMemory is actively looking to diversify maintainership. The growth plan in [ROADMAP.md](./ROADMAP.md) commits to adding at least one additional Maintainer from a different organization by the end of the current growth cycle.
 
 If you have a sustained contribution track record and would like to be considered, open an issue tagged `governance`.
 
-The complete contributor graph, with commit counts and recent activity, lives at <https://github.com/rohitg00/agentmemory/graphs/contributors>.
+The complete contributor graph, with commit counts and recent activity, lives at <https://github.com/ziishanahmad/ziiagentmemory/graphs/contributors>.

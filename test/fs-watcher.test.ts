@@ -52,7 +52,7 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
       await wait(1500);
       expect(captured.length).toBeGreaterThanOrEqual(1);
       const obs = captured[captured.length - 1];
-      expect(obs.url).toBe("http://localhost:3111/agentmemory/observe");
+      expect(obs.url).toBe("http://localhost:3111/ziiagentmemory/observe");
       const body = obs.body as {
         hookType: string;
         sessionId: string;
@@ -355,11 +355,11 @@ describe("FilesystemWatcher", { retry: 2 }, () => {
 describe("configFromEnv", () => {
   it("parses comma-separated dirs and ignore patterns", () => {
     const cfg = configFromEnv({
-      AGENTMEMORY_FS_WATCH_DIRS: " /a , /b ",
-      AGENTMEMORY_FS_WATCH_IGNORE: "foo$, ^bar",
-      AGENTMEMORY_URL: "http://localhost:3111",
-      AGENTMEMORY_SECRET: "tok",
-      AGENTMEMORY_PROJECT: "demo",
+      ZIIAGENTMEMORY_FS_WATCH_DIRS: " /a , /b ",
+      ZIIAGENTMEMORY_FS_WATCH_IGNORE: "foo$, ^bar",
+      ZIIAGENTMEMORY_URL: "http://localhost:3111",
+      ZIIAGENTMEMORY_SECRET: "tok",
+      ZIIAGENTMEMORY_PROJECT: "demo",
     });
     expect(cfg.roots).toEqual(["/a", "/b"]);
     expect(cfg.baseUrl).toBe("http://localhost:3111");

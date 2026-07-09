@@ -62,22 +62,22 @@ async function seedPinnedSlot(
 }
 
 describe("mem::context — pinned slot injection", () => {
-  const ORIGINAL_SLOTS_ENV = process.env["AGENTMEMORY_SLOTS"];
+  const ORIGINAL_SLOTS_ENV = process.env["ZIIAGENTMEMORY_SLOTS"];
 
   afterEach(() => {
     if (ORIGINAL_SLOTS_ENV === undefined) {
-      delete process.env["AGENTMEMORY_SLOTS"];
+      delete process.env["ZIIAGENTMEMORY_SLOTS"];
     } else {
-      process.env["AGENTMEMORY_SLOTS"] = ORIGINAL_SLOTS_ENV;
+      process.env["ZIIAGENTMEMORY_SLOTS"] = ORIGINAL_SLOTS_ENV;
     }
   });
 
-  describe("when AGENTMEMORY_SLOTS=true", () => {
+  describe("when ZIIAGENTMEMORY_SLOTS=true", () => {
     let kv: ReturnType<typeof mockKV>;
     let handler: ContextHandler;
 
     beforeEach(() => {
-      process.env["AGENTMEMORY_SLOTS"] = "true";
+      process.env["ZIIAGENTMEMORY_SLOTS"] = "true";
       kv = mockKV();
       handler = wireContext(kv);
     });
@@ -157,9 +157,9 @@ describe("mem::context — pinned slot injection", () => {
     });
   });
 
-  describe("when AGENTMEMORY_SLOTS is off", () => {
+  describe("when ZIIAGENTMEMORY_SLOTS is off", () => {
     it("does not include any slot content", async () => {
-      delete process.env["AGENTMEMORY_SLOTS"];
+      delete process.env["ZIIAGENTMEMORY_SLOTS"];
       const kv = mockKV();
       const handler = wireContext(kv);
 

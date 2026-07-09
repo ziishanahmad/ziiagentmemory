@@ -68,7 +68,7 @@ export function registerMcpEndpoints(
   sdk.registerTrigger({
     type: "http",
     function_id: "mcp::tools::list",
-    config: { api_path: "/agentmemory/mcp/tools", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/mcp/tools", http_method: "GET" },
   });
 
   sdk.registerFunction("mcp::tools::call", 
@@ -116,7 +116,7 @@ export function registerMcpEndpoints(
             // #817: forward agentId so mem::search applies the same
             // isolation filter smart-search uses. Default behavior is
             // unchanged (no agentId → falls back to env AGENT_ID when
-            // AGENTMEMORY_AGENT_SCOPE=isolated; "*" wildcard bypasses).
+            // ZIIAGENTMEMORY_AGENT_SCOPE=isolated; "*" wildcard bypasses).
             const recallAgentId =
               typeof args.agentId === "string" && args.agentId.trim().length > 0
                 ? (args.agentId as string).trim()
@@ -1276,43 +1276,43 @@ export function registerMcpEndpoints(
   sdk.registerTrigger({
     type: "http",
     function_id: "mcp::tools::call",
-    config: { api_path: "/agentmemory/mcp/call", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/mcp/call", http_method: "POST" },
   });
 
   const MCP_RESOURCES = [
     {
-      uri: "agentmemory://status",
+      uri: "ZiiAgentMemory://status",
       name: "Agent Memory Status",
       description: "Current session count, memory count, and health status",
       mimeType: "application/json",
     },
     {
-      uri: "agentmemory://project/{name}/profile",
+      uri: "ZiiAgentMemory://project/{name}/profile",
       name: "Project Profile",
       description:
         "Top concepts, frequently modified files, and conventions for a project",
       mimeType: "application/json",
     },
     {
-      uri: "agentmemory://project/{name}/recent",
+      uri: "ZiiAgentMemory://project/{name}/recent",
       name: "Recent Sessions",
       description: "Last 5 session summaries for a project",
       mimeType: "application/json",
     },
     {
-      uri: "agentmemory://memories/latest",
+      uri: "ZiiAgentMemory://memories/latest",
       name: "Latest Memories",
       description: "Top 10 latest memories with their type and strength",
       mimeType: "application/json",
     },
     {
-      uri: "agentmemory://graph/stats",
+      uri: "ZiiAgentMemory://graph/stats",
       name: "Knowledge Graph Stats",
       description: "Node and edge counts by type in the knowledge graph",
       mimeType: "application/json",
     },
     {
-      uri: "agentmemory://team/{id}/profile",
+      uri: "ZiiAgentMemory://team/{id}/profile",
       name: "Team Profile",
       description: "Team memory profile with shared concepts and patterns",
       mimeType: "application/json",
@@ -1329,7 +1329,7 @@ export function registerMcpEndpoints(
   sdk.registerTrigger({
     type: "http",
     function_id: "mcp::resources::list",
-    config: { api_path: "/agentmemory/mcp/resources", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/mcp/resources", http_method: "GET" },
   });
 
   sdk.registerFunction("mcp::resources::read", 
@@ -1343,7 +1343,7 @@ export function registerMcpEndpoints(
       }
 
       try {
-        if (uri === "agentmemory://status") {
+        if (uri === "ZiiAgentMemory://status") {
           const sessions = await kv.list<Session>(KV.sessions);
           const memories = await kv.list<Memory>(KV.memories);
           const healthData = await kv.list(KV.health).catch(() => []);
@@ -1367,7 +1367,7 @@ export function registerMcpEndpoints(
         }
 
         const projectProfileMatch = uri.match(
-          /^agentmemory:\/\/project\/(.+)\/profile$/,
+          /^ZiiAgentMemory:\/\/project\/(.+)\/profile$/,
         );
         if (projectProfileMatch) {
           let projectName: string;
@@ -1397,7 +1397,7 @@ export function registerMcpEndpoints(
         }
 
         const projectRecentMatch = uri.match(
-          /^agentmemory:\/\/project\/(.+)\/recent$/,
+          /^ZiiAgentMemory:\/\/project\/(.+)\/recent$/,
         );
         if (projectRecentMatch) {
           let projectName: string;
@@ -1432,7 +1432,7 @@ export function registerMcpEndpoints(
           };
         }
 
-        if (uri === "agentmemory://memories/latest") {
+        if (uri === "ZiiAgentMemory://memories/latest") {
           const memories = await kv.list<Memory>(KV.memories);
           const latest = memories
             .filter((m) => m.isLatest)
@@ -1462,7 +1462,7 @@ export function registerMcpEndpoints(
           };
         }
 
-        if (uri === "agentmemory://graph/stats") {
+        if (uri === "ZiiAgentMemory://graph/stats") {
           try {
             const nodes = await kv.list<GraphNode>(KV.graphNodes);
             const edges = await kv.list<GraphEdge>(KV.graphEdges);
@@ -1509,7 +1509,7 @@ export function registerMcpEndpoints(
         }
 
         const teamProfileMatch = uri.match(
-          /^agentmemory:\/\/team\/(.+)\/profile$/,
+          /^ZiiAgentMemory:\/\/team\/(.+)\/profile$/,
         );
         if (teamProfileMatch) {
           try {
@@ -1562,7 +1562,7 @@ export function registerMcpEndpoints(
     type: "http",
     function_id: "mcp::resources::read",
     config: {
-      api_path: "/agentmemory/mcp/resources/read",
+      api_path: "/ziiagentmemory/mcp/resources/read",
       http_method: "POST",
     },
   });
@@ -1615,7 +1615,7 @@ export function registerMcpEndpoints(
   sdk.registerTrigger({
     type: "http",
     function_id: "mcp::prompts::list",
-    config: { api_path: "/agentmemory/mcp/prompts", http_method: "GET" },
+    config: { api_path: "/ziiagentmemory/mcp/prompts", http_method: "GET" },
   });
 
   sdk.registerFunction("mcp::prompts::get", 
@@ -1646,7 +1646,7 @@ export function registerMcpEndpoints(
               };
             }
             // #817: mem::search now enforces agent-scope upstream when
-            // AGENTMEMORY_AGENT_SCOPE=isolated, so the search half of
+            // ZIIAGENTMEMORY_AGENT_SCOPE=isolated, so the search half of
             // this prompt is safe by default.
             const searchResult = await sdk
               .trigger({
@@ -1768,6 +1768,6 @@ export function registerMcpEndpoints(
   sdk.registerTrigger({
     type: "http",
     function_id: "mcp::prompts::get",
-    config: { api_path: "/agentmemory/mcp/prompts/get", http_method: "POST" },
+    config: { api_path: "/ziiagentmemory/mcp/prompts/get", http_method: "POST" },
   });
 }

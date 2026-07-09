@@ -46,7 +46,7 @@ const ALLOWED_ORIGINS = (
 // directly, the Origin header reads `http://attacker.com` (same-origin from
 // the browser's perspective on a same-port attacker page, so no preflight
 // fires), and the request body is whatever the page wants. The viewer
-// proxies it to the local REST API with the AGENTMEMORY_SECRET bearer
+// proxies it to the local REST API with the ZIIAGENTMEMORY_SECRET bearer
 // attached, so the response stream is fully privileged. Rejecting any Host
 // not in this allowlist closes that path before the proxy runs.
 //
@@ -65,7 +65,7 @@ function readAllowedHostsOverride(): string[] {
 }
 
 export function resolveViewerHost(): string {
-  return process.env.AGENTMEMORY_VIEWER_HOST?.trim() || "127.0.0.1";
+  return process.env.ZIIAGENTMEMORY_VIEWER_HOST?.trim() || "127.0.0.1";
 }
 
 export function isLoopbackHost(host: string): boolean {
@@ -217,12 +217,12 @@ export function startViewerServer(
   if (!isLoopbackHost(host)) {
     if (!secret) {
       throw new ViewerConfigError(
-        `AGENTMEMORY_VIEWER_HOST=${host} requires AGENTMEMORY_SECRET to be set so the viewer can validate inbound bearer tokens. To fix: unset AGENTMEMORY_VIEWER_HOST to keep the safe loopback bind, or set AGENTMEMORY_SECRET. For Fly images, it is printed on first boot; see deploy/fly/README.md.`,
+        `ZIIAGENTMEMORY_VIEWER_HOST=${host} requires ZIIAGENTMEMORY_SECRET to be set so the viewer can validate inbound bearer tokens. To fix: unset ZIIAGENTMEMORY_VIEWER_HOST to keep the safe loopback bind, or set ZIIAGENTMEMORY_SECRET. For Fly images, it is printed on first boot; see deploy/fly/README.md.`,
       );
     }
     if (readAllowedHostsOverride().length === 0) {
       throw new ViewerConfigError(
-        `AGENTMEMORY_VIEWER_HOST=${host} requires VIEWER_ALLOWED_HOSTS because non-loopback viewer binds only trust explicit Host headers. To fix: set VIEWER_ALLOWED_HOSTS to a comma-separated list of trusted Host header values (e.g. "localhost:3113" for fly proxy), or unset AGENTMEMORY_VIEWER_HOST to keep the safe loopback bind.`,
+        `ZIIAGENTMEMORY_VIEWER_HOST=${host} requires VIEWER_ALLOWED_HOSTS because non-loopback viewer binds only trust explicit Host headers. To fix: set VIEWER_ALLOWED_HOSTS to a comma-separated list of trusted Host header values (e.g. "localhost:3113" for fly proxy), or unset ZIIAGENTMEMORY_VIEWER_HOST to keep the safe loopback bind.`,
       );
     }
     inboundSecret = secret;
@@ -267,7 +267,7 @@ export function startViewerServer(
       method === "GET" &&
       (pathname === "/" ||
         pathname === "/viewer" ||
-        pathname === "/agentmemory/viewer")
+        pathname === "/ziiagentmemory/viewer")
     ) {
       const rendered = renderViewerDocument();
       if (rendered.found) {
@@ -304,7 +304,7 @@ export function startViewerServer(
     ) {
       res.writeHead(401, {
         "Content-Type": "text/plain",
-        "WWW-Authenticate": 'Bearer realm="agentmemory-viewer"',
+        "WWW-Authenticate": 'Bearer realm="ZiiAgentMemory-viewer"',
       });
       res.end("unauthorized");
       return;
@@ -339,15 +339,15 @@ export function startViewerServer(
     if (inboundSecret !== null) {
       const allowedHosts = readAllowedHostsOverride().join(", ");
       console.log(
-        `[agentmemory] Viewer: http://localhost:${actualPort} (bound to ${host}; inbound Bearer required; allowed Host headers: ${allowedHosts})`,
+        `[ZiiAgentMemory] Viewer: http://localhost:${actualPort} (bound to ${host}; inbound Bearer required; allowed Host headers: ${allowedHosts})`,
       );
       return;
     }
     if (actualPort === requestedPort) {
-      console.log(`[agentmemory] Viewer: http://localhost:${actualPort}`);
+      console.log(`[ZiiAgentMemory] Viewer: http://localhost:${actualPort}`);
     } else {
       console.log(
-        `[agentmemory] Viewer started on http://localhost:${actualPort} (fallback from ${requestedPort})`,
+        `[ZiiAgentMemory] Viewer started on http://localhost:${actualPort} (fallback from ${requestedPort})`,
       );
     }
   });
@@ -368,17 +368,17 @@ export function startViewerServer(
       viewerSkipped = true;
       if (inboundSecret !== null) {
         console.warn(
-          `[agentmemory] Viewer port ${requestedPort} is in use while bound to ${host}; not retrying because non-loopback viewer binds require VIEWER_ALLOWED_HOSTS to match the exact port. Free the port, choose another viewer port, or unset AGENTMEMORY_VIEWER_HOST to keep the safe loopback bind.`,
+          `[ZiiAgentMemory] Viewer port ${requestedPort} is in use while bound to ${host}; not retrying because non-loopback viewer binds require VIEWER_ALLOWED_HOSTS to match the exact port. Free the port, choose another viewer port, or unset ZIIAGENTMEMORY_VIEWER_HOST to keep the safe loopback bind.`,
         );
       } else {
         console.warn(
-          `[agentmemory] Viewer ports ${requestedPort}-${requestedPort + MAX_VIEWER_PORT_RETRIES} all in use, skipping viewer.`,
+          `[ZiiAgentMemory] Viewer ports ${requestedPort}-${requestedPort + MAX_VIEWER_PORT_RETRIES} all in use, skipping viewer.`,
         );
       }
     } else {
       boundViewerPort = null;
       viewerSkipped = true;
-      console.error(`[agentmemory] Viewer error:`, err.message);
+      console.error(`[ZiiAgentMemory] Viewer error:`, err.message);
     }
   });
 
@@ -396,9 +396,9 @@ async function proxyToRestApi(
   res: ServerResponse,
   secret?: string,
 ): Promise<void> {
-  const upstreamPath = pathname.startsWith("/agentmemory/")
+  const upstreamPath = pathname.startsWith("/ziiagentmemory/")
     ? pathname
-    : `/agentmemory${pathname.startsWith("/") ? pathname : "/" + pathname}`;
+    : `/ZiiAgentMemory${pathname.startsWith("/") ? pathname : "/" + pathname}`;
 
   const upstreamUrl = `http://127.0.0.1:${restPort}${upstreamPath}${qs ? "?" + qs : ""}`;
 

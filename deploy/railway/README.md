@@ -1,16 +1,16 @@
-# Deploy agentmemory on Railway
+# Deploy ZiiAgentMemory on Railway
 
-This template runs agentmemory on a single Railway service with a
+This template runs ZiiAgentMemory on a single Railway service with a
 persistent volume mounted at `/data`. The HMAC secret is generated on
 first boot and persisted to the volume — you read it once from the
 deploy logs and copy it into your client.
 
 ## What you get
 
-- A public HTTPS endpoint serving the agentmemory REST API on port 3111
+- A public HTTPS endpoint serving the ZiiAgentMemory REST API on port 3111
 - A persistent Railway Volume at `/data` for memories, BM25 index, and
   stream backlog
-- Railway healthcheck against `/agentmemory/livez`
+- Railway healthcheck against `/ziiagentmemory/livez`
 - The HMAC bearer secret is generated on first boot inside the
   container and persisted to `/data/.hmac` (chmod 600); the operator
   copies it from the deploy logs once.
@@ -21,7 +21,7 @@ deploy logs and copy it into your client.
 ## Deploy via Railway dashboard
 
 1. Click **Deploy from GitHub** in the Railway dashboard and pick the
-   `rohitg00/agentmemory` repo.
+   `rohitg00/ZiiAgentMemory` repo.
 2. Set the **Config-as-Code Path** under the service Settings to
    `deploy/railway/railway.json`. Railway picks up the Dockerfile path
    from there.
@@ -36,8 +36,8 @@ deploy logs and copy it into your client.
 # Install: https://docs.railway.com/guides/cli
 railway login
 railway init                                            # link a new project
-railway up --service agentmemory                        # builds + deploys
-railway volume add --service agentmemory --mount /data  # attach persistent volume
+railway up --service ZiiAgentMemory                        # builds + deploys
+railway volume add --service ZiiAgentMemory --mount /data  # attach persistent volume
 railway redeploy                                        # restart with the volume
 ```
 
@@ -46,17 +46,17 @@ railway redeploy                                        # restart with the volum
 After the first deploy succeeds, open the service's **Deploy Logs**:
 
 ```bash
-railway logs --service agentmemory | grep AGENTMEMORY_SECRET=
+railway logs --service ZiiAgentMemory | grep ZIIAGENTMEMORY_SECRET=
 ```
 
-You will see exactly one line of the form `AGENTMEMORY_SECRET=<64 hex chars>`.
+You will see exactly one line of the form `ZIIAGENTMEMORY_SECRET=<64 hex chars>`.
 Copy it into your client environment. The secret is never printed again
 on subsequent boots.
 
 ## Verify the deployment
 
 ```bash
-curl https://<your-service>.up.railway.app/agentmemory/livez
+curl https://<your-service>.up.railway.app/ziiagentmemory/livez
 # {"status":"ok"}
 ```
 
@@ -73,7 +73,7 @@ viewer with one of the following.
 **Quick in-container check:**
 
 ```bash
-railway ssh --service agentmemory
+railway ssh --service ZiiAgentMemory
 # inside the container:
 curl http://localhost:3113
 ```
@@ -93,11 +93,11 @@ This is the heavier path; option A is what most users will want.
 ## Rotate the HMAC secret
 
 ```bash
-railway ssh --service agentmemory
+railway ssh --service ZiiAgentMemory
 rm /data/.hmac
 exit
-railway redeploy --service agentmemory
-railway logs --service agentmemory | grep AGENTMEMORY_SECRET=
+railway redeploy --service ZiiAgentMemory
+railway logs --service ZiiAgentMemory | grep ZIIAGENTMEMORY_SECRET=
 ```
 
 Update every client with the new secret. Old tokens stop working
@@ -106,20 +106,20 @@ immediately.
 ## Back up `/data`
 
 ```bash
-railway ssh --service agentmemory -- "tar czf - /data" > agentmemory-$(date +%Y%m%d).tar.gz
+railway ssh --service ZiiAgentMemory -- "tar czf - /data" > ZiiAgentMemory-$(date +%Y%m%d).tar.gz
 ```
 
 To restore on a fresh volume:
 
 ```bash
-cat agentmemory-YYYYMMDD.tar.gz | railway ssh --service agentmemory -- "tar xzf - -C /"
-railway redeploy --service agentmemory
+cat ZiiAgentMemory-YYYYMMDD.tar.gz | railway ssh --service ZiiAgentMemory -- "tar xzf - -C /"
+railway redeploy --service ZiiAgentMemory
 ```
 
 ## Cost floor and egress
 
 - Hobby plan: $5/month flat, includes $5 of usage.
-- agentmemory at idle plus a 1 GB volume typically uses $3–$6 of usage
+- ZiiAgentMemory at idle plus a 1 GB volume typically uses $3–$6 of usage
   per month on the smallest instance, so most users stay near the $5
   floor.
 - Egress: $0.10/GB after the bundled allowance.
@@ -132,5 +132,5 @@ See <https://railway.com/pricing> for the current rate card.
   or use the dashboard's manual snapshot feature.
 - The Dockerfile builds on Railway's builder on every deploy. First
   deploy is ~2 minutes; cached layers make subsequent rebuilds quick.
-  Pin `AGENTMEMORY_VERSION` / `III_VERSION` build args in the
+  Pin `ZIIAGENTMEMORY_VERSION` / `III_VERSION` build args in the
   service's *Variables* tab to lock a specific release.

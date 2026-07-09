@@ -1,27 +1,27 @@
 ---
-name: agentmemory-config
-description: agentmemory configuration, environment variables, ports, and feature flags. Use when enabling a feature, changing ports, setting an API key, configuring auth, or explaining why a feature is off by default.
+name: ZiiAgentMemory-config
+description: ZiiAgentMemory configuration, environment variables, ports, and feature flags. Use when enabling a feature, changing ports, setting an API key, configuring auth, or explaining why a feature is off by default.
 user-invocable: false
 ---
 
-agentmemory reads configuration from the environment and from `~/.agentmemory/.env` (one `KEY=value` per line, no `export` prefix). Restart the server after changing it.
+ZiiAgentMemory reads configuration from the environment and from `~/.ziiagentmemory/.env` (one `KEY=value` per line, no `export` prefix). Restart the server after changing it.
 
 ## Quick start
 
-Enable richer memory and set a provider key in `~/.agentmemory/.env`:
+Enable richer memory and set a provider key in `~/.ziiagentmemory/.env`:
 
 ```env
 ANTHROPIC_API_KEY=sk-ant-...
-AGENTMEMORY_AUTO_COMPRESS=true
-AGENTMEMORY_INJECT_CONTEXT=true
+ZIIAGENTMEMORY_AUTO_COMPRESS=true
+ZIIAGENTMEMORY_INJECT_CONTEXT=true
 ```
 
 ## Defaults worth knowing
 
-- No API key is required. Without one, agentmemory runs zero-LLM with BM25 plus local embeddings.
-- Token-spending features ship OFF on purpose: `AGENTMEMORY_AUTO_COMPRESS` (LLM summaries) and `AGENTMEMORY_INJECT_CONTEXT` (auto context injection) both cost tokens proportional to tool-use frequency.
-- Tool visibility: `AGENTMEMORY_TOOLS=all` (default) or `core` for the lean set.
-- Auth: set `AGENTMEMORY_SECRET` to require `Authorization: Bearer` on the REST API.
+- No API key is required. Without one, ZiiAgentMemory runs zero-LLM with BM25 plus local embeddings.
+- Token-spending features ship OFF on purpose: `ZIIAGENTMEMORY_AUTO_COMPRESS` (LLM summaries) and `ZIIAGENTMEMORY_INJECT_CONTEXT` (auto context injection) both cost tokens proportional to tool-use frequency.
+- Tool visibility: `ZIIAGENTMEMORY_TOOLS=all` (default) or `core` for the lean set.
+- Auth: set `ZIIAGENTMEMORY_SECRET` to require `Authorization: Bearer` on the REST API.
 
 ## Ports
 
@@ -29,8 +29,8 @@ REST is the anchor at 3111. Streams = N+1 (3112), viewer = N+2 (3113), engine = 
 
 ## See also
 
-- agentmemory-rest-api for how the secret is used.
-- agentmemory-architecture for the port quartet rationale.
+- ZiiAgentMemory-rest-api for how the secret is used.
+- ZiiAgentMemory-architecture for the port quartet rationale.
 
 ## Reference
 

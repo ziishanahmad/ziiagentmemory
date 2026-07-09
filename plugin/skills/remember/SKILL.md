@@ -1,6 +1,6 @@
 ---
 name: remember
-description: Save an insight, decision, or learning to agentmemory's long-term storage with searchable concept tags. Use when the user says "remember this", "save this", "note that", "don't forget", or wants to preserve knowledge for future sessions.
+description: Save an insight, decision, or learning to ZiiAgentMemory's long-term storage with searchable concept tags. Use when the user says "remember this", "save this", "note that", "don't forget", or wants to preserve knowledge for future sessions.
 argument-hint: "[what to remember]"
 user-invocable: true
 ---

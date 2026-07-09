@@ -17,7 +17,7 @@ function safeParseInt(value: string | undefined, fallback: number): number {
   return Number.isNaN(parsed) ? fallback : parsed;
 }
 
-const DATA_DIR = join(homedir(), ".agentmemory");
+const DATA_DIR = join(homedir(), ".ziiagentmemory");
 const ENV_FILE = join(DATA_DIR, ".env");
 
 let warnPremiumModelShown = false;
@@ -83,8 +83,8 @@ function detectProvider(env: Record<string, string>): ProviderConfig {
   if (hasRealValue(env["GEMINI_API_KEY"]) || hasRealValue(env["GOOGLE_API_KEY"])) {
     if (!hasRealValue(env["GEMINI_API_KEY"]) && hasRealValue(env["GOOGLE_API_KEY"])) {
       process.stderr.write(
-        "[agentmemory] GOOGLE_API_KEY detected — treating as GEMINI_API_KEY. " +
-          "Set GEMINI_API_KEY in ~/.agentmemory/.env to silence this warning.\n",
+        "[ZiiAgentMemory] GOOGLE_API_KEY detected — treating as GEMINI_API_KEY. " +
+          "Set GEMINI_API_KEY in ~/.ziiagentmemory/.env to silence this warning.\n",
       );
     }
     return {
@@ -104,17 +104,17 @@ function detectProvider(env: Record<string, string>): ProviderConfig {
     if (
       !warnPremiumModelShown &&
       /sonnet|opus|gpt-4o(?!.*mini)|gpt-4-turbo/i.test(model) &&
-      env["AGENTMEMORY_SUPPRESS_COST_WARNING"] !== "1" &&
-      env["AGENTMEMORY_SUPPRESS_COST_WARNING"] !== "true"
+      env["ZIIAGENTMEMORY_SUPPRESS_COST_WARNING"] !== "1" &&
+      env["ZIIAGENTMEMORY_SUPPRESS_COST_WARNING"] !== "true"
     ) {
       warnPremiumModelShown = true;
       process.stderr.write(
-        `[agentmemory] OPENROUTER_MODEL=${model} is in the premium tier. ` +
+        `[ZiiAgentMemory] OPENROUTER_MODEL=${model} is in the premium tier. ` +
           `Background compression on this model can cost $5+/day under active use. ` +
           `Cheaper alternatives with comparable quality for memory compression: ` +
           `deepseek/deepseek-v4-pro, deepseek/deepseek-chat, qwen/qwen3-coder. ` +
           `See README "Cost-aware model selection" for the full table. ` +
-          `Set AGENTMEMORY_SUPPRESS_COST_WARNING=1 to silence.\n`,
+          `Set ZIIAGENTMEMORY_SUPPRESS_COST_WARNING=1 to silence.\n`,
       );
     }
     return {
@@ -124,13 +124,13 @@ function detectProvider(env: Record<string, string>): ProviderConfig {
     };
   }
 
-  const allowAgentSdk = env["AGENTMEMORY_ALLOW_AGENT_SDK"] === "true";
+  const allowAgentSdk = env["ZIIAGENTMEMORY_ALLOW_AGENT_SDK"] === "true";
   if (!allowAgentSdk) {
     process.stderr.write(
       pc.dim(
-        "[agentmemory] No LLM provider key set — running zero-LLM (BM25 + on-device embeddings). " +
-          "Set ANTHROPIC_API_KEY (or GEMINI/OPENAI/OPENROUTER/MINIMAX) in ~/.agentmemory/.env for LLM compression and summaries. " +
-          "Agent-SDK fallback stays off by default to avoid a Stop-hook recursion loop; opt in with AGENTMEMORY_AUTO_COMPRESS=true + AGENTMEMORY_ALLOW_AGENT_SDK=true.\n",
+        "[ZiiAgentMemory] No LLM provider key set — running zero-LLM (BM25 + on-device embeddings). " +
+          "Set ANTHROPIC_API_KEY (or GEMINI/OPENAI/OPENROUTER/MINIMAX) in ~/.ziiagentmemory/.env for LLM compression and summaries. " +
+          "Agent-SDK fallback stays off by default to avoid a Stop-hook recursion loop; opt in with ZIIAGENTMEMORY_AUTO_COMPRESS=true + ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true.\n",
       ),
     );
     return {
@@ -141,10 +141,10 @@ function detectProvider(env: Record<string, string>): ProviderConfig {
   }
 
   process.stderr.write(
-    "[agentmemory] WARNING: agent-sdk fallback enabled via AGENTMEMORY_ALLOW_AGENT_SDK=true. " +
+    "[ZiiAgentMemory] WARNING: agent-sdk fallback enabled via ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true. " +
       "This spawns @anthropic-ai/claude-agent-sdk child sessions that can trigger the Stop-hook " +
       "recursion loop. A SDK-child env marker is set to block re-entry, " +
-      "but prefer setting a real API key in ~/.agentmemory/.env instead.\n",
+      "but prefer setting a real API key in ~/.ziiagentmemory/.env instead.\n",
   );
   return {
     provider: "agent-sdk",
@@ -196,7 +196,7 @@ export function getEnvVar(key: string): string | undefined {
 }
 
 export function isDropStaleIndexEnabled(): boolean {
-  return getMergedEnv()["AGENTMEMORY_DROP_STALE_INDEX"] === "true";
+  return getMergedEnv()["ZIIAGENTMEMORY_DROP_STALE_INDEX"] === "true";
 }
 
 export function detectLlmProviderKind(): "llm" | "noop" {
@@ -284,7 +284,7 @@ export function loadTeamConfig(): TeamConfig | null {
 // Returns null when unset so memory stays unscoped (legacy behavior).
 // Trimmed + length-capped to keep KV writes well-formed.
 //
-// Filtering is gated by AGENTMEMORY_AGENT_SCOPE:
+// Filtering is gated by ZIIAGENTMEMORY_AGENT_SCOPE:
 //   "shared"   (default) — tag everything, do not filter recall paths
 //   "isolated"           — tag everything AND filter recall paths
 export function loadAgentScope(): {
@@ -296,7 +296,7 @@ export function loadAgentScope(): {
   if (!raw) return null;
   const agentId = raw.trim().slice(0, 128);
   if (!agentId) return null;
-  const mode = env["AGENTMEMORY_AGENT_SCOPE"] === "isolated"
+  const mode = env["ZIIAGENTMEMORY_AGENT_SCOPE"] === "isolated"
     ? "isolated"
     : "shared";
   return { agentId, mode };
@@ -321,7 +321,7 @@ export function loadSnapshotConfig(): {
   return {
     enabled: env["SNAPSHOT_ENABLED"] === "true",
     interval: safeParseInt(env["SNAPSHOT_INTERVAL"], 3600),
-    dir: env["SNAPSHOT_DIR"] || join(homedir(), ".agentmemory", "snapshots"),
+    dir: env["SNAPSHOT_DIR"] || join(homedir(), ".ziiagentmemory", "snapshots"),
   };
 }
 
@@ -342,7 +342,7 @@ const FOLLOWUP_WINDOW_DEFAULT_SECONDS = 30;
 
 export function getFollowupWindowSeconds(): number {
   return safeParseInt(
-    getMergedEnv()["AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS"],
+    getMergedEnv()["ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS"],
     FOLLOWUP_WINDOW_DEFAULT_SECONDS,
   );
 }
@@ -356,7 +356,7 @@ export function isConsolidationEnabled(): boolean {
 }
 
 function hasLLMProviderConfigured(env: Record<string, string | undefined>): boolean {
-  const provider = (env["AGENTMEMORY_PROVIDER"] || "").toLowerCase();
+  const provider = (env["ZIIAGENTMEMORY_PROVIDER"] || "").toLowerCase();
   if (provider === "noop") return false;
   const openaiKeyForLlm =
     env["OPENAI_API_KEY"] &&
@@ -376,24 +376,24 @@ function hasLLMProviderConfigured(env: Record<string, string | undefined>): bool
 // Per-observation LLM compression is OFF by default as of 0.8.8.
 // When disabled, observations are captured and indexed via a synthetic
 // (zero-LLM) compression path so recall/search still works. Users who want
-// richer LLM-generated summaries can set AGENTMEMORY_AUTO_COMPRESS=true in
-// ~/.agentmemory/.env — but should expect their Claude API token usage to
+// richer LLM-generated summaries can set ZIIAGENTMEMORY_AUTO_COMPRESS=true in
+// ~/.ziiagentmemory/.env — but should expect their Claude API token usage to
 // climb proportionally with session tool-use frequency.
 export function isAutoCompressEnabled(): boolean {
-  return getMergedEnv()["AGENTMEMORY_AUTO_COMPRESS"] === "true";
+  return getMergedEnv()["ZIIAGENTMEMORY_AUTO_COMPRESS"] === "true";
 }
 
 // Hook-level context injection into Claude Code's conversation is OFF by
 // default as of 0.8.10. When disabled, pre-tool-use and
 // session-start hooks still POST observations for background capture, but
 // never write context to stdout — so Claude Code doesn't inject an extra
-// ~4000-char blob into every tool turn. 0.8.8 stopped the agentmemory-side
+// ~4000-char blob into every tool turn. 0.8.8 stopped the ZiiAgentMemory-side
 // Claude calls (via ANTHROPIC_API_KEY); this stops the Claude Code-side
 // token burn where every tool call silently grew the model input window.
 // Users who want the in-conversation context injection explicitly opt in
-// with AGENTMEMORY_INJECT_CONTEXT=true and get a loud startup warning.
+// with ZIIAGENTMEMORY_INJECT_CONTEXT=true and get a loud startup warning.
 export function isContextInjectionEnabled(): boolean {
-  return getMergedEnv()["AGENTMEMORY_INJECT_CONTEXT"] === "true";
+  return getMergedEnv()["ZIIAGENTMEMORY_INJECT_CONTEXT"] === "true";
 }
 
 export function getConsolidationDecayDays(): number {
@@ -408,7 +408,7 @@ export function getStandalonePersistPath(): string {
   const env = getMergedEnv();
   return (
     env["STANDALONE_PERSIST_PATH"] ||
-    join(homedir(), ".agentmemory", "standalone.json")
+    join(homedir(), ".ziiagentmemory", "standalone.json")
   );
 }
 
@@ -424,7 +424,7 @@ const VALID_PROVIDERS = new Set([
 export function loadFallbackConfig(): FallbackConfig {
   const env = getMergedEnv();
   const raw = env["FALLBACK_PROVIDERS"] || "";
-  const allowAgentSdk = env["AGENTMEMORY_ALLOW_AGENT_SDK"] === "true";
+  const allowAgentSdk = env["ZIIAGENTMEMORY_ALLOW_AGENT_SDK"] === "true";
   const providers = raw
     .split(",")
     .map((p) => p.trim())
@@ -440,11 +440,11 @@ export function loadFallbackConfig(): FallbackConfig {
       // detectProvider() returned the noop provider.
       if (p === "agent-sdk" && !allowAgentSdk) {
         process.stderr.write(
-          "[agentmemory] Ignoring FALLBACK_PROVIDERS entry 'agent-sdk' " +
-            "(AGENTMEMORY_ALLOW_AGENT_SDK is not 'true'). The agent-sdk " +
+          "[ZiiAgentMemory] Ignoring FALLBACK_PROVIDERS entry 'agent-sdk' " +
+            "(ZIIAGENTMEMORY_ALLOW_AGENT_SDK is not 'true'). The agent-sdk " +
             "fallback can spawn Claude Agent SDK child sessions that trigger " +
             "the Stop-hook recursion loop. Opt in explicitly " +
-            "with AGENTMEMORY_ALLOW_AGENT_SDK=true if this is intentional.\n",
+            "with ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true if this is intentional.\n",
         );
         return false;
       }

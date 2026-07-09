@@ -1,7 +1,7 @@
 // JSON-backed CLI preferences.
 //
-// Lives at `~/.agentmemory/preferences.json`. The agentmemory daemon
-// already owns `~/.agentmemory/.env`, `iii.pid`, `engine-state.json` —
+// Lives at `~/.ziiagentmemory/preferences.json`. The ZiiAgentMemory daemon
+// already owns `~/.ziiagentmemory/.env`, `iii.pid`, `engine-state.json` —
 // adding one more sibling here keeps the install-state surface in one
 // place.
 //
@@ -45,7 +45,7 @@ export interface Prefs {
   // tradeoff" toggle. Kept on the schema so we don't have to bump
   // schemaVersion when we ship the flag.
   skipNpxHint: boolean;
-  // Set to true when the user declines the "install agentmemory
+  // Set to true when the user declines the "install ZiiAgentMemory
   // globally?" prompt on first npx run. We never ask again on this
   // machine so the prompt stays a one-time DX nudge, not a nag.
   skipGlobalInstall: boolean;
@@ -54,7 +54,7 @@ export interface Prefs {
   // install step — once the user says no, we stop asking.
   skipConsoleInstall: boolean;
   // ISO timestamp of the first time onboarding completed. Set once,
-  // never updated, so we can show "you joined agentmemory N days ago"
+  // never updated, so we can show "you joined ZiiAgentMemory N days ago"
   // copy in /status later without keeping a separate file.
   firstRunAt: string | null;
   // Set to true once the user has answered the context-injection prompt
@@ -78,7 +78,7 @@ const DEFAULTS: Prefs = {
 };
 
 export function prefsDir(): string {
-  return join(homedir(), ".agentmemory");
+  return join(homedir(), ".ziiagentmemory");
 }
 
 export function prefsPath(): string {
@@ -139,7 +139,7 @@ export function resetPrefs(): void {
 export function isFirstRun(): boolean {
   // "First run" means: the preferences file doesn't exist OR exists
   // but `firstRunAt` was never recorded. The latter handles users who
-  // had `.agentmemory/preferences.json` from a much older agentmemory
+  // had `.ZiiAgentMemory/preferences.json` from a much older ZiiAgentMemory
   // build that wrote a different schema — we treat them as new.
   if (!existsSync(prefsPath())) return true;
   return readPrefs().firstRunAt === null;

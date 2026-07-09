@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 import type { MemoryProvider } from '../types.js'
 
-// #781: the recursion guard used to live on `process.env.AGENTMEMORY_SDK_CHILD`
+// #781: the recursion guard used to live on `process.env.ZIIAGENTMEMORY_SDK_CHILD`
 // (#181). #472 then introduced chunked summarize that runs chunks
 // concurrently in the same process via Promise.all. The first chunk
 // flipped the global env to "1" synchronously before its `await`, and
@@ -15,7 +15,7 @@ import type { MemoryProvider } from '../types.js'
 //     async call tree of the SDK query, so concurrent siblings on the
 //     same provider instance no longer see each other's marker.
 //   - **Cross-process** recursion guard for hooks: still
-//     `process.env.AGENTMEMORY_SDK_CHILD = "1"` around the SDK call.
+//     `process.env.ZIIAGENTMEMORY_SDK_CHILD = "1"` around the SDK call.
 //     Subprocesses spawned by `@anthropic-ai/claude-agent-sdk` inherit
 //     `process.env` at spawn time, so the hook scripts (which run as
 //     separate processes) still see the marker and skip their REST
@@ -64,7 +64,7 @@ export class AgentSDKProvider implements MemoryProvider {
     if (sdkChildContext.getStore()) {
       // We are already inside a Claude Agent SDK-spawned async call
       // tree. Spawning another one would let its plugin-hook-driven
-      // Stop loop re-enter /agentmemory/summarize and cause unbounded
+      // Stop loop re-enter /ziiagentmemory/summarize and cause unbounded
       // recursion (#149 follow-up). Degrade to empty string so callers
       // short-circuit. The chunk retry path in src/functions/summarize.ts
       // treats "" as a parse failure but only the in-process re-entry
@@ -80,8 +80,8 @@ export class AgentSDKProvider implements MemoryProvider {
       // their REST callbacks. Reference-counted so overlapping calls
       // don't race each other into restoring stale values.
       if (sdkActiveCount === 0) {
-        sdkOriginalEnv = process.env.AGENTMEMORY_SDK_CHILD
-        process.env.AGENTMEMORY_SDK_CHILD = '1'
+        sdkOriginalEnv = process.env.ZIIAGENTMEMORY_SDK_CHILD
+        process.env.ZIIAGENTMEMORY_SDK_CHILD = '1'
       }
       sdkActiveCount++
 
@@ -108,9 +108,9 @@ export class AgentSDKProvider implements MemoryProvider {
         sdkActiveCount--
         if (sdkActiveCount === 0) {
           if (sdkOriginalEnv === undefined) {
-            delete process.env.AGENTMEMORY_SDK_CHILD
+            delete process.env.ZIIAGENTMEMORY_SDK_CHILD
           } else {
-            process.env.AGENTMEMORY_SDK_CHILD = sdkOriginalEnv
+            process.env.ZIIAGENTMEMORY_SDK_CHILD = sdkOriginalEnv
           }
           sdkOriginalEnv = undefined
         }

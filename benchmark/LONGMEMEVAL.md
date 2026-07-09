@@ -14,8 +14,8 @@
 
 | System | R@5 | R@10 | R@20 | NDCG@10 | MRR |
 |---|---|---|---|---|---|
-| **agentmemory BM25+Vector** | **95.2%** | **98.6%** | **99.4%** | **87.9%** | **88.2%** |
-| agentmemory BM25-only | 86.2% | 94.6% | 98.6% | 73.0% | 71.5% |
+| **ZiiAgentMemory BM25+Vector** | **95.2%** | **98.6%** | **99.4%** | **87.9%** | **88.2%** |
+| ZiiAgentMemory BM25-only | 86.2% | 94.6% | 98.6% | 73.0% | 71.5% |
 | MemPalace raw (vector-only) | 96.6% | ~97.6% | — | — | — |
 
 ### By Question Type (BM25+Vector)

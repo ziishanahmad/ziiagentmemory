@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync, appendFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { agentmemoryAdapter } from "./adapters/agentmemory.js";
+import { agentmemoryAdapter } from "./adapters/ZiiAgentMemory.js";
 import { grepAdapter } from "./adapters/grep.js";
 import { vectorAdapter } from "./adapters/vector.js";
 import { aggregate, scoreQuestion } from "./score.js";
@@ -10,7 +10,7 @@ import type { Adapter, Question, ScoreRow, Session } from "./types.js";
 const ADAPTERS: Record<string, Adapter> = {
   grep: grepAdapter as unknown as Adapter,
   vector: vectorAdapter as unknown as Adapter,
-  agentmemory: agentmemoryAdapter as unknown as Adapter,
+  ZiiAgentMemory: agentmemoryAdapter as unknown as Adapter,
 };
 
 interface CliOptions {
@@ -24,7 +24,7 @@ function parse(): CliOptions {
   const { values } = parseArgs({
     options: {
       data: { type: "string", default: "eval/data/coding-agent-life-v1" },
-      adapters: { type: "string", default: "grep,vector,agentmemory" },
+      adapters: { type: "string", default: "grep,vector,ZiiAgentMemory" },
       k: { type: "string", default: "5" },
       out: { type: "string", default: "eval/reports/coding-life" },
     },

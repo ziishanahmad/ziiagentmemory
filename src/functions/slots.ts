@@ -96,14 +96,14 @@ export const DEFAULT_SLOTS: ReadonlyArray<
   },
 ];
 
-// Read merged env so values loaded from ~/.agentmemory/.env are
+// Read merged env so values loaded from ~/.ziiagentmemory/.env are
 // honoured. process.env alone misses .env-only exports (#678).
 export function isSlotsEnabled(): boolean {
-  return getEnvVar("AGENTMEMORY_SLOTS") === "true";
+  return getEnvVar("ZIIAGENTMEMORY_SLOTS") === "true";
 }
 
 export function isReflectEnabled(): boolean {
-  return getEnvVar("AGENTMEMORY_REFLECT") === "true";
+  return getEnvVar("ZIIAGENTMEMORY_REFLECT") === "true";
 }
 
 function scopeKv(scope: SlotScope): string {
@@ -184,7 +184,7 @@ export async function listPinnedSlots(kv: StateKV): Promise<MemorySlot[]> {
 
 export function renderPinnedContext(slots: MemorySlot[]): string {
   if (slots.length === 0) return "";
-  const lines: string[] = ["# agentmemory pinned slots", ""];
+  const lines: string[] = ["# ZiiAgentMemory pinned slots", ""];
   for (const slot of slots) {
     lines.push(`## ${slot.label}`);
     lines.push(slot.content.trim());

@@ -91,7 +91,7 @@ describe("Smart-search followup-rate diagnostic (#771)", () => {
   let searchResults: HybridSearchResult[];
 
   beforeEach(() => {
-    delete process.env.AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS;
+    delete process.env.ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS;
     resetFollowupStatsForTests();
     kv = mockKV();
     sdk = mockSdk(kv);
@@ -101,7 +101,7 @@ describe("Smart-search followup-rate diagnostic (#771)", () => {
   });
 
   afterEach(() => {
-    delete process.env.AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS;
+    delete process.env.ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS;
   });
 
   it("records the first agent-initiated search but does not flag it as a followup", async () => {
@@ -176,7 +176,7 @@ describe("Smart-search followup-rate diagnostic (#771)", () => {
   });
 
   it("does not flag a follow-up when prior search is outside the window", async () => {
-    process.env.AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS = "1";
+    process.env.ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS = "1";
     searchResults = [makeHit("obs_a")];
     await sdk.trigger("mem::smart-search", {
       query: "first",
@@ -268,7 +268,7 @@ describe("Smart-search followup-rate diagnostic (#771)", () => {
   });
 
   it("followup-stats function returns the configured window and live counts", async () => {
-    process.env.AGENTMEMORY_FOLLOWUP_WINDOW_SECONDS = "45";
+    process.env.ZIIAGENTMEMORY_FOLLOWUP_WINDOW_SECONDS = "45";
     searchResults = [makeHit("obs_a")];
     await sdk.trigger("mem::smart-search", {
       query: "q1",

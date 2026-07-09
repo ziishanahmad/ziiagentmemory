@@ -1,9 +1,9 @@
 import { execSync } from "node:child_process";
 import { basename } from "node:path";
 
-// Resolution order: AGENTMEMORY_PROJECT_NAME env → git toplevel basename → cwd basename.
+// Resolution order: ZIIAGENTMEMORY_PROJECT_NAME env → git toplevel basename → cwd basename.
 export function resolveProject(cwd?: string): string {
-  const explicit = process.env["AGENTMEMORY_PROJECT_NAME"];
+  const explicit = process.env["ZIIAGENTMEMORY_PROJECT_NAME"];
   if (explicit && explicit.trim()) return explicit.trim();
   const dir = cwd && cwd.trim() ? cwd : process.cwd();
   try {

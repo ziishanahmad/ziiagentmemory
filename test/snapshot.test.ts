@@ -77,7 +77,7 @@ function mockSdk() {
 describe("Snapshot Functions", () => {
   let sdk: ReturnType<typeof mockSdk>;
   let kv: ReturnType<typeof mockKV>;
-  const snapshotDir = "/tmp/agentmemory-snapshots";
+  const snapshotDir = "/tmp/ZiiAgentMemory-snapshots";
 
   beforeEach(async () => {
     sdk = mockSdk();

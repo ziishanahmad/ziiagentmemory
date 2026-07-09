@@ -6,14 +6,14 @@ export interface RepoStats {
   issues: number;
 }
 
-const REPO = "rohitg00/agentmemory";
+const REPO = "ziishanahmad/ziiagentmemory";
 
 export async function fetchRepoStats(): Promise<RepoStats> {
   const fallback: RepoStats = { stars: 0, forks: 0, issues: 0 };
   try {
     const headers: Record<string, string> = {
       accept: "application/vnd.github+json",
-      "user-agent": "agentmemory-website",
+      "user-agent": "ZiiAgentMemory-website",
     };
     if (process.env.GITHUB_TOKEN) {
       headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;

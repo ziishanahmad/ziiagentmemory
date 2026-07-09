@@ -510,7 +510,7 @@ function generateReport(systems: SystemMetrics[], obsCount: number, queryCount: 
   const lines: string[] = [];
   const w = (s: string) => lines.push(s);
 
-  w("# agentmemory v0.6.0 — Search Quality Evaluation");
+  w("# ZiiAgentMemory v0.6.0 — Search Quality Evaluation");
   w("");
   w(`**Date:** ${new Date().toISOString()}`);
   w(`**Dataset:** ${obsCount} observations across 30 sessions (realistic coding project)`);
@@ -538,8 +538,8 @@ function generateReport(systems: SystemMetrics[], obsCount: number, queryCount: 
   if (builtin && triple) {
     const recallLift = ((triple.avg_recall_at_10 - builtin.avg_recall_at_10) / Math.max(0.001, builtin.avg_recall_at_10) * 100);
     const tokenSaving = ((1 - triple.total_tokens_per_query / builtin.total_tokens_per_query) * 100);
-    w(`**Recall improvement:** agentmemory triple-stream finds ${pct(triple.avg_recall_at_10)} of relevant memories at K=10 vs ${pct(builtin.avg_recall_at_10)} for keyword grep (${recallLift > 0 ? "+" : ""}${recallLift.toFixed(0)}%)`);
-    w(`**Token savings:** agentmemory returns only the top 10 results (${triple.total_tokens_per_query.toLocaleString()} tokens) vs loading everything into context (${builtin.total_tokens_per_query.toLocaleString()} tokens) — ${tokenSaving.toFixed(0)}% reduction`);
+    w(`**Recall improvement:** ZiiAgentMemory triple-stream finds ${pct(triple.avg_recall_at_10)} of relevant memories at K=10 vs ${pct(builtin.avg_recall_at_10)} for keyword grep (${recallLift > 0 ? "+" : ""}${recallLift.toFixed(0)}%)`);
+    w(`**Token savings:** ZiiAgentMemory returns only the top 10 results (${triple.total_tokens_per_query.toLocaleString()} tokens) vs loading everything into context (${builtin.total_tokens_per_query.toLocaleString()} tokens) — ${tokenSaving.toFixed(0)}% reduction`);
   }
 
   if (truncated && triple) {
@@ -578,7 +578,7 @@ function generateReport(systems: SystemMetrics[], obsCount: number, queryCount: 
   w("");
   w("The fundamental problem with built-in agent memory:");
   w("");
-  w("| Observations | MEMORY.md tokens | agentmemory tokens (top 10) | Savings | MEMORY.md reachable |");
+  w("| Observations | MEMORY.md tokens | ZiiAgentMemory tokens (top 10) | Savings | MEMORY.md reachable |");
   w("|-------------|-----------------|---------------------------|---------|-------------------|");
 
   for (const count of [240, 500, 1000, 5000]) {
@@ -590,7 +590,7 @@ function generateReport(systems: SystemMetrics[], obsCount: number, queryCount: 
   }
 
   w("");
-  w("At 240 observations (our dataset), MEMORY.md already hits its 200-line cap and loses access to the most recent 40 observations. At 1,000 observations, 80% of memories are invisible. agentmemory always searches the full corpus.");
+  w("At 240 observations (our dataset), MEMORY.md already hits its 200-line cap and loses access to the most recent 40 observations. At 1,000 observations, 80% of memories are invisible. ZiiAgentMemory always searches the full corpus.");
 
   w("");
   w("---");

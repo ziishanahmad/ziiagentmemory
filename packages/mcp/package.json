@@ -1,10 +1,10 @@
 {
-  "name": "@agentmemory/mcp",
+  "name": "ziiagentmemory",
   "version": "0.9.27",
-  "description": "Standalone MCP server for agentmemory — thin shim that re-exposes @agentmemory/agentmemory's MCP entrypoint",
+  "description": "Standalone MCP server for ZiiAgentMemory — thin shim that re-exposes ziiagentmemory's MCP entrypoint",
   "type": "module",
   "bin": {
-    "agentmemory-mcp": "./bin.mjs"
+    "ZiiAgentMemory-mcp": "./bin.mjs"
   },
   "files": [
     "bin.mjs",
@@ -16,19 +16,19 @@
     "agent",
     "memory",
     "mcp",
-    "agentmemory"
+    "ZiiAgentMemory"
   ],
   "author": "Rohit Ghumare <ghumare64@gmail.com>",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rohitg00/agentmemory",
+    "url": "https://github.com/ziishanahmad/ziiagentmemory",
     "directory": "packages/mcp"
   },
-  "homepage": "https://github.com/rohitg00/agentmemory#readme",
-  "bugs": "https://github.com/rohitg00/agentmemory/issues",
+  "homepage": "https://github.com/rohitg00/ZiiAgentMemory#readme",
+  "bugs": "https://github.com/ziishanahmad/ziiagentmemory/issues",
   "dependencies": {
-    "@agentmemory/agentmemory": "~0.9.0"
+    "ziiagentmemory": "~0.9.0"
   },
   "publishConfig": {
     "access": "public",

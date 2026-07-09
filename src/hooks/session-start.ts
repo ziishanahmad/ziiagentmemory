@@ -4,7 +4,7 @@ import { resolveProject } from "./_project.js";
 // Inlined from ./sdk-guard so each hook bundles to a single self-contained
 // .mjs (matches the pattern used by every other hook entry in tsdown.config).
 function isSdkChildContext(payload: unknown): boolean {
-  if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+  if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
   if (!payload || typeof payload !== "object") return false;
   return (payload as { entrypoint?: unknown }).entrypoint === "sdk-ts";
 }
@@ -14,12 +14,12 @@ function isSdkChildContext(payload: unknown): boolean {
 // Always registers the session for observation tracking (so memories
 // captured on PostToolUse get attached to the right session). Only writes
 // project context to stdout — which Claude Code prepends to the very first
-// turn — when AGENTMEMORY_INJECT_CONTEXT=true. Default off as of 0.8.10
+// turn — when ZIIAGENTMEMORY_INJECT_CONTEXT=true. Default off as of 0.8.10
 // (#143); see pre-tool-use.ts for the full explanation.
-const INJECT_CONTEXT = process.env["AGENTMEMORY_INJECT_CONTEXT"] === "true";
+const INJECT_CONTEXT = process.env["ZIIAGENTMEMORY_INJECT_CONTEXT"] === "true";
 
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 
 // When the server is unreachable a 5s timeout multiplies hard under
 // concurrent fan-out (Slack bots, multi-agent harnesses) and becomes a
@@ -55,7 +55,7 @@ async function main() {
   const cwd = (data.cwd as string) || process.cwd();
   const project = resolveProject(data.cwd as string | undefined);
 
-  const url = `${REST_URL}/agentmemory/session/start`;
+  const url = `${REST_URL}/ziiagentmemory/session/start`;
   const init: RequestInit = {
     method: "POST",
     headers: authHeaders(),

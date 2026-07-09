@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Backfill memory artifacts for sessions imported via `agentmemory import-jsonl`.
+# Backfill memory artifacts for sessions imported via `ziiagentmemory import-jsonl`.
 #
 # The import path only persists Session + Observation rows (via synthetic,
 # zero-LLM compression) and the deterministic crystal/lesson derivation.
@@ -7,10 +7,10 @@
 # of the consolidation pipeline have nothing to roll up.
 #
 # This script walks every session tagged `jsonl-import` and:
-#   1. POSTs /agentmemory/summarize per session  (LLM call)
-#   2. POSTs /agentmemory/consolidate-pipeline once at the end
+#   1. POSTs /ziiagentmemory/summarize per session  (LLM call)
+#   2. POSTs /ziiagentmemory/consolidate-pipeline once at the end
 #
-# Graph extraction (/agentmemory/graph/extract) is intentionally skipped —
+# Graph extraction (/ziiagentmemory/graph/extract) is intentionally skipped —
 # its API takes a per-observation payload, which is cost-prohibitive for
 # bulk imports. `reflect` falls back to a no-graph clustering mode.
 #
@@ -21,7 +21,7 @@
 
 set -euo pipefail
 
-URL="${AGENTMEMORY_URL:-http://localhost:3111}"
+URL="${ZIIAGENTMEMORY_URL:-http://localhost:3111}"
 DRY_RUN=0
 LIMIT=0           # 0 = no limit
 ONLY_TAG="jsonl-import"
@@ -29,19 +29,19 @@ SKIP_CONSOLIDATE=0
 SKIP_AGENTS=0     # drop sessions whose project starts with "agent-"
 MAX_OBS=0         # 0 = no cap; skip sessions with more observations than this
 DEBUG_ON_ERROR=0  # on failure, dump session metadata + obs to DEBUG_DIR
-DEBUG_DIR="${AGENTMEMORY_DEBUG_DIR:-./agentmemory-debug}"
+DEBUG_DIR="${ZIIAGENTMEMORY_DEBUG_DIR:-./ZiiAgentMemory-debug}"
 PROJECT_PATTERN=""  # jq test() regex against .project; "" means no filter
 
 # Cost-estimate knobs (defaults tuned for DeepSeek V4 Flash on DeepInfra:
 # $0.14 / 1M input, $0.28 / 1M output). Override via env if needed.
-COST_IN_PER_1M="${AGENTMEMORY_COST_IN_PER_1M:-0.14}"
-COST_OUT_PER_1M="${AGENTMEMORY_COST_OUT_PER_1M:-0.28}"
+COST_IN_PER_1M="${ZIIAGENTMEMORY_COST_IN_PER_1M:-0.14}"
+COST_OUT_PER_1M="${ZIIAGENTMEMORY_COST_OUT_PER_1M:-0.28}"
 # Rough token weight per compressed observation, derived from inspecting
 # real synthetic-compression payloads in the kv store (mostly 100-300 tok,
 # heavy-tailed). Override if your sessions are unusually verbose.
-TOKENS_PER_OBS="${AGENTMEMORY_TOKENS_PER_OBS:-200}"
+TOKENS_PER_OBS="${ZIIAGENTMEMORY_TOKENS_PER_OBS:-200}"
 # Reserved per-call output budget (XML summary is small).
-TOKENS_OUT_PER_SESSION="${AGENTMEMORY_TOKENS_OUT_PER_SESSION:-500}"
+TOKENS_OUT_PER_SESSION="${ZIIAGENTMEMORY_TOKENS_OUT_PER_SESSION:-500}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -73,17 +73,17 @@ done
 META_CURL_OPTS=(--connect-timeout 10 --max-time 30 --retry 2 --retry-delay 1)
 WORK_CURL_OPTS=(--connect-timeout 10 --max-time 1800)
 
-echo "agentmemory backfill — server: $URL"
+echo "ZiiAgentMemory backfill — server: $URL"
 [[ "$DRY_RUN" == 1 ]] && echo "DRY RUN: no POSTs will be made."
 
 # --- liveness ---
-if ! curl -fsS "${META_CURL_OPTS[@]}" "$URL/agentmemory/livez" >/dev/null; then
-  echo "server not reachable at $URL (try: npx @agentmemory/agentmemory)" >&2
+if ! curl -fsS "${META_CURL_OPTS[@]}" "$URL/ziiagentmemory/livez" >/dev/null; then
+  echo "server not reachable at $URL (try: npx ziiagentmemory)" >&2
   exit 1
 fi
 
 # --- collect session ids ---
-sessions_json="$(curl -fsS "${META_CURL_OPTS[@]}" "$URL/agentmemory/sessions")"
+sessions_json="$(curl -fsS "${META_CURL_OPTS[@]}" "$URL/ziiagentmemory/sessions")"
 filter='.sessions[] | select(.status=="completed")'
 if [[ -n "$ONLY_TAG" ]]; then
   filter+=" | select((.tags // []) | index(\"$ONLY_TAG\"))"
@@ -141,9 +141,9 @@ if [[ "$DRY_RUN" == 1 ]]; then
   done
   echo
   echo "(dry run) next steps if you re-run without --dry-run:"
-  echo "  for each session above: POST $URL/agentmemory/summarize {sessionId}"
+  echo "  for each session above: POST $URL/ziiagentmemory/summarize {sessionId}"
   if [[ "$SKIP_CONSOLIDATE" == 0 ]]; then
-    echo "  then: POST $URL/agentmemory/consolidate-pipeline {}"
+    echo "  then: POST $URL/ziiagentmemory/consolidate-pipeline {}"
   fi
   exit 0
 fi
@@ -173,11 +173,11 @@ dump_failure() {
   # characters can't corrupt the query string.
   curl -fsS "${META_CURL_OPTS[@]}" --get \
        --data-urlencode "sessionId=$id" \
-       "$URL/agentmemory/observations" \
+       "$URL/ziiagentmemory/observations" \
     | jq \
         --arg id "$id" \
         --argjson obsCount "$obs" \
-        --arg url "$URL/agentmemory/summarize" \
+        --arg url "$URL/ziiagentmemory/summarize" \
         --argjson response "$resp" \
         '. as $root
          | .observations as $obs
@@ -204,7 +204,7 @@ for row in "${rows[@]}"; do
   obs="$(cut -f2 <<<"$row")"
 
   body="$(jq -nc --arg id "$id" '{sessionId:$id}')"
-  resp="$(curl -sS "${WORK_CURL_OPTS[@]}" -X POST "$URL/agentmemory/summarize" \
+  resp="$(curl -sS "${WORK_CURL_OPTS[@]}" -X POST "$URL/ziiagentmemory/summarize" \
     -H 'content-type: application/json' --data "$body" || echo '{"success":false,"error":"curl_failed"}')"
   # iii's HTTP layer occasionally returns non-JSON (HTML 5xx, empty body
   # on timeout, etc.). Validate before parsing so `set -e` doesn't abort
@@ -248,7 +248,7 @@ fi
 
 echo
 echo "running consolidate-pipeline …"
-resp="$(curl -sS "${WORK_CURL_OPTS[@]}" -X POST "$URL/agentmemory/consolidate-pipeline" \
+resp="$(curl -sS "${WORK_CURL_OPTS[@]}" -X POST "$URL/ziiagentmemory/consolidate-pipeline" \
   -H 'content-type: application/json' --data '{}' || echo '{"success":false,"error":"curl_failed"}')"
 if jq -e . >/dev/null 2>&1 <<<"$resp"; then
   echo "$resp" | jq .

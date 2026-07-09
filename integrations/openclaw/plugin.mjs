@@ -1,13 +1,13 @@
 /**
- * agentmemory plugin for OpenClaw
+ * ZiiAgentMemory plugin for OpenClaw
  *
  * Deeper integration than raw MCP:
  * - claims the plugins.slots.memory slot via api.registerMemoryCapability({ promptBuilder })
  * - recalls relevant memories before the agent starts (before_agent_start hook)
  * - captures completed conversation turns after the agent finishes (agent_end hook)
  *
- * Requires the agentmemory server on localhost:3111.
- * Start it with: npx @agentmemory/agentmemory
+ * Requires the ziiagentmemory server on localhost:3111.
+ * Start it with: npx ziiagentmemory
  */
 
 const DEFAULT_BASE_URL = "http://localhost:3111";
@@ -89,7 +89,7 @@ function usesPlaintextBearerAuth(baseUrl, secret) {
 }
 
 function plaintextBearerAuthMessage(baseUrl) {
-  return `agentmemory: AGENTMEMORY_SECRET is configured for plaintext HTTP to ${baseUrl}. Bearer tokens and memory payloads can be observed on the network; use HTTPS or an SSH tunnel.`;
+  return `ZiiAgentMemory: ZIIAGENTMEMORY_SECRET is configured for plaintext HTTP to ${baseUrl}. Bearer tokens and memory payloads can be observed on the network; use HTTPS or an SSH tunnel.`;
 }
 
 export function createPlaintextBearerAuthGuard(warn, env) {
@@ -97,7 +97,7 @@ export function createPlaintextBearerAuthGuard(warn, env) {
   return function guardPlaintextBearerAuth(baseUrl, secret) {
     if (!usesPlaintextBearerAuth(baseUrl, secret)) return;
     const message = plaintextBearerAuthMessage(baseUrl);
-    if ((env || process.env).AGENTMEMORY_REQUIRE_HTTPS === "1") throw new Error(message);
+    if ((env || process.env).ZIIAGENTMEMORY_REQUIRE_HTTPS === "1") throw new Error(message);
     if (!warned) {
       warned = true;
       warn(message);
@@ -109,11 +109,11 @@ function createClient(cfg, api) {
   const baseUrl = String(cfg.base_url || DEFAULT_BASE_URL).replace(/\/+$/, "");
   const timeoutMs = Number(cfg.timeout_ms || DEFAULT_TIMEOUT_MS);
   const fallbackOnError = cfg.fallback_on_error !== false;
-  const secret = process.env.AGENTMEMORY_SECRET;
+  const secret = process.env.ZIIAGENTMEMORY_SECRET;
   const guardPlaintextBearerAuth = createPlaintextBearerAuthGuard(
     (message) => api.logger.warn?.(message),
   );
-  if (process.env.AGENTMEMORY_REQUIRE_HTTPS === "1") {
+  if (process.env.ZIIAGENTMEMORY_REQUIRE_HTTPS === "1") {
     guardPlaintextBearerAuth(baseUrl, secret);
   }
 
@@ -131,12 +131,12 @@ function createClient(cfg, api) {
       if (!res.ok) {
         if (fallbackOnError) return null;
         const body = await res.text().catch(() => "");
-        throw new Error(`agentmemory ${path} failed: ${res.status} ${body}`);
+        throw new Error(`ZiiAgentMemory ${path} failed: ${res.status} ${body}`);
       }
       return await res.json();
     } catch (error) {
       if (!fallbackOnError) throw error;
-      api.logger.warn?.(`agentmemory: ${String(error)}`);
+      api.logger.warn?.(`ZiiAgentMemory: ${String(error)}`);
       return null;
     }
   }
@@ -145,9 +145,9 @@ function createClient(cfg, api) {
 }
 
 const plugin = {
-  id: "agentmemory",
-  name: "agentmemory",
-  description: "Shared cross-session memory via the local agentmemory server.",
+  id: "ZiiAgentMemory",
+  name: "ZiiAgentMemory",
+  description: "Shared cross-session memory via the local ziiagentmemory server.",
   configSchema,
   register(api) {
     const cfg = {
@@ -166,10 +166,10 @@ const plugin = {
         // don't currently branch on tool availability, but accept the params
         // object so the signature matches MemoryPromptSectionBuilder exactly.
         promptBuilder: (_params) => [
-          "Long-term memory provider: agentmemory (external REST service on " +
+          "Long-term memory provider: ZiiAgentMemory (external REST service on " +
             client.baseUrl +
             ").",
-          "agentmemory recalls relevant prior observations before each turn via the before_agent_start hook and captures completed turns via agent_end.",
+          "ZiiAgentMemory recalls relevant prior observations before each turn via the before_agent_start hook and captures completed turns via agent_end.",
           "Treat recalled context as background, not authoritative — prefer current workspace state and explicit user instructions when they conflict.",
         ],
       });
@@ -179,14 +179,14 @@ const plugin = {
       if (!cfg.enabled) return;
       const prompt = typeof event?.prompt === "string" ? event.prompt.trim() : "";
       if (!prompt) return;
-      const result = await client.postJson("/agentmemory/smart-search", {
+      const result = await client.postJson("/ziiagentmemory/smart-search", {
         query: prompt,
         limit: 5,
       });
       const block = formatResults(result?.results || []);
       if (!block) return;
       return {
-        prependContext: `Relevant long-term memory from agentmemory:\n${block}`,
+        prependContext: `Relevant long-term memory from ZiiAgentMemory:\n${block}`,
       };
     });
 
@@ -200,7 +200,7 @@ const plugin = {
         event.sessionKey ||
         event.runId ||
         `openclaw-${Date.now()}`;
-      await client.postJson("/agentmemory/observe", {
+      await client.postJson("/ziiagentmemory/observe", {
         hookType: "post_tool_use",
         sessionId,
         timestamp: new Date().toISOString(),

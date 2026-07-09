@@ -201,8 +201,8 @@ export function registerContextFunction(
       let usedTokens = 0;
       const selected: string[] = [];
       const accessedIds: string[] = [];
-      const header = `<agentmemory-context project="${escapeXmlAttr(data.project)}">`;
-      const footer = `</agentmemory-context>`;
+      const header = `<ZiiAgentMemory-context project="${escapeXmlAttr(data.project)}">`;
+      const footer = `</ZiiAgentMemory-context>`;
       usedTokens += estimateTokens(header) + estimateTokens(footer);
 
       for (const block of blocks) {

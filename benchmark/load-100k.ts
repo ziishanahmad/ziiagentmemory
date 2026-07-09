@@ -1,17 +1,17 @@
 /**
- * Load harness — seeds N synthetic memories against a local agentmemory
+ * Load harness — seeds N synthetic memories against a local ZiiAgentMemory
  * daemon, then drives a matrix of (N, concurrency, endpoint) cells and
  * records p50 / p90 / p99 latency + throughput per cell.
  *
  * Spec: GitHub issue #346.
  *
  * Runs against an already-running daemon at `http://localhost:3111` by
- * default. Set `AGENTMEMORY_BENCH_AUTOSTART=1` to spawn one via
+ * default. Set `ZIIAGENTMEMORY_BENCH_AUTOSTART=1` to spawn one via
  * `node dist/cli.js start` for the duration of the run.
  *
  * Env knobs:
- *   AGENTMEMORY_BENCH_AUTOSTART   "1" to spawn the daemon (default: assume up)
- *   AGENTMEMORY_URL               base URL of the daemon (default: http://localhost:3111)
+ *   ZIIAGENTMEMORY_BENCH_AUTOSTART   "1" to spawn the daemon (default: assume up)
+ *   ZIIAGENTMEMORY_URL               base URL of the daemon (default: http://localhost:3111)
  *   BENCH_N                       comma-separated N sizes (default: 1000,10000,100000)
  *   BENCH_C                       comma-separated concurrency levels (default: 1,10,100)
  *   BENCH_OPS                     ops per cell during measurement (default: 200)
@@ -90,7 +90,7 @@ function parseIntList(raw: string | undefined, fallback: number[]): number[] {
 
 function loadConfig(): RunConfig {
   return {
-    baseUrl: (process.env["AGENTMEMORY_URL"] || "http://localhost:3111").replace(
+    baseUrl: (process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111").replace(
       /\/+$/,
       "",
     ),
@@ -101,7 +101,7 @@ function loadConfig(): RunConfig {
     outDir:
       process.env["BENCH_OUT_DIR"] ||
       resolve(process.cwd(), "benchmark", "results"),
-    autoStart: process.env["AGENTMEMORY_BENCH_AUTOSTART"] === "1",
+    autoStart: process.env["ZIIAGENTMEMORY_BENCH_AUTOSTART"] === "1",
   };
 }
 
@@ -110,7 +110,7 @@ async function waitForLivez(baseUrl: string, timeoutMs: number): Promise<void> {
   let lastErr: unknown = null;
   while (Date.now() - start < timeoutMs) {
     try {
-      const res = await fetch(`${baseUrl}/agentmemory/livez`, {
+      const res = await fetch(`${baseUrl}/ziiagentmemory/livez`, {
         signal: AbortSignal.timeout(2000),
       });
       if (res.ok) return;
@@ -134,7 +134,7 @@ function maybeStartDaemon(): ChildProcess | null {
   const cliPath = candidates.find((p) => existsSync(p));
   if (!cliPath) {
     throw new Error(
-      `AGENTMEMORY_BENCH_AUTOSTART=1 but neither ${candidates.join(" nor ")} exists — run \`npm run build\` first`,
+      `ZIIAGENTMEMORY_BENCH_AUTOSTART=1 but neither ${candidates.join(" nor ")} exists — run \`npm run build\` first`,
     );
   }
   const child = spawn(process.execPath, [cliPath, "start"], {
@@ -260,7 +260,7 @@ async function seedMemories(
         type: "observation",
       });
       try {
-        const res = await fetch(`${baseUrl}/agentmemory/remember`, {
+        const res = await fetch(`${baseUrl}/ziiagentmemory/remember`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body,
@@ -296,7 +296,7 @@ async function measureRemember(
       content: buildContent(rng, N + i),
       type: "observation",
     });
-    const res = await fetch(`${baseUrl}/agentmemory/remember`, {
+    const res = await fetch(`${baseUrl}/ziiagentmemory/remember`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body,
@@ -305,7 +305,7 @@ async function measureRemember(
     await res.text().catch(() => "");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   });
-  return summarize("POST /agentmemory/remember", N, C, latencies, errors, wallMs);
+  return summarize("POST /ziiagentmemory/remember", N, C, latencies, errors, wallMs);
 }
 
 async function measureSmartSearch(
@@ -321,7 +321,7 @@ async function measureSmartSearch(
       query: queries[i % queries.length],
       limit: 5,
     });
-    const res = await fetch(`${baseUrl}/agentmemory/smart-search`, {
+    const res = await fetch(`${baseUrl}/ziiagentmemory/smart-search`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body,
@@ -331,7 +331,7 @@ async function measureSmartSearch(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   });
   return summarize(
-    "POST /agentmemory/smart-search",
+    "POST /ziiagentmemory/smart-search",
     N,
     C,
     latencies,
@@ -347,7 +347,7 @@ async function measureMemoriesLatest(
   ops: number,
 ): Promise<CellResult> {
   const { latencies, errors, wallMs } = await driveLoad(C, ops, async () => {
-    const res = await fetch(`${baseUrl}/agentmemory/memories?latest=true`, {
+    const res = await fetch(`${baseUrl}/ziiagentmemory/memories?latest=true`, {
       method: "GET",
       signal: AbortSignal.timeout(30_000),
     });
@@ -355,7 +355,7 @@ async function measureMemoriesLatest(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   });
   return summarize(
-    "GET /agentmemory/memories?latest=true",
+    "GET /ziiagentmemory/memories?latest=true",
     N,
     C,
     latencies,
@@ -384,12 +384,12 @@ async function main(): Promise<void> {
 
   let daemon: ChildProcess | null = null;
   if (cfg.autoStart) {
-    console.log("[load-100k] AGENTMEMORY_BENCH_AUTOSTART=1 — spawning daemon");
+    console.log("[load-100k] ZIIAGENTMEMORY_BENCH_AUTOSTART=1 — spawning daemon");
     daemon = maybeStartDaemon();
   }
 
   try {
-    console.log("[load-100k] waiting for /agentmemory/livez (timeout 30s)");
+    console.log("[load-100k] waiting for /ziiagentmemory/livez (timeout 30s)");
     await waitForLivez(cfg.baseUrl, 30_000);
 
     const cells: CellResult[] = [];

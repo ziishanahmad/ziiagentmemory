@@ -1,6 +1,6 @@
 # AI Agent Memory: Benchmark Comparison
 
-How agentmemory compares against other persistent memory solutions for AI coding agents.
+How ZiiAgentMemory compares against other persistent memory solutions for AI coding agents.
 
 All numbers here come from published benchmarks or public repositories. We link to primary sources wherever possible so you can reproduce.
 
@@ -12,22 +12,22 @@ All numbers here come from published benchmarks or public repositories. We link 
 
 | System | Benchmark | R@5 | Notes |
 |---|---|---|---|
-| **agentmemory** (BM25 + Vector) | LongMemEval-S | **95.2%** | `all-MiniLM-L6-v2` embeddings, no API key |
-| agentmemory (BM25-only) | LongMemEval-S | 86.2% | Fallback when no embedding provider available |
+| **ZiiAgentMemory** (BM25 + Vector) | LongMemEval-S | **95.2%** | `all-MiniLM-L6-v2` embeddings, no API key |
+| ZiiAgentMemory (BM25-only) | LongMemEval-S | 86.2% | Fallback when no embedding provider available |
 | MemPalace | LongMemEval-S | ~96.6% (self-reported) | Vendor-published number we have not independently reproduced. Vector-only with a larger embedding model and no agent-integration surface (no hooks, no MCP, no multi-agent) |
-| oracleagentmemory | LongMemEval | 94.4% (self-reported) | Vendor-published, scored with GPT-5.5 at "xhigh reasoning" and requires an Oracle AI Database. We have not reproduced it. agentmemory's 95.2% uses free local embeddings and no API key |
+| oracleagentmemory | LongMemEval | 94.4% (self-reported) | Vendor-published, scored with GPT-5.5 at "xhigh reasoning" and requires an Oracle AI Database. We have not reproduced it. ZiiAgentMemory's 95.2% uses free local embeddings and no API key |
 | Letta / MemGPT | LoCoMo | 83.2% | Different benchmark (LoCoMo, not LongMemEval) |
 | Mem0 | LoCoMo | 68.5% | Different benchmark (LoCoMo, not LongMemEval) |
 
-**⚠️ Apples vs oranges caveat:** only agentmemory's 95.2% is our own measured result, reproducible from the methodology below. Every other number here is the vendor's published claim, on a different benchmark or harness, that we have not independently reproduced: MemPalace and oracleagentmemory report LongMemEval (oracleagentmemory's run used GPT-5.5 at "xhigh reasoning" against an Oracle AI Database), while Letta and Mem0 publish on [LoCoMo](https://snap-stanford.github.io/LoCoMo/). Treat them as ballpark vendor claims, not a head-to-head on identical data. We'd love to run every system on the same dataset; if any maintainer wants to collaborate, open an issue.
+**⚠️ Apples vs oranges caveat:** only ZiiAgentMemory's 95.2% is our own measured result, reproducible from the methodology below. Every other number here is the vendor's published claim, on a different benchmark or harness, that we have not independently reproduced: MemPalace and oracleagentmemory report LongMemEval (oracleagentmemory's run used GPT-5.5 at "xhigh reasoning" against an Oracle AI Database), while Letta and Mem0 publish on [LoCoMo](https://snap-stanford.github.io/LoCoMo/). Treat them as ballpark vendor claims, not a head-to-head on identical data. We'd love to run every system on the same dataset; if any maintainer wants to collaborate, open an issue.
 
-Full agentmemory methodology: [`LONGMEMEVAL.md`](LONGMEMEVAL.md)
+Full ZiiAgentMemory methodology: [`LONGMEMEVAL.md`](LONGMEMEVAL.md)
 
 ---
 
 ## Feature Matrix
 
-| Feature | agentmemory | mem0 | Letta/MemGPT | Khoj | supermemory | MemPalace | oracleagentmemory | Hippo |
+| Feature | ZiiAgentMemory | mem0 | Letta/MemGPT | Khoj | supermemory | MemPalace | oracleagentmemory | Hippo |
 |---|---|---|---|---|---|---|---|---|
 | **GitHub stars** | Growing | 58K+ | 23K+ | 35K+ | 26K+ | 54K+ | PyPI (Oracle) | Trending |
 | **Type** | Memory engine + MCP server | Memory layer API | Full agent runtime | Personal AI | Memory API + app | Benchmark-focused OSS | Memory engine (Oracle DB) | Memory system |
@@ -58,20 +58,20 @@ The main reason to use persistent memory at all: token cost. Here's what one yea
 |---|---|---|---|
 | Paste full history into context | 19.5M+ | Impossible | Exceeds context window after ~200 observations |
 | LLM-summarized memory (extraction-based) | ~650K | ~$500 | Lossy — summarization drops detail |
-| **agentmemory (API embeddings)** | **~170K** | **~$10** | Token-budgeted, only relevant memories injected |
-| **agentmemory (local embeddings)** | **~170K** | **$0** | `all-MiniLM-L6-v2` runs in-process |
+| **ZiiAgentMemory (API embeddings)** | **~170K** | **~$10** | Token-budgeted, only relevant memories injected |
+| **ZiiAgentMemory (local embeddings)** | **~170K** | **$0** | `all-MiniLM-L6-v2` runs in-process |
 | supermemory | Not published | Cloud pricing | Managed API, no local token budget |
 | Mem0 | Varies by integration | Varies | Extraction-based, no token budget |
 
-**agentmemory ships with a built-in token savings calculator.** Run `npx @agentmemory/agentmemory status` after a few sessions and you'll see exactly how many tokens you've saved vs. pasting the full history.
+**ZiiAgentMemory ships with a built-in token savings calculator.** Run `npx ziiagentmemory status` after a few sessions and you'll see exactly how many tokens you've saved vs. pasting the full history.
 
 ---
 
 ## What Each Tool Is Best At
 
-This isn't a "agentmemory wins everything" page. Different tools solve different problems.
+This isn't a "ZiiAgentMemory wins everything" page. Different tools solve different problems.
 
-**Choose agentmemory if you want:**
+**Choose ZiiAgentMemory if you want:**
 - Automatic capture with zero manual `add()` calls
 - MCP server that works across Claude Code, Cursor, Codex, Gemini CLI, etc.
 - Hybrid BM25 + vector + graph search
@@ -129,8 +129,8 @@ We encourage you to measure this yourself rather than trust any README. Here's h
 
 ```bash
 # Clone the repo
-git clone https://github.com/rohitg00/agentmemory.git
-cd agentmemory && npm install
+git clone https://github.com/ziishanahmad/ziiagentmemory.git
+cd ZiiAgentMemory && npm install
 
 # Run LongMemEval-S
 npm run bench:longmemeval

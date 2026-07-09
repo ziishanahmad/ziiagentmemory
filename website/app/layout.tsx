@@ -17,7 +17,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agentmemory.dev"),
+  metadataBase: new URL("https://ZiiAgentMemory.dev"),
   title: "AGENTMEMORY — PERSISTENT MEMORY FOR AI CODING AGENTS",
   description:
     "The memory layer your coding agent should have had from day one. 95.2% retrieval R@5. 92% fewer tokens. 0 external databases. Works with every agent.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "agentmemory",
+    title: "ZiiAgentMemory",
     description:
       "Persistent memory for AI coding agents. Runs locally. Zero external databases.",
     type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "agentmemory",
+    title: "ZiiAgentMemory",
     description:
       "Persistent memory for AI coding agents. Runs locally. Zero external databases.",
   },

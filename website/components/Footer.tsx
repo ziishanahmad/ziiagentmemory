@@ -9,14 +9,14 @@ export function Footer() {
         </a>
         <nav className={styles.links} aria-label="Footer">
           <a
-            href="https://github.com/rohitg00/agentmemory"
+            href="https://github.com/ziishanahmad/ziiagentmemory"
             target="_blank"
             rel="noopener"
           >
             SOURCE
           </a>
           <a
-            href="https://github.com/rohitg00/agentmemory/blob/main/CHANGELOG.md"
+            href="https://github.com/ziishanahmad/ziiagentmemory/blob/main/CHANGELOG.md"
             target="_blank"
             rel="noopener"
           >
@@ -26,7 +26,7 @@ export function Footer() {
             RUNS ON iii
           </a>
           <a
-            href="https://github.com/rohitg00/agentmemory/blob/main/LICENSE"
+            href="https://github.com/ziishanahmad/ziiagentmemory/blob/main/LICENSE"
             target="_blank"
             rel="noopener"
           >

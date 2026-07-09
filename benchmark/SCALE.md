@@ -1,13 +1,13 @@
-# agentmemory v0.6.0 — Scale & Cross-Session Evaluation
+# ZiiAgentMemory v0.6.0 — Scale & Cross-Session Evaluation
 
 **Date:** 2026-03-18T07:45:03.529Z
 **Platform:** darwin arm64, Node v20.20.0
 
-## 1. Scale: agentmemory vs Built-in Memory
+## 1. Scale: ZiiAgentMemory vs Built-in Memory
 
-Every built-in agent memory (CLAUDE.md, .cursorrules, Cline's memory-bank) loads ALL memory into context every session. agentmemory searches and returns only relevant results.
+Every built-in agent memory (CLAUDE.md, .cursorrules, Cline's memory-bank) loads ALL memory into context every session. ZiiAgentMemory searches and returns only relevant results.
 
-| Observations | Sessions | Index Build | BM25 Search | Hybrid Search | Heap | Context Tokens (built-in) | Context Tokens (agentmemory) | Savings | Built-in Unreachable |
+| Observations | Sessions | Index Build | BM25 Search | Hybrid Search | Heap | Context Tokens (built-in) | Context Tokens (ZiiAgentMemory) | Savings | Built-in Unreachable |
 |-------------|----------|------------|-------------|---------------|------|--------------------------|-----------------------------|---------|--------------------|
 | 240 | 30 | 177ms | 0.112ms | 0.63ms | 9MB | 10,504 | 1,924 | 82% | 17% |
 | 1,000 | 125 | 155ms | 0.317ms | 1.709ms | 6MB | 43,834 | 1,969 | 96% | 80% |
@@ -19,7 +19,7 @@ Every built-in agent memory (CLAUDE.md, .cursorrules, Cline's memory-bank) loads
 
 **Context Tokens (built-in):** How many tokens Claude Code/Cursor/Cline would consume loading ALL memory into the context window. At 5,000 observations, this is ~250K tokens — exceeding most context windows entirely.
 
-**Context Tokens (agentmemory):** How many tokens the top-10 search results consume. Stays constant regardless of corpus size.
+**Context Tokens (ZiiAgentMemory):** How many tokens the top-10 search results consume. Stays constant regardless of corpus size.
 
 **Built-in Unreachable:** Percentage of memories that built-in systems CANNOT access because they exceed the 200-line MEMORY.md cap or context window limits. At 1,000 observations, 80% of your project history is invisible.
 
@@ -52,7 +52,7 @@ Can the system find relevant information from past sessions? This is impossible 
 | CSRF protection double-submit cookie | ses_005-009 | 24 | Yes | #1 | Yes | #1 | Yes |
 | blue-green deployment rollback | ses_025-029 | 4 | Yes | #1 | Yes | #1 | No |
 
-**Summary:** agentmemory BM25 found 12/12 cross-session queries. Hybrid found 12/12. Built-in memory (200-line cap) could only reach 10/12.
+**Summary:** ZiiAgentMemory BM25 found 12/12 cross-session queries. Hybrid found 12/12. Built-in memory (200-line cap) could only reach 10/12.
 
 ## 3. The Context Window Problem
 
@@ -67,13 +67,13 @@ At 50 tokens/observation:
   1,000 observations =  50,000 tokens  (33% of available budget)
   5,000 observations = 250,000 tokens  (EXCEEDS total context window)
 
-agentmemory top-10 results:
+ZiiAgentMemory top-10 results:
   Any corpus size     =  ~1,924 tokens  (0.3% of budget)
 ```
 
 ## 4. What Built-in Memory Cannot Do
 
-| Capability | Built-in (CLAUDE.md) | agentmemory |
+| Capability | Built-in (CLAUDE.md) | ZiiAgentMemory |
 |-----------|---------------------|-------------|
 | Semantic search | No (keyword grep only) | BM25 + vector + graph |
 | Scale beyond 200 lines | No (hard cap) | Unlimited |
@@ -96,7 +96,7 @@ agentmemory top-10 results:
 - Preferences and quick facts only
 - Zero setup is the priority
 
-**Use agentmemory when:**
+**Use ZiiAgentMemory when:**
 - Project history exceeds 200 observations
 - You need to recall specific incidents from weeks ago
 - Multiple agents work on the same codebase
@@ -104,7 +104,7 @@ agentmemory top-10 results:
 - You need to track memory quality, decay, and lifecycle
 - You want a shared memory layer across Claude Code, Cursor, Windsurf, etc.
 
-Built-in memory is your sticky notes. agentmemory is the searchable database behind them.
+Built-in memory is your sticky notes. ZiiAgentMemory is the searchable database behind them.
 
 ---
 *Scale tests: 5 corpus sizes. Cross-session tests: 12 queries targeting specific past sessions.*

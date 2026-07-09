@@ -1,13 +1,13 @@
 {
-  "name": "agentmemory",
+  "name": "ziiagentmemory",
   "owner": {
-    "name": "Rohit Ghumare",
-    "github": "rohitg00"
+    "name": "Zeeshan Ahmad",
+    "github": "ziishanahmad"
   },
   "plugins": [
     {
-      "name": "agentmemory",
-      "description": "Persistent memory for AI coding agents -- captures tool usage, compresses via LLM, injects context into future sessions",
+      "name": "ziiagentmemory",
+      "description": "Persistent memory for AI coding agents -- captures tool usage, compresses via LLM, injects context into future sessions. Fork of agentmemory by Rohit Ghumare.",
       "source": "./plugin"
     }
   ]

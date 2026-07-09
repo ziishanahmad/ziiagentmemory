@@ -1,0 +1,27 @@
+ZiiAgentMemory
+Copyright 2026 Zeeshan Ahmad <ziishanahmad@gmail.com>
+
+This product is a fork of @agentmemory/agentmemory by Rohit Ghumare
+<ghumare64@gmail.com>, originally distributed under the Apache License,
+Version 2.0.
+
+The original work includes contributions from many authors; see the
+upstream repository's MAINTAINERS.md and git history for the full list:
+
+  https://github.com/rohitg00/agentmemory
+
+This fork is also distributed under the Apache License, Version 2.0. A
+copy of the license is in the LICENSE file in the root of this
+repository. Where this fork includes substantive new files or
+modifications, those changes are copyright Zeeshan Ahmad and are also
+licensed under Apache-2.0.
+
+The original copyright notices and license headers in the source files
+have been preserved. If you find a file that is missing its upstream
+attribution, please open an issue at:
+
+  https://github.com/ziishanahmad/ziiagentmemory/issues
+
+ZiiAgentMemory is not affiliated with, endorsed by, or sponsored by
+Rohit Ghumare or the agentmemory project. All trademarks belong to
+their respective owners.

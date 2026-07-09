@@ -31,8 +31,8 @@ async function ensureGitRepo(dir: string): Promise<void> {
   }
   if (!existsSync(join(dir, ".git"))) {
     await gitExec(dir, ["init"]);
-    await gitExec(dir, ["config", "user.email", "agentmemory@local"]);
-    await gitExec(dir, ["config", "user.name", "agentmemory"]);
+    await gitExec(dir, ["config", "user.email", "ZiiAgentMemory@local"]);
+    await gitExec(dir, ["config", "user.name", "ZiiAgentMemory"]);
   }
 }
 

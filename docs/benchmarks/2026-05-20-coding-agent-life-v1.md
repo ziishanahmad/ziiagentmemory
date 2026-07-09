@@ -4,10 +4,10 @@
 **N:** 15
 **K:** 5
 **Hardware:** macOS 15 (Apple Silicon)
-**agentmemory:** v0.9.26
+**ZiiAgentMemory:** v0.9.26
 **iii-engine:** v0.11.2
 **Embedding provider:** local default
-**Sandbox:** isolated data dir at `/tmp/agentmemory-eval-sandbox/`, ports 3411/3412
+**Sandbox:** isolated data dir at `/tmp/ZiiAgentMemory-eval-sandbox/`, ports 3411/3412
 
 ## Math ceiling on this dataset
 
@@ -29,7 +29,7 @@ differentiate top-tier adapters.
 
 ## Headline
 
-`agentmemory-hybrid` hits **100% top-5 hit rate**, R@5 = **1.000**,
+`ZiiAgentMemory-hybrid` hits **100% top-5 hit rate**, R@5 = **1.000**,
 P@5 = **0.240** (at the math ceiling — every gold session retrieved
 in top-5).
 
@@ -42,9 +42,9 @@ precision.
 | Adapter | P@5 | R@5 | Hit rate | p50 latency |
 |---|---|---|---|---|
 | grep (tokenized substring) | 0.227 | 0.967 | 15 / 15 | 0 ms |
-| `agentmemory-hybrid` | **0.240** | **1.000** | **15 / 15** | 14 ms |
+| `ZiiAgentMemory-hybrid` | **0.240** | **1.000** | **15 / 15** | 14 ms |
 
-`agentmemory-hybrid` runs through the production smart-search endpoint (`POST /agentmemory/smart-search`) so it exercises the full BM25 + embedding + reranker stack.
+`ZiiAgentMemory-hybrid` runs through the production smart-search endpoint (`POST /ziiagentmemory/smart-search`) so it exercises the full BM25 + embedding + reranker stack.
 
 ## Per-question-type
 
@@ -76,10 +76,10 @@ The differentiator at this corpus size is **temporal** (`What was shipped on Apr
 
 - 15 fictional Claude Code sessions across a 10-day stretch of a Rust CLI project (`shipctl`) — bug fixes, refactors, infra, perf, schema migrations, preferences, post-mortem
 - 15 hand-graded queries with `goldSessionIds[]` covering single-session, multi-session causal, multi-session review, preference, temporal
-- Each session ingested via `POST /agentmemory/remember` with `type=eval-session` and `concepts=[session_id]`
-- Each query hits `POST /agentmemory/smart-search` with `limit=50`; dedupe by session ID; truncate to K=5
+- Each session ingested via `POST /ziiagentmemory/remember` with `type=eval-session` and `concepts=[session_id]`
+- Each query hits `POST /ziiagentmemory/smart-search` with `limit=50`; dedupe by session ID; truncate to K=5
 - No LLM in the retrieval loop
-- Sandbox: clean `~/.agentmemory` via `HOME` override + alt ports (3411/3412) so no cross-contamination from a user's real store
+- Sandbox: clean `~/.ziiagentmemory` via `HOME` override + alt ports (3411/3412) so no cross-contamination from a user's real store
 
 ## Reproduce
 
@@ -89,7 +89,7 @@ npm install --legacy-peer-deps
 npm run build
 
 source eval/scripts/sandbox.sh
-npm run eval:coding-life -- --adapters grep,agentmemory
+npm run eval:coding-life -- --adapters grep,ZiiAgentMemory
 ```
 
 Outputs land in `eval/reports/coding-life/`: `scores.ndjson` (per-query rows) and `summary.json` (per-adapter and per-type aggregates).

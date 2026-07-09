@@ -11,10 +11,10 @@ import type {
   Session,
 } from "../types.js";
 import { recordAudit } from "./audit.js";
-const DEFAULT_EXPORT_ROOT = join(homedir(), ".agentmemory");
+const DEFAULT_EXPORT_ROOT = join(homedir(), ".ziiagentmemory");
 
 function getExportRoot(): string {
-  return resolve(process.env["AGENTMEMORY_EXPORT_ROOT"] || DEFAULT_EXPORT_ROOT);
+  return resolve(process.env["ZIIAGENTMEMORY_EXPORT_ROOT"] || DEFAULT_EXPORT_ROOT);
 }
 
 function resolveVaultDir(vaultDir?: string): string | null {
@@ -390,7 +390,7 @@ export function registerObsidianExportFunction(
           `exported: ${exportedAt}`,
           "---",
           "",
-          "# agentmemory vault",
+          "# ZiiAgentMemory vault",
           "",
           `Exported: ${exportedAt}`,
           "",

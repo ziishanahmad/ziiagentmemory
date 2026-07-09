@@ -1,6 +1,6 @@
 # Python usage via `iii-sdk`
 
-agentmemory registers its core operations as iii functions (`mem::remember`,
+ZiiAgentMemory registers its core operations as iii functions (`mem::remember`,
 `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Any
 language with an iii SDK can call them directly over the WebSocket transport
 on `ws://localhost:49134` — no separate REST client needed.
@@ -15,11 +15,11 @@ pip install iii-sdk
 
 ## Quickstart
 
-Start the agentmemory daemon (defaults to `ws://localhost:49134`, REST on
+Start the ZiiAgentMemory daemon (defaults to `ws://localhost:49134`, REST on
 `:3111`):
 
 ```bash
-npx -y @agentmemory/agentmemory
+npx -y ziiagentmemory
 ```
 
 Then from Python:

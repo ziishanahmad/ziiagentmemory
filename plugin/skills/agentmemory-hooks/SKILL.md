@@ -1,6 +1,6 @@
 ---
-name: agentmemory-hooks
-description: The agentmemory plugin hooks that capture observations automatically across the agent session lifecycle. Use when explaining how memory gets captured without manual saves, when debugging missing observations, or when tuning what gets recorded.
+name: ZiiAgentMemory-hooks
+description: The ZiiAgentMemory plugin hooks that capture observations automatically across the agent session lifecycle. Use when explaining how memory gets captured without manual saves, when debugging missing observations, or when tuning what gets recorded.
 user-invocable: false
 ---
 
@@ -11,8 +11,8 @@ The Claude Code plugin registers lifecycle hooks so memory is captured automatic
 Install the plugin and the hooks register themselves:
 
 ```bash
-/plugin marketplace add rohitg00/agentmemory
-/plugin install agentmemory
+/plugin marketplace add ziishanahmad/ziiagentmemory
+/plugin install ZiiAgentMemory
 ```
 
 Watch observations land live at `http://localhost:3113`.
@@ -26,12 +26,12 @@ Watch observations land live at `http://localhost:3113`.
 
 ## Important
 
-- Capture is on by default and is zero-LLM. Turning observations into LLM summaries (`AGENTMEMORY_AUTO_COMPRESS`) and injecting them back into context (`AGENTMEMORY_INJECT_CONTEXT`) are separate opt-ins because they spend tokens.
+- Capture is on by default and is zero-LLM. Turning observations into LLM summaries (`ZIIAGENTMEMORY_AUTO_COMPRESS`) and injecting them back into context (`ZIIAGENTMEMORY_INJECT_CONTEXT`) are separate opt-ins because they spend tokens.
 - If observations are missing, confirm the plugin is enabled and the server is running. See ../_shared/TROUBLESHOOTING.md.
 
 ## See also
 
-- agentmemory-config for the capture and injection flags.
+- ZiiAgentMemory-config for the capture and injection flags.
 - The handoff, recap, and session-history skills consume what these hooks record.
 
 ## Reference

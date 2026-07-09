@@ -27,7 +27,7 @@ const PANELS: Record<
   viewer: {
     title: "SHIP-WITH VIEWER · PORT 3113",
     blurb:
-      "The agentmemory server auto-starts a real-time viewer on port 3113. No install, no config. Everything the server sees, the viewer shows.",
+      "The ziiagentmemory server auto-starts a real-time viewer on port 3113. No install, no config. Everything the server sees, the viewer shows.",
     bullets: [
       "LIVE OBSERVATION STREAM · EVERY HOOK AS IT FIRES",
       "SESSION EXPLORER · REPLAY ANY PAST SESSION",
@@ -36,13 +36,13 @@ const PANELS: Record<
       "HEALTH DASHBOARD · HEAP / RSS / EVENT LOOP LAG",
     ],
     img: "/demo.gif",
-    alt: "agentmemory viewer live demo",
+    alt: "ZiiAgentMemory viewer live demo",
     launch: "open http://localhost:3113",
   },
   console: {
     title: "iii CONSOLE · FIRST-CLASS",
     blurb:
-      "agentmemory runs on the iii engine, so the official iii console gives engine-level visibility: every function call, every worker, every queue, every trace. From v0.9.16 the agentmemory CLI prompts to install iii console alongside the engine. Launch on :3114 so the viewer keeps :3113.",
+      "ZiiAgentMemory runs on the iii engine, so the official iii console gives engine-level visibility: every function call, every worker, every queue, every trace. From v0.9.16 the ZiiAgentMemory CLI prompts to install iii console alongside the engine. Launch on :3114 so the viewer keeps :3113.",
     bullets: [
       "REGISTERED FUNCTIONS · INVOKE ANY DIRECTLY WITH JSON",
       "121 HTTP ENDPOINTS · REPLAY ANY REST CALL",

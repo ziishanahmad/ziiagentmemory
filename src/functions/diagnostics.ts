@@ -374,7 +374,7 @@ export function registerDiagnosticsFunction(sdk: ISdk, kv: StateKV): void {
             name: "memory-project-coverage",
             category: "memories",
             status: "warn",
-            message: `${unscopedCount} of ${latestMemories.length} latest memories have no project scope — run POST /agentmemory/migrate {"step":"infer-memory-projects"} to backfill`,
+            message: `${unscopedCount} of ${latestMemories.length} latest memories have no project scope — run POST /ziiagentmemory/migrate {"step":"infer-memory-projects"} to backfill`,
             fixable: true,
           });
         } else {
@@ -382,7 +382,7 @@ export function registerDiagnosticsFunction(sdk: ISdk, kv: StateKV): void {
             name: "memory-project-coverage",
             category: "memories",
             status: "fail",
-            message: `${unscopedCount} of ${latestMemories.length} latest memories have no project scope — run POST /agentmemory/migrate {"step":"infer-memory-projects"} to backfill`,
+            message: `${unscopedCount} of ${latestMemories.length} latest memories have no project scope — run POST /ziiagentmemory/migrate {"step":"infer-memory-projects"} to backfill`,
             fixable: true,
           });
         }

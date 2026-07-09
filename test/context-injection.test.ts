@@ -55,27 +55,27 @@ function runHook(
 }
 
 describe("pre-tool-use hook — context injection gate (#143)", () => {
-  it("writes nothing to stdout when AGENTMEMORY_INJECT_CONTEXT is unset (default)", async () => {
+  it("writes nothing to stdout when ZIIAGENTMEMORY_INJECT_CONTEXT is unset (default)", async () => {
     const payload = JSON.stringify({
       session_id: "ses_test",
       tool_name: "Read",
       tool_input: { file_path: "src/foo.ts" },
     });
     // No AGENTMEMORY_* env vars at all — simulates a fresh Claude Pro
-    // install with no ~/.agentmemory/.env overrides.
+    // install with no ~/.ziiagentmemory/.env overrides.
     const result = await runHook("pre-tool-use.mjs", payload, {});
     expect(result.stdout).toBe("");
     expect(result.exitCode).toBe(0);
   });
 
-  it("writes nothing to stdout when AGENTMEMORY_INJECT_CONTEXT=false explicitly", async () => {
+  it("writes nothing to stdout when ZIIAGENTMEMORY_INJECT_CONTEXT=false explicitly", async () => {
     const payload = JSON.stringify({
       session_id: "ses_test",
       tool_name: "Edit",
       tool_input: { file_path: "src/foo.ts", old_string: "a", new_string: "b" },
     });
     const result = await runHook("pre-tool-use.mjs", payload, {
-      AGENTMEMORY_INJECT_CONTEXT: "false",
+      ZIIAGENTMEMORY_INJECT_CONTEXT: "false",
     });
     expect(result.stdout).toBe("");
     expect(result.exitCode).toBe(0);
@@ -91,7 +91,7 @@ describe("pre-tool-use hook — context injection gate (#143)", () => {
     expect(result.stdout).toBe("");
   });
 
-  it("when AGENTMEMORY_INJECT_CONTEXT=true, hook still runs but safely errors on unreachable backend", async () => {
+  it("when ZIIAGENTMEMORY_INJECT_CONTEXT=true, hook still runs but safely errors on unreachable backend", async () => {
     // Opt-in path. We point at a port that's guaranteed closed so the
     // fetch fails fast; the hook must still exit cleanly (the whole
     // point of the try/catch is not to break Claude Code) and must not
@@ -102,8 +102,8 @@ describe("pre-tool-use hook — context injection gate (#143)", () => {
       tool_input: { file_path: "src/foo.ts" },
     });
     const result = await runHook("pre-tool-use.mjs", payload, {
-      AGENTMEMORY_INJECT_CONTEXT: "true",
-      AGENTMEMORY_URL: "http://127.0.0.1:1",
+      ZIIAGENTMEMORY_INJECT_CONTEXT: "true",
+      ZIIAGENTMEMORY_URL: "http://127.0.0.1:1",
     });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toBe("");
@@ -111,7 +111,7 @@ describe("pre-tool-use hook — context injection gate (#143)", () => {
 });
 
 describe("session-start hook — context injection gate (#143)", () => {
-  it("registers the session but writes nothing to stdout when AGENTMEMORY_INJECT_CONTEXT is unset", async () => {
+  it("registers the session but writes nothing to stdout when ZIIAGENTMEMORY_INJECT_CONTEXT is unset", async () => {
     // Session registration POST will fail against the unreachable URL,
     // but the hook's try/catch must swallow that cleanly — Claude Code
     // must never see an error at session start.
@@ -120,7 +120,7 @@ describe("session-start hook — context injection gate (#143)", () => {
       cwd: "/tmp/fake-project",
     });
     const result = await runHook("session-start.mjs", payload, {
-      AGENTMEMORY_URL: "http://127.0.0.1:1",
+      ZIIAGENTMEMORY_URL: "http://127.0.0.1:1",
     });
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toBe("");

@@ -21,9 +21,9 @@ function stubCtx(overrides: Partial<DoctorContext> = {}): DoctorContext {
   return {
     baseUrl: "http://localhost:3111",
     viewerUrl: "http://localhost:3113",
-    envPath: "/tmp/test/.agentmemory/.env",
-    pidfilePath: "/tmp/test/.agentmemory/iii.pid",
-    enginePath: "/tmp/test/.agentmemory/engine-state.json",
+    envPath: "/tmp/test/.ziiagentmemory/.env",
+    pidfilePath: "/tmp/test/.ziiagentmemory/iii.pid",
+    enginePath: "/tmp/test/.ziiagentmemory/engine-state.json",
     pinnedVersion: "0.11.2",
     ...overrides,
   };

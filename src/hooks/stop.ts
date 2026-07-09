@@ -4,13 +4,13 @@
 // per-hook so tsdown does not emit a shared hashed chunk that would churn
 // the diff on every rebuild.
 function isSdkChildContext(payload: unknown): boolean {
-  if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+  if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
   if (!payload || typeof payload !== "object") return false;
   return (payload as { entrypoint?: unknown }).entrypoint === "sdk-ts";
 }
 
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 
 function authHeaders(): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json" };
@@ -39,14 +39,14 @@ async function main() {
 
   const sessionId = ((data.session_id || data.sessionId) as string) || "unknown";
 
-  fetch(`${REST_URL}/agentmemory/summarize`, {
+  fetch(`${REST_URL}/ziiagentmemory/summarize`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ sessionId }),
     signal: AbortSignal.timeout(120000),
   }).catch(() => {});
 
-  fetch(`${REST_URL}/agentmemory/session/end`, {
+  fetch(`${REST_URL}/ziiagentmemory/session/end`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ sessionId }),

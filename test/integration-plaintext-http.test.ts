@@ -37,8 +37,8 @@ describe("OpenClaw plaintext bearer guard", () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env = { ...originalEnv, AGENTMEMORY_SECRET: "secret" };
-    delete process.env["AGENTMEMORY_REQUIRE_HTTPS"];
+    process.env = { ...originalEnv, ZIIAGENTMEMORY_SECRET: "secret" };
+    delete process.env["ZIIAGENTMEMORY_REQUIRE_HTTPS"];
     mockFetch();
   });
 
@@ -68,7 +68,7 @@ describe("OpenClaw plaintext bearer guard", () => {
   });
 
   it("fails before any request when HTTPS is required", () => {
-    process.env["AGENTMEMORY_REQUIRE_HTTPS"] = "1";
+    process.env["ZIIAGENTMEMORY_REQUIRE_HTTPS"] = "1";
     const fetchMock = mockFetch();
     expect(() => registerOpenClaw("http://remote.example:3111")).toThrow(
       /plaintext HTTP to http:\/\/remote\.example:3111/,
@@ -104,7 +104,7 @@ describe("pi plaintext bearer guard", () => {
   it("fails before callers can issue a request when HTTPS is required", () => {
     const warn = vi.fn();
     const guard = createPlaintextBearerAuthGuard(warn, {
-      AGENTMEMORY_REQUIRE_HTTPS: "1",
+      ZIIAGENTMEMORY_REQUIRE_HTTPS: "1",
     });
     expect(() => guard("http://remote.example:3111", "secret")).toThrow(
       /plaintext HTTP to http:\/\/remote\.example:3111/,
@@ -148,7 +148,7 @@ describe("Hermes plaintext bearer guard", () => {
   let home: string;
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), "agentmemory-hermes-test-"));
+    home = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-hermes-test-"));
   });
 
   afterEach(() => {
@@ -166,7 +166,7 @@ mod = importlib.util.module_from_spec(spec)
 assert spec.loader is not None
 spec.loader.exec_module(mod)
 
-for key in ("AGENTMEMORY_SECRET", "AGENTMEMORY_URL", "AGENTMEMORY_REQUIRE_HTTPS"):
+for key in ("ZIIAGENTMEMORY_SECRET", "ZIIAGENTMEMORY_URL", "ZIIAGENTMEMORY_REQUIRE_HTTPS"):
     os.environ.pop(key, None)
 
 warnings = []
@@ -191,7 +191,7 @@ def fake_urlopen(req, timeout=0):
     raise AssertionError("request should not be sent")
 
 mod.urlopen = fake_urlopen
-os.environ["AGENTMEMORY_REQUIRE_HTTPS"] = "1"
+os.environ["ZIIAGENTMEMORY_REQUIRE_HTTPS"] = "1"
 try:
     mod._api("http://remote.example:3111", "health", method="GET", secret="secret")
 except RuntimeError as exc:

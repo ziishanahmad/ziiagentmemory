@@ -26,7 +26,7 @@ const RUNTIME_ONLY = new Set([
   "PATH",
   "USERPROFILE",
   "NODE_ENV",
-  "AGENTMEMORY_SDK_CHILD",
+  "ZIIAGENTMEMORY_SDK_CHILD",
 ]);
 
 // Walk src/ for .ts / .mts / .mjs / .js files (excluding `.d.ts` declarations

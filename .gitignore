@@ -16,7 +16,7 @@ data/
 !eval/data/
 !eval/data/**
 data-*/
-agentmemory-debug/
+ZiiAgentMemory-debug/
 .gstack/
 
 # Lock files — never commit (see feedback_no_lockfiles memory)

@@ -28,7 +28,7 @@ function showHintOnce(key: string, message: string): void {
   if (hintShown.has(key)) return;
   hintShown.add(key);
   if (typeof process !== "undefined" && process.stderr?.write) {
-    process.stderr.write(`agentmemory: ${message}\n`);
+    process.stderr.write(`ZiiAgentMemory: ${message}\n`);
   }
 }
 

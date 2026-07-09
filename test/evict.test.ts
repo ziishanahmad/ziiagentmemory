@@ -21,8 +21,8 @@ function daysAgo(days: number): string {
 function makeSession(id: string): Session {
   return {
     id,
-    project: "agentmemory",
-    cwd: "/repo/agentmemory",
+    project: "ZiiAgentMemory",
+    cwd: "/repo/ziiagentmemory",
     startedAt: daysAgo(31),
     status: "active",
     observationCount: 1,

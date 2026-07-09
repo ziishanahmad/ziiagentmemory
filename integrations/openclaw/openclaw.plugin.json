@@ -1,8 +1,8 @@
 {
-  "id": "agentmemory",
+  "id": "ZiiAgentMemory",
   "kind": "memory",
-  "name": "agentmemory",
-  "description": "Persistent cross-session memory for OpenClaw via agentmemory.",
+  "name": "ZiiAgentMemory",
+  "description": "Persistent cross-session memory for OpenClaw via ZiiAgentMemory.",
   "version": "0.9.4",
   "configSchema": {
     "type": "object",
@@ -18,7 +18,7 @@
   },
   "uiHints": {
     "enabled": { "label": "Enabled" },
-    "base_url": { "label": "Base URL", "help": "agentmemory REST server base URL" },
+    "base_url": { "label": "Base URL", "help": "ZiiAgentMemory REST server base URL" },
     "token_budget": { "label": "Token Budget", "help": "Approximate context budget to inject before the agent starts" },
     "min_confidence": { "label": "Min Confidence" },
     "fallback_on_error": { "label": "Fallback On Error" },

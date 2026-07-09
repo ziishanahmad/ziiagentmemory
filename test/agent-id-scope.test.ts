@@ -214,19 +214,19 @@ describe("mem::remember stamps agentId on the Memory (#554)", () => {
   });
 });
 
-describe("AGENTMEMORY_AGENT_SCOPE mode (#554)", () => {
+describe("ZIIAGENTMEMORY_AGENT_SCOPE mode (#554)", () => {
   const ORIG_ID = process.env["AGENT_ID"];
-  const ORIG_MODE = process.env["AGENTMEMORY_AGENT_SCOPE"];
+  const ORIG_MODE = process.env["ZIIAGENTMEMORY_AGENT_SCOPE"];
   beforeEach(() => {
     vi.resetModules();
     delete process.env["AGENT_ID"];
-    delete process.env["AGENTMEMORY_AGENT_SCOPE"];
+    delete process.env["ZIIAGENTMEMORY_AGENT_SCOPE"];
   });
   afterEach(() => {
     if (ORIG_ID === undefined) delete process.env["AGENT_ID"];
     else process.env["AGENT_ID"] = ORIG_ID;
-    if (ORIG_MODE === undefined) delete process.env["AGENTMEMORY_AGENT_SCOPE"];
-    else process.env["AGENTMEMORY_AGENT_SCOPE"] = ORIG_MODE;
+    if (ORIG_MODE === undefined) delete process.env["ZIIAGENTMEMORY_AGENT_SCOPE"];
+    else process.env["ZIIAGENTMEMORY_AGENT_SCOPE"] = ORIG_MODE;
   });
 
   it("defaults to shared mode when AGENT_ID set but scope unset", async () => {
@@ -241,9 +241,9 @@ describe("AGENTMEMORY_AGENT_SCOPE mode (#554)", () => {
     expect(isAgentScopeIsolated()).toBe(false);
   });
 
-  it("flips to isolated when AGENTMEMORY_AGENT_SCOPE=isolated", async () => {
+  it("flips to isolated when ZIIAGENTMEMORY_AGENT_SCOPE=isolated", async () => {
     process.env["AGENT_ID"] = "developer";
-    process.env["AGENTMEMORY_AGENT_SCOPE"] = "isolated";
+    process.env["ZIIAGENTMEMORY_AGENT_SCOPE"] = "isolated";
     const { loadAgentScope, isAgentScopeIsolated } = await import(
       "../src/config.js"
     );
@@ -255,14 +255,14 @@ describe("AGENTMEMORY_AGENT_SCOPE mode (#554)", () => {
   });
 
   it("isolated requires AGENT_ID to also be set (no scope without id)", async () => {
-    process.env["AGENTMEMORY_AGENT_SCOPE"] = "isolated";
+    process.env["ZIIAGENTMEMORY_AGENT_SCOPE"] = "isolated";
     const { isAgentScopeIsolated } = await import("../src/config.js");
     expect(isAgentScopeIsolated()).toBe(false);
   });
 
   it("unknown scope values fall back to shared", async () => {
     process.env["AGENT_ID"] = "developer";
-    process.env["AGENTMEMORY_AGENT_SCOPE"] = "weird";
+    process.env["ZIIAGENTMEMORY_AGENT_SCOPE"] = "weird";
     const { isAgentScopeIsolated } = await import("../src/config.js");
     expect(isAgentScopeIsolated()).toBe(false);
   });

@@ -1,10 +1,10 @@
 ---
-name: write-agentmemory-skill
-description: The house format and rules for writing or updating an agentmemory skill. Use when adding a new skill, restructuring an existing one, or reviewing a skill contribution for consistency.
+name: write-ZiiAgentMemory-skill
+description: The house format and rules for writing or updating an ZiiAgentMemory skill. Use when adding a new skill, restructuring an existing one, or reviewing a skill contribution for consistency.
 user-invocable: false
 ---
 
-agentmemory skills follow one tiered format so they stay skimmable, accurate, and current. Match it exactly.
+ZiiAgentMemory skills follow one tiered format so they stay skimmable, accurate, and current. Match it exactly.
 
 ## Directory layout
 

@@ -1,10 +1,10 @@
 ---
-name: agentmemory-mcp-tools
-description: Map of every agentmemory MCP tool, what each does, and its parameters. Use when choosing which memory tool to call, when a tool name or argument is unclear, or when answering what agentmemory can do via MCP.
+name: ZiiAgentMemory-mcp-tools
+description: Map of every ZiiAgentMemory MCP tool, what each does, and its parameters. Use when choosing which memory tool to call, when a tool name or argument is unclear, or when answering what ZiiAgentMemory can do via MCP.
 user-invocable: false
 ---
 
-agentmemory exposes its full capability set as MCP tools. This skill is the index: it tells you which tool to reach for and where to find exact parameters.
+ZiiAgentMemory exposes its full capability set as MCP tools. This skill is the index: it tells you which tool to reach for and where to find exact parameters.
 
 ## Quick start
 
@@ -30,8 +30,8 @@ Save then recall:
 
 ## See also
 
-- agentmemory-rest-api for the HTTP equivalents.
-- agentmemory-config for tool-visibility and feature flags.
+- ZiiAgentMemory-rest-api for the HTTP equivalents.
+- ZiiAgentMemory-config for tool-visibility and feature flags.
 - The user-invocable action skills (remember, recall, recap, handoff, forget) wrap the most common tools.
 
 ## Reference

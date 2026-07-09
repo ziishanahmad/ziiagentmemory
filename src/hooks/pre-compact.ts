@@ -2,13 +2,13 @@
 import { resolveProject } from "./_project.js";
 
 function isSdkChildContext(payload: unknown): boolean {
-  if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+  if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
   if (!payload || typeof payload !== "object") return false;
   return (payload as { entrypoint?: unknown }).entrypoint === "sdk-ts";
 }
 
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 
 function authHeaders(): Record<string, string> {
   const h: Record<string, string> = { "Content-Type": "application/json" };
@@ -36,7 +36,7 @@ async function main() {
 
   if (process.env["CLAUDE_MEMORY_BRIDGE"] === "true") {
     try {
-      await fetch(`${REST_URL}/agentmemory/claude-bridge/sync`, {
+      await fetch(`${REST_URL}/ziiagentmemory/claude-bridge/sync`, {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({}),
@@ -48,7 +48,7 @@ async function main() {
   }
 
   try {
-    const res = await fetch(`${REST_URL}/agentmemory/context`, {
+    const res = await fetch(`${REST_URL}/ziiagentmemory/context`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ sessionId, project, budget: 1500 }),

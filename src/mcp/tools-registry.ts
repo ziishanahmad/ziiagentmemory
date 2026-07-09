@@ -137,7 +137,7 @@ export const CORE_TOOLS: McpToolDef[] = [
   {
     name: "memory_vision_search",
     description:
-      "Cross-modal image search via CLIP embeddings. Pass queryText to find screenshots matching a description, or queryImageBase64/queryImageRef to find similar images. Requires AGENTMEMORY_IMAGE_EMBEDDINGS=true.",
+      "Cross-modal image search via CLIP embeddings. Pass queryText to find screenshots matching a description, or queryImageBase64/queryImageRef to find similar images. Requires ZIIAGENTMEMORY_IMAGE_EMBEDDINGS=true.",
     inputSchema: {
       type: "object",
       properties: {
@@ -562,7 +562,7 @@ export const V050_TOOLS: McpToolDef[] = [
   {
     name: "memory_mesh_sync",
     description:
-      "Sync memories and actions with peer agentmemory instances for multi-agent collaboration.",
+      "Sync memories and actions with peer ZiiAgentMemory instances for multi-agent collaboration.",
     inputSchema: {
       type: "object",
       properties: {
@@ -808,7 +808,7 @@ export const V070_TOOLS: McpToolDef[] = [
       properties: {
         vaultDir: {
           type: "string",
-          description: "Output directory (default ~/.agentmemory/vault/)",
+          description: "Output directory (default ~/.ziiagentmemory/vault/)",
         },
         types: {
           type: "string",
@@ -953,9 +953,9 @@ export function getAllTools(): McpToolDef[] {
 // (full 53-tool surface). README and plugin manifests have always
 // advertised 53 tools "in proxy mode"; the old default left OpenCode /
 // Claude Code users seeing 8 with no indication the other tools existed.
-// Users who want the lean essentials can still set AGENTMEMORY_TOOLS=core.
+// Users who want the lean essentials can still set ZIIAGENTMEMORY_TOOLS=core.
 export function getVisibleTools(): McpToolDef[] {
-  const mode = process.env["AGENTMEMORY_TOOLS"] || "all";
+  const mode = process.env["ZIIAGENTMEMORY_TOOLS"] || "all";
   if (mode === "core") return getAllTools().filter((t) => ESSENTIAL_TOOLS.has(t.name));
   return getAllTools();
 }

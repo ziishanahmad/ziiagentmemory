@@ -6,12 +6,12 @@
 
 Use one of:
 
-- **GitHub Security Advisories (preferred)** — private report form at <https://github.com/rohitg00/agentmemory/security/advisories/new>. GitHub routes the report to the Maintainers, assigns a GHSA identifier, and keeps you in a private thread until the fix ships. All sensitive details (stack traces, credentials, exploit payloads) stay end-to-end within GitHub's security infrastructure — use this channel whenever possible.
-- **Encrypted email (fallback)** — if GitHub is unavailable or the issue cannot be described in the GHSA form, send an encrypted message to `ghumare64@gmail.com` with subject `agentmemory security`. Encrypt with the Maintainer public keys published at <https://github.com/rohitg00.gpg> (PGP) and <https://github.com/rohitg00.keys> (SSH for verification); attach your own public key so we can reply encrypted. Plaintext email is accepted only as a last resort — prefer GHSA.
+- **GitHub Security Advisories (preferred)** — private report form at <https://github.com/ziishanahmad/ziiagentmemory/security/advisories/new>. GitHub routes the report to the Maintainers, assigns a GHSA identifier, and keeps you in a private thread until the fix ships. All sensitive details (stack traces, credentials, exploit payloads) stay end-to-end within GitHub's security infrastructure — use this channel whenever possible.
+- **Encrypted email (fallback)** — if GitHub is unavailable or the issue cannot be described in the GHSA form, send an encrypted message to `ghumare64@gmail.com` with subject `ZiiAgentMemory security`. Encrypt with the Maintainer public keys published at <https://github.com/rohitg00.gpg> (PGP) and <https://github.com/rohitg00.keys> (SSH for verification); attach your own public key so we can reply encrypted. Plaintext email is accepted only as a last resort — prefer GHSA.
 
 Include, at minimum:
 
-- agentmemory version (`npm view @agentmemory/agentmemory version` against your install).
+- ziiagentmemory version (`npm view ziiagentmemory version` against your install).
 - The affected surface — REST endpoint, MCP tool, hook, CLI flag, or filesystem layout.
 - A minimal reproduction — prefer one curl invocation or one MCP tool call plus the environment state required.
 - Impact, in your own words.
@@ -38,21 +38,21 @@ At v1.0 this policy switches to a stated LTS window per the roadmap.
 
 In scope:
 
-- The `@agentmemory/agentmemory` server (REST + MCP surface, hook handlers, state store).
-- The `@agentmemory/mcp` standalone MCP server.
-- The `@agentmemory/fs-watcher` connector.
+- The `ziiagentmemory` server (REST + MCP surface, hook handlers, state store).
+- The `ziiagentmemory` standalone MCP server.
+- The `@ZiiAgentMemory/fs-watcher` connector.
 - First-party integrations under `integrations/` (`hermes/`, `openclaw/`, `filesystem-watcher/`).
 - The Claude Code plugin under `plugin/`.
 
 Out of scope:
 
-- Third-party MCP clients consuming agentmemory — report to those projects.
+- Third-party MCP clients consuming ZiiAgentMemory — report to those projects.
 - `iii-sdk` upstream — report to the iii project.
 - The marketing site under `website/` unless the issue affects user security (XSS against visitors, credential leak in build output).
 
 ## Supply-chain stance
 
-agentmemory ships pre-built artifacts in the npm tarball — `dist/` is bundled at publish time, not built from `node_modules` at install time. The package's runtime dependency tree is intentionally small (6 production deps: `@anthropic-ai/sdk`, `@anthropic-ai/claude-agent-sdk`, `@clack/prompts`, `dotenv`, `iii-sdk`, `zod`) plus an optional set guarded behind `optionalDependencies` for embeddings.
+ZiiAgentMemory ships pre-built artifacts in the npm tarball — `dist/` is bundled at publish time, not built from `node_modules` at install time. The package's runtime dependency tree is intentionally small (6 production deps: `@anthropic-ai/sdk`, `@anthropic-ai/claude-agent-sdk`, `@clack/prompts`, `dotenv`, `iii-sdk`, `zod`) plus an optional set guarded behind `optionalDependencies` for embeddings.
 
 **No lockfile is committed** (#540). The reasoning:
 
@@ -60,7 +60,7 @@ agentmemory ships pre-built artifacts in the npm tarball — `dist/` is bundled 
 - The lockfile only affects contributor-local builds. Pinning it would shift the supply-chain attack surface from "what npm resolves today" to "what was resolved when the lockfile was last regenerated," which is a different tradeoff, not strictly better.
 - We use SemVer ranges (`^x.y.z`) on the published deps so security patches reach users without a re-release.
 
-If you ship agentmemory inside a hardened pipeline that requires reproducible installs, the recommended path is:
+If you ship ZiiAgentMemory inside a hardened pipeline that requires reproducible installs, the recommended path is:
 
 1. `npm install --legacy-peer-deps` against the published tarball in a controlled environment.
 2. `npm shrinkwrap` to produce a versioned `npm-shrinkwrap.json` that travels with your deployment.
@@ -78,8 +78,8 @@ If you find a malicious package in our dep tree, file via the GHSA flow at the t
 
 ## Past advisories
 
-See the [`.github/security-advisories/`](./.github/security-advisories) directory for advisory drafts. Published advisories (with assigned GHSA IDs) live at <https://github.com/rohitg00/agentmemory/security/advisories>.
+See the [`.github/security-advisories/`](./.github/security-advisories) directory for advisory drafts. Published advisories (with assigned GHSA IDs) live at <https://github.com/ziishanahmad/ziiagentmemory/security/advisories>.
 
 ## Safe harbor
 
-Good-faith research, reported privately, does not get legal heat from the project. Research targeting third-party deployments of agentmemory is not covered — that's between you and the deployer.
+Good-faith research, reported privately, does not get legal heat from the project. Research targeting third-party deployments of ZiiAgentMemory is not covered — that's between you and the deployer.

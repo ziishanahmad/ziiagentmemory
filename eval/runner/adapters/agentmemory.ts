@@ -39,13 +39,13 @@ function authHeaders(secret?: string): Record<string, string> {
 }
 
 export const agentmemoryAdapter: Adapter<AgentMemoryState> = {
-  name: "agentmemory-hybrid",
+  name: "ZiiAgentMemory-hybrid",
   async init(sessions, config) {
-    const baseUrl = (config?.baseUrl as string) ?? process.env.AGENTMEMORY_BASE_URL ?? "http://localhost:3111";
-    const secret = (config?.secret as string) ?? process.env.AGENTMEMORY_SECRET;
+    const baseUrl = (config?.baseUrl as string) ?? process.env.ZIIAGENTMEMORY_BASE_URL ?? "http://localhost:3111";
+    const secret = (config?.secret as string) ?? process.env.ZIIAGENTMEMORY_SECRET;
     const observationToSession = new Map<string, string>();
     for (const s of sessions) {
-      const res = await fetch(`${baseUrl}/agentmemory/remember`, {
+      const res = await fetch(`${baseUrl}/ziiagentmemory/remember`, {
         method: "POST",
         headers: authHeaders(secret),
         body: JSON.stringify({
@@ -65,7 +65,7 @@ export const agentmemoryAdapter: Adapter<AgentMemoryState> = {
     return { baseUrl, secret, sessions, observationToSession };
   },
   async query(q, state, k) {
-    const res = await fetch(`${state.baseUrl}/agentmemory/smart-search`, {
+    const res = await fetch(`${state.baseUrl}/ziiagentmemory/smart-search`, {
       method: "POST",
       headers: authHeaders(state.secret),
       body: JSON.stringify({ query: q, limit: Math.max(k * 10, 50) }),

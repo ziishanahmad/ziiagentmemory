@@ -104,13 +104,13 @@ import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 
 // #640 + #474: the worker process (this file) is spawned by iii-exec
-// inside the engine. When `agentmemory stop` kills only the engine pid,
+// inside the engine. When `ziiagentmemory stop` kills only the engine pid,
 // this worker can survive (detached spawn, signal not propagated, or a
 // wrapper script keeps it running) and reconnects to the next engine as
 // a duplicate worker. Write the worker pid alongside iii.pid so
-// `agentmemory stop` can reap us too.
+// `ziiagentmemory stop` can reap us too.
 function workerPidfilePath(): string {
-  return join(homedir(), ".agentmemory", "worker.pid");
+  return join(homedir(), ".ziiagentmemory", "worker.pid");
 }
 function writeWorkerPidfile(): void {
   try {
@@ -152,7 +152,7 @@ process.on("unhandledRejection", (reason) => {
   lastUnhandledLogAt = now;
   const r = reason as { code?: string; function_id?: string; message?: string };
   console.warn(
-    `[agentmemory] unhandledRejection (suppressed):`,
+    `[ZiiAgentMemory] unhandledRejection (suppressed):`,
     r?.code ? `${r.code} ${r.function_id ?? ""} ${r.message ?? ""}`.trim() : reason,
   );
 });
@@ -188,12 +188,12 @@ async function main() {
     );
   }
   bootLog(
-    `REST API: http://localhost:${config.restPort}/agentmemory/*`,
+    `REST API: http://localhost:${config.restPort}/ziiagentmemory/*`,
   );
   bootLog(`Streams: ws://localhost:${config.streamsPort}`);
 
   const sdk = registerWorker(config.engineUrl, {
-    workerName: "agentmemory",
+    workerName: "ZiiAgentMemory",
     invocationTimeoutMs: 180000,
     otel: {
       serviceName: OTEL_CONFIG.serviceName,
@@ -203,12 +203,12 @@ async function main() {
     // Explicit worker telemetry metadata. iii-sdk falls back to
     // auto-detection (cwd / package.json name / hostname) when this
     // is omitted, which produces inconsistent values per host —
-    // `agentmemory`, `node`, `npm`, occasionally the user's home
+    // `ziiagentmemory`, `node`, `npm`, occasionally the user's home
     // directory basename. Pinning the value here gives every install
     // the same stable project identifier for downstream attribution
     // and grouping in the engine's metrics + traces output.
     telemetry: {
-      project_name: "agentmemory",
+      project_name: "ZiiAgentMemory",
       language: "node",
       framework: "iii-sdk",
     },
@@ -217,7 +217,7 @@ async function main() {
   writeWorkerPidfile();
 
   const kv = new StateKV(sdk);
-  const secret = getEnvVar("AGENTMEMORY_SECRET");
+  const secret = getEnvVar("ZIIAGENTMEMORY_SECRET");
   const metricsStore = new MetricsStore(kv);
   const dedupMap = new DedupMap();
 
@@ -276,21 +276,21 @@ async function main() {
 
   if (isAutoCompressEnabled()) {
     bootLog(
-      `WARNING: AGENTMEMORY_AUTO_COMPRESS=true — every PostToolUse observation will be sent to your LLM provider for compression. This spends API tokens proportional to your session tool-use frequency. Set AGENTMEMORY_AUTO_COMPRESS=false to disable.`,
+      `WARNING: ZIIAGENTMEMORY_AUTO_COMPRESS=true — every PostToolUse observation will be sent to your LLM provider for compression. This spends API tokens proportional to your session tool-use frequency. Set ZIIAGENTMEMORY_AUTO_COMPRESS=false to disable.`,
     );
   } else {
     bootLog(
-      `Auto-compress: OFF (default) — observations indexed via zero-LLM synthetic compression. Set AGENTMEMORY_AUTO_COMPRESS=true to opt-in to LLM-powered summaries (uses your API key).`,
+      `Auto-compress: OFF (default) — observations indexed via zero-LLM synthetic compression. Set ZIIAGENTMEMORY_AUTO_COMPRESS=true to opt-in to LLM-powered summaries (uses your API key).`,
     );
   }
 
   if (isContextInjectionEnabled()) {
     bootLog(
-      `WARNING: AGENTMEMORY_INJECT_CONTEXT=true — the PreToolUse and SessionStart hooks will inject up to ~4000 chars of memory context into every tool turn. On Claude Pro this burns session tokens proportional to your tool-call frequency. Set AGENTMEMORY_INJECT_CONTEXT=false to disable.`,
+      `WARNING: ZIIAGENTMEMORY_INJECT_CONTEXT=true — the PreToolUse and SessionStart hooks will inject up to ~4000 chars of memory context into every tool turn. On Claude Pro this burns session tokens proportional to your tool-call frequency. Set ZIIAGENTMEMORY_INJECT_CONTEXT=false to disable.`,
     );
   } else {
     bootLog(
-      `Context injection: OFF (default) — hooks capture observations but do not inject context into Claude Code's conversation. Set AGENTMEMORY_INJECT_CONTEXT=true to opt-in (warning: expect your Claude Pro allocation to drain faster).`,
+      `Context injection: OFF (default) — hooks capture observations but do not inject context into Claude Code's conversation. Set ZIIAGENTMEMORY_INJECT_CONTEXT=true to opt-in (warning: expect your Claude Pro allocation to drain faster).`,
     );
   }
 
@@ -353,7 +353,7 @@ async function main() {
   }
 
   const bm25Index = getSearchIndex();
-  const graphWeight = parseFloat(getEnvVar("AGENTMEMORY_GRAPH_WEIGHT") || "0.3");
+  const graphWeight = parseFloat(getEnvVar("ZIIAGENTMEMORY_GRAPH_WEIGHT") || "0.3");
   const hybridSearch = new HybridSearch(
     bm25Index,
     vectorIndex,
@@ -383,7 +383,7 @@ async function main() {
   setIndexPersistence(indexPersistence);
 
   const loaded = await indexPersistence.load().catch((err) => {
-    console.warn(`[agentmemory] Failed to load persisted index:`, err);
+    console.warn(`[ZiiAgentMemory] Failed to load persisted index:`, err);
     return null;
   });
   if (loaded?.bm25 && loaded.bm25.size > 0) {
@@ -417,23 +417,23 @@ async function main() {
       const dropStale = isDropStaleIndexEnabled();
       if (dropStale) {
         console.warn(
-          `[agentmemory] Persisted vector index has ${mismatches.length} of ` +
+          `[ZiiAgentMemory] Persisted vector index has ${mismatches.length} of ` +
             `${loaded.vector.size} vectors with the wrong dimension. Active ` +
             `provider (${embeddingProvider?.name}) declares ${activeDim}; ` +
             `dimensions seen on disk: ${distinct}. ` +
-            `AGENTMEMORY_DROP_STALE_INDEX=true is set — discarding the persisted ` +
+            `ZIIAGENTMEMORY_DROP_STALE_INDEX=true is set — discarding the persisted ` +
             `vectors. Live observations will rebuild the index over time.`,
         );
       } else {
         throw new Error(
-          `[agentmemory] Refusing to start: persisted vector index has ` +
+          `[ZiiAgentMemory] Refusing to start: persisted vector index has ` +
             `${mismatches.length} of ${loaded.vector.size} vectors with the ` +
             `wrong dimension. Active provider (${embeddingProvider?.name}) ` +
             `declares ${activeDim}; dimensions seen on disk: ${distinct}. ` +
             `First mismatched obsIds: ${sample}. Loading would silently corrupt ` +
             `search (cross-dimension cosine returns 0). Choose one:\n` +
             `  - Re-embed the existing index against the new provider, then start.\n` +
-            `  - Set AGENTMEMORY_DROP_STALE_INDEX=true to discard the persisted ` +
+            `  - Set ZIIAGENTMEMORY_DROP_STALE_INDEX=true to discard the persisted ` +
             `vectors and rebuild from live observations.\n` +
             `  - Switch the embedding provider back to the one that wrote the index.`,
         );
@@ -465,7 +465,7 @@ async function main() {
         }
       })
       .catch((err) => {
-        console.warn(`[agentmemory] Failed to rebuild search index:`, err);
+        console.warn(`[ZiiAgentMemory] Failed to rebuild search index:`, err);
       });
   } else {
     // Backfill memories into BM25 for users upgrading from <0.9.5: prior
@@ -504,7 +504,7 @@ async function main() {
       }
     } catch (err) {
       console.warn(
-        `[agentmemory] Failed to backfill memories into BM25:`,
+        `[ZiiAgentMemory] Failed to backfill memories into BM25:`,
         err,
       );
     }
@@ -518,10 +518,10 @@ async function main() {
     `Ready. ${embeddingProvider ? "Triple-stream (BM25+Vector+Graph)" : "BM25+Graph"} search active.`,
   );
   bootLog(
-    `REST API: 128 endpoints at http://localhost:${config.restPort}/agentmemory/*`,
+    `REST API: 128 endpoints at http://localhost:${config.restPort}/ziiagentmemory/*`,
   );
   bootLog(
-    `MCP surface (opt-in via \`npx @agentmemory/mcp\`): ${getAllTools().length} tools · 6 resources · 3 prompts`,
+    `MCP surface (opt-in via \`npx ziiagentmemory\`): ${getAllTools().length} tools · 6 resources · 3 prompts`,
   );
 
   const viewerPort = config.restPort + 2;
@@ -590,13 +590,13 @@ async function main() {
   }
 
   const shutdown = async () => {
-    console.log(`\n[agentmemory] Shutting down...`);
+    console.log(`\n[ZiiAgentMemory] Shutting down...`);
     healthMonitor.stop();
     dedupMap.stop();
     indexPersistence.stop();
     await new Promise<void>((resolve) => viewerServer.close(() => resolve()));
     await indexPersistence.save().catch((err) => {
-      console.warn(`[agentmemory] Failed to save index on shutdown:`, err);
+      console.warn(`[ZiiAgentMemory] Failed to save index on shutdown:`, err);
     });
     await sdk.shutdown();
     clearWorkerPidfile();
@@ -607,6 +607,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(`[agentmemory] Fatal:`, err);
+  console.error(`[ZiiAgentMemory] Fatal:`, err);
   process.exit(1);
 });

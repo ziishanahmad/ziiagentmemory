@@ -6,13 +6,13 @@ import { promisify } from "node:util";
 const exec = promisify(execFile);
 
 function isSdkChildContext(payload: unknown): boolean {
-  if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+  if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
   if (!payload || typeof payload !== "object") return false;
   return (payload as { entrypoint?: unknown }).entrypoint === "sdk-ts";
 }
 
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 const TIMEOUT_MS = 1500;
 
 function authHeaders(): Record<string, string> {
@@ -49,15 +49,15 @@ async function main() {
 
   const cwd =
     (data.cwd as string) ||
-    process.env["AGENTMEMORY_CWD"] ||
+    process.env["ZIIAGENTMEMORY_CWD"] ||
     process.cwd();
   const sessionId =
     (data.session_id as string) ||
-    process.env["AGENTMEMORY_SESSION_ID"] ||
+    process.env["ZIIAGENTMEMORY_SESSION_ID"] ||
     undefined;
 
   const sha =
-    process.env["AGENTMEMORY_COMMIT_SHA"] ||
+    process.env["ZIIAGENTMEMORY_COMMIT_SHA"] ||
     (await git(["rev-parse", "HEAD"], cwd));
   if (!sha) return;
 
@@ -84,7 +84,7 @@ async function main() {
   };
 
   try {
-    await fetch(`${REST_URL}/agentmemory/session/commit`, {
+    await fetch(`${REST_URL}/ziiagentmemory/session/commit`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(body),

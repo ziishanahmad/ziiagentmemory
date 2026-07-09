@@ -109,8 +109,8 @@ describe("Enrich Function", () => {
     })) as { context: string; truncated: boolean };
 
     expect(result.context).toContain("File was edited in session ses_1");
-    expect(result.context).toContain("agentmemory-relevant-context");
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-relevant-context");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
     expect(result.truncated).toBe(false);
   });
 

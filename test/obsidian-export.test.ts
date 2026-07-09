@@ -121,10 +121,10 @@ function makeSession(id: string): Session {
 describe("Obsidian Export", () => {
   let sdk: ReturnType<typeof mockSdk>;
   let kv: ReturnType<typeof mockKV>;
-  const exportRoot = "/tmp/agentmemory-export-root";
+  const exportRoot = "/tmp/ZiiAgentMemory-export-root";
 
   beforeEach(() => {
-    process.env.AGENTMEMORY_EXPORT_ROOT = exportRoot;
+    process.env.ZIIAGENTMEMORY_EXPORT_ROOT = exportRoot;
     sdk = mockSdk();
     kv = mockKV();
     writtenFiles.clear();
@@ -149,7 +149,7 @@ describe("Obsidian Export", () => {
     const mocPath = [...writtenFiles.keys()].find((k) => k.endsWith("MOC.md"));
     expect(mocPath).toBeDefined();
     const moc = writtenFiles.get(mocPath!);
-    expect(moc).toContain("# agentmemory vault");
+    expect(moc).toContain("# ZiiAgentMemory vault");
     expect(moc).toContain("## Memories (0)");
   });
 
@@ -223,11 +223,11 @@ describe("Obsidian Export", () => {
 
   it("respects custom vaultDir", async () => {
     await sdk.trigger("mem::obsidian-export", {
-      vaultDir: "/tmp/agentmemory-export-root/test-vault",
+      vaultDir: "/tmp/ZiiAgentMemory-export-root/test-vault",
     });
 
     const hasCustomPath = [...createdDirs].some((d) =>
-      d.startsWith("/tmp/agentmemory-export-root/test-vault"),
+      d.startsWith("/tmp/ZiiAgentMemory-export-root/test-vault"),
     );
     expect(hasCustomPath).toBe(true);
   });

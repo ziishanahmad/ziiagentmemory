@@ -153,7 +153,7 @@ describe("viewer request handler DNS rebinding defence (e2e)", () => {
   function request(
     port: number,
     hostHeader: string,
-    pathname = "/agentmemory/livez",
+    pathname = "/ziiagentmemory/livez",
   ): Promise<{ status: number; body: string; headers: Record<string, string | string[] | undefined> }> {
     return new Promise((resolve, reject) => {
       const req = httpRequest(
@@ -206,7 +206,7 @@ describe("viewer request handler DNS rebinding defence (e2e)", () => {
     // passed. The CSP nonce assertion below is the load-bearing check.
     expect(res.status === 200 || res.status === 404).toBe(true);
     if (res.status === 200) {
-      expect(res.body).toContain("agentmemory viewer");
+      expect(res.body).toContain("ZiiAgentMemory viewer");
     }
   });
 

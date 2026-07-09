@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: agentmemory
+    name: ZiiAgentMemory
     runtime: docker
     plan: starter
     dockerfilePath: ./deploy/render/Dockerfile
     dockerContext: ./deploy/render
-    healthCheckPath: /agentmemory/livez
+    healthCheckPath: /ziiagentmemory/livez
     autoDeploy: false
     disk:
       name: data
@@ -14,7 +14,7 @@ services:
     envVars:
       - key: PORT
         value: "3111"
-      - key: AGENTMEMORY_VERSION
+      - key: ZIIAGENTMEMORY_VERSION
         value: "0.9.27"
       - key: III_VERSION
         value: "0.11.2"

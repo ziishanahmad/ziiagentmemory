@@ -1,4 +1,4 @@
-// Unit tests for the `agentmemory remove` destruction plan.
+// Unit tests for the `ziiagentmemory remove` destruction plan.
 //
 // The plan module is pure-fs (just inspects what's present) so we sandbox
 // a fake $HOME under tmpdir() and assert which plan items come back. The
@@ -38,7 +38,7 @@ function mkdir(relPath: string): void {
 }
 
 beforeEach(() => {
-  sandbox = mkdtempSync(join(tmpdir(), "agentmemory-remove-"));
+  sandbox = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-remove-"));
 });
 
 afterEach(() => {
@@ -53,8 +53,8 @@ describe("buildRemovePlan", () => {
   });
 
   it("includes pidfile + engine-state when both exist", () => {
-    touch(".agentmemory/iii.pid", "12345\n");
-    touch(".agentmemory/engine-state.json", "{}");
+    touch(".ZiiAgentMemory/iii.pid", "12345\n");
+    touch(".ZiiAgentMemory/engine-state.json", "{}");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: false });
     const ids = plan.filter((p) => p.applicable).map((p) => p.id);
     expect(ids).toContain("stop-engine");
@@ -63,7 +63,7 @@ describe("buildRemovePlan", () => {
   });
 
   it("marks .env as alwaysAsk", () => {
-    touch(".agentmemory/.env", "ANTHROPIC_API_KEY=sk-ant-real\n");
+    touch(".ziiagentmemory/.env", "ANTHROPIC_API_KEY=sk-ant-real\n");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: false });
     const envItem = plan.find((p) => p.id === "env")!;
     expect(envItem.applicable).toBe(true);
@@ -71,10 +71,10 @@ describe("buildRemovePlan", () => {
   });
 
   it("--keep-data hides .env, preferences, backups, and data-dir", () => {
-    touch(".agentmemory/.env", "x");
-    touch(".agentmemory/preferences.json", "{}");
-    mkdir(".agentmemory/backups");
-    mkdir(".agentmemory/data");
+    touch(".ziiagentmemory/.env", "x");
+    touch(".ZiiAgentMemory/preferences.json", "{}");
+    mkdir(".ZiiAgentMemory/backups");
+    mkdir(".ZiiAgentMemory/data");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: true });
     const applicable = plan.filter((p) => p.applicable).map((p) => p.id);
     expect(applicable).not.toContain("env");
@@ -84,7 +84,7 @@ describe("buildRemovePlan", () => {
   });
 
   it("data-dir is alwaysAsk even on --force", () => {
-    mkdir(".agentmemory/data");
+    mkdir(".ZiiAgentMemory/data");
     const plan = buildRemovePlan(ctx(), { force: true, keepData: false });
     const item = plan.find((p) => p.id === "data-dir")!;
     expect(item.applicable).toBe(true);
@@ -138,8 +138,8 @@ describe("buildRemovePlan", () => {
     expect(plan.find((p) => p.id === "private-bin-iii")).toBeUndefined();
   });
 
-  it("private ~/.agentmemory/bin/iii is removed without prompt", () => {
-    touch(".agentmemory/bin/iii", "fakebin");
+  it("private ~/.ziiagentmemory/bin/iii is removed without prompt", () => {
+    touch(".ziiagentmemory/bin/iii", "fakebin");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: false });
     const item = plan.find((p) => p.id === "private-bin-iii")!;
     expect(item).toBeDefined();
@@ -151,8 +151,8 @@ describe("buildRemovePlan", () => {
 
 describe("formatPlan", () => {
   it("renders applicable items with numbers", () => {
-    touch(".agentmemory/iii.pid", "1");
-    touch(".agentmemory/engine-state.json", "{}");
+    touch(".ZiiAgentMemory/iii.pid", "1");
+    touch(".ZiiAgentMemory/engine-state.json", "{}");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: false });
     const out = formatPlan(plan);
     expect(out).toMatch(/^\s+1\./m);
@@ -161,7 +161,7 @@ describe("formatPlan", () => {
   });
 
   it("marks alwaysAsk items with [asks]", () => {
-    touch(".agentmemory/.env", "x");
+    touch(".ziiagentmemory/.env", "x");
     const plan = buildRemovePlan(ctx(), { force: false, keepData: false });
     const out = formatPlan(plan);
     expect(out).toContain("[asks]");

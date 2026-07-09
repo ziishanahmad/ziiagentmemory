@@ -29,10 +29,10 @@ type HealthResponse = {
   };
 };
 
-const DEFAULT_URL = process.env.AGENTMEMORY_URL || "http://localhost:3111";
+const DEFAULT_URL = process.env.ZIIAGENTMEMORY_URL || "http://localhost:3111";
 const guardPlaintextBearerAuth = createPlaintextBearerAuthGuard();
 const TOOL_GUIDANCE = [
-  "agentmemory is available for cross-session memory.",
+  "ZiiAgentMemory is available for cross-session memory.",
   "Use memory_search to recall prior decisions, preferences, bugs, and workflows.",
   "Use memory_save when you discover durable facts worth remembering beyond this session.",
 ].join(" ");
@@ -90,11 +90,11 @@ async function callAgentMemory<T>(
     baseUrl?: string;
   },
 ): Promise<T | null> {
-  const baseUrl = normalizeBaseUrl(options?.baseUrl || process.env.AGENTMEMORY_URL || DEFAULT_URL);
+  const baseUrl = normalizeBaseUrl(options?.baseUrl || process.env.ZIIAGENTMEMORY_URL || DEFAULT_URL);
   const method = options?.method || "POST";
-  const url = `${baseUrl}/agentmemory/${pathname.replace(/^\/+/, "")}`;
+  const url = `${baseUrl}/ziiagentmemory/${pathname.replace(/^\/+/, "")}`;
   const headers: Record<string, string> = {};
-  const secret = process.env.AGENTMEMORY_SECRET;
+  const secret = process.env.ZIIAGENTMEMORY_SECRET;
   guardPlaintextBearerAuth(baseUrl, secret);
   if (options?.body !== undefined) headers["Content-Type"] = "application/json";
   if (secret) headers.Authorization = `Bearer ${secret}`;
@@ -113,10 +113,10 @@ async function callAgentMemory<T>(
 }
 
 export default function agentmemoryExtension(pi: ExtensionAPI) {
-  if (process.env.AGENTMEMORY_REQUIRE_HTTPS === "1") {
+  if (process.env.ZIIAGENTMEMORY_REQUIRE_HTTPS === "1") {
     guardPlaintextBearerAuth(
-      normalizeBaseUrl(process.env.AGENTMEMORY_URL || DEFAULT_URL),
-      process.env.AGENTMEMORY_SECRET,
+      normalizeBaseUrl(process.env.ZIIAGENTMEMORY_URL || DEFAULT_URL),
+      process.env.ZIIAGENTMEMORY_SECRET,
     );
   }
   let sessionId = `ephemeral-${crypto.randomUUID().slice(0, 8)}`;
@@ -131,19 +131,19 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
   async function refreshStatus(ctx: { ui: { setStatus: (key: string, text: string) => void } }) {
     const health = await getHealth();
     lastHealthOk = !!health && (health.status === "healthy" || health.health?.status === "healthy");
-    ctx.ui.setStatus("agentmemory", lastHealthOk ? "🧠 agentmemory" : "🧠 agentmemory off");
+    ctx.ui.setStatus("ZiiAgentMemory", lastHealthOk ? "🧠 ZiiAgentMemory" : "🧠 ZiiAgentMemory off");
   }
 
-  pi.registerCommand("agentmemory-status", {
-    description: "Check local agentmemory server health",
+  pi.registerCommand("ZiiAgentMemory-status", {
+    description: "Check local ziiagentmemory server health",
     handler: async (_args, ctx) => {
       const health = await getHealth();
       if (!health) {
-        ctx.ui.notify("agentmemory is unreachable at http://localhost:3111", "warning");
+        ctx.ui.notify("ZiiAgentMemory is unreachable at http://localhost:3111", "warning");
         return;
       }
       ctx.ui.notify(
-        `agentmemory ${health.status || health.health?.status || "unknown"}${health.version ? ` v${health.version}` : ""}`,
+        `ZiiAgentMemory ${health.status || health.health?.status || "unknown"}${health.version ? ` v${health.version}` : ""}`,
         "info",
       );
     },
@@ -152,13 +152,13 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "memory_health",
     label: "Memory Health",
-    description: "Check whether the local agentmemory server is reachable and healthy",
+    description: "Check whether the local ziiagentmemory server is reachable and healthy",
     parameters: Type.Object({}),
     async execute() {
       const health = await getHealth();
       if (!health) {
         return {
-          content: [{ type: "text", text: "agentmemory is unreachable at http://localhost:3111" }],
+          content: [{ type: "text", text: "ZiiAgentMemory is unreachable at http://localhost:3111" }],
           details: { ok: false },
         };
       }
@@ -166,7 +166,7 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
         content: [
           {
             type: "text",
-            text: `agentmemory status: ${health.status || health.health?.status || "unknown"}${health.version ? ` (v${health.version})` : ""}`,
+            text: `ziiagentmemory status: ${health.status || health.health?.status || "unknown"}${health.version ? ` (v${health.version})` : ""}`,
           },
         ],
         details: health,
@@ -177,7 +177,7 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "memory_search",
     label: "Memory Search",
-    description: "Search agentmemory for cross-session project memory, prior decisions, bugs, and user preferences",
+    description: "Search ZiiAgentMemory for cross-session project memory, prior decisions, bugs, and user preferences",
     parameters: Type.Object({
       query: Type.String({ description: "What to search for in memory" }),
       limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 10, default: 5, description: "Maximum results" })),
@@ -197,7 +197,7 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "memory_save",
     label: "Memory Save",
-    description: "Save a durable fact, convention, workflow, preference, or bug fix into agentmemory",
+    description: "Save a durable fact, convention, workflow, preference, or bug fix into ZiiAgentMemory",
     parameters: Type.Object({
       content: Type.String({ description: "What should be remembered" }),
       type: Type.Optional(
@@ -213,7 +213,7 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
       });
       if (!result) {
         return {
-          content: [{ type: "text", text: "Failed to save memory to agentmemory." }],
+          content: [{ type: "text", text: "Failed to save memory to ZiiAgentMemory." }],
           details: { ok: false },
         };
       }
@@ -242,7 +242,7 @@ export default function agentmemoryExtension(pi: ExtensionAPI) {
     const results = result?.results || [];
     const recallBlock = results.length
       ? [
-          "Relevant long-term memory from agentmemory:",
+          "Relevant long-term memory from ZiiAgentMemory:",
           formatSearchResults(results),
         ].join("\n")
       : "";

@@ -163,7 +163,7 @@ export class FilesystemWatcher {
     const headers = { "content-type": "application/json" };
     if (this.secret) headers.authorization = `Bearer ${this.secret}`;
     try {
-      const res = await fetch(`${this.baseUrl}/agentmemory/observe`, {
+      const res = await fetch(`${this.baseUrl}/ziiagentmemory/observe`, {
         method: "POST",
         headers,
         body: JSON.stringify(event),
@@ -294,23 +294,23 @@ export class FilesystemWatcher {
 
 // Small helper used by tests and bin.mjs to parse env.
 export function configFromEnv(env = process.env) {
-  const roots = (env.AGENTMEMORY_FS_WATCH_DIRS || "")
+  const roots = (env.ZIIAGENTMEMORY_FS_WATCH_DIRS || "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  const extraIgnore = (env.AGENTMEMORY_FS_WATCH_IGNORE || "")
+  const extraIgnore = (env.ZIIAGENTMEMORY_FS_WATCH_IGNORE || "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
     .map((s) => new RegExp(s));
   return {
     roots,
-    baseUrl: env.AGENTMEMORY_URL,
-    secret: env.AGENTMEMORY_SECRET,
-    project: env.AGENTMEMORY_PROJECT || null,
-    sessionId: env.AGENTMEMORY_SESSION_ID || null,
+    baseUrl: env.ZIIAGENTMEMORY_URL,
+    secret: env.ZIIAGENTMEMORY_SECRET,
+    project: env.ZIIAGENTMEMORY_PROJECT || null,
+    sessionId: env.ZIIAGENTMEMORY_SESSION_ID || null,
     ignorePatterns: extraIgnore,
-    allowBinary: env.AGENTMEMORY_FS_WATCH_ALLOW_BINARY === "1",
+    allowBinary: env.ZIIAGENTMEMORY_FS_WATCH_ALLOW_BINARY === "1",
   };
 }
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
 import { basename } from "node:path";
-
 //#region src/hooks/_project.ts
 function resolveProject(cwd) {
-	const explicit = process.env["AGENTMEMORY_PROJECT_NAME"];
+	const explicit = process.env["ZIIAGENTMEMORY_PROJECT_NAME"];
 	if (explicit && explicit.trim()) return explicit.trim();
 	const dir = cwd && cwd.trim() ? cwd : process.cwd();
 	try {
@@ -21,16 +20,15 @@ function resolveProject(cwd) {
 	} catch {}
 	return basename(dir);
 }
-
 //#endregion
 //#region src/hooks/prompt-submit.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
 	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
@@ -47,7 +45,7 @@ async function main() {
 	}
 	if (isSdkChildContext(data)) return;
 	const sessionId = data.session_id || data.sessionId || "unknown";
-	fetch(`${REST_URL}/agentmemory/observe`, {
+	fetch(`${REST_URL}/ziiagentmemory/observe`, {
 		method: "POST",
 		headers: authHeaders(),
 		body: JSON.stringify({
@@ -63,7 +61,7 @@ async function main() {
 	setTimeout(() => process.exit(0), 500).unref();
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=prompt-submit.mjs.map

@@ -53,7 +53,7 @@ async function freshOnboarding() {
 
 describe("cli onboarding", () => {
   beforeEach(() => {
-    sandboxHome = mkdtempSync(join(tmpdir(), "agentmemory-onboarding-"));
+    sandboxHome = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-onboarding-"));
     process.env["HOME"] = sandboxHome;
     process.env["USERPROFILE"] = sandboxHome;
     setTTY(false);
@@ -79,7 +79,7 @@ describe("cli onboarding", () => {
     expect(prompts.select).not.toHaveBeenCalled();
     expect(prompts.confirm).not.toHaveBeenCalled();
 
-    const preferencesPath = join(sandboxHome, ".agentmemory", "preferences.json");
+    const preferencesPath = join(sandboxHome, ".ziiagentmemory", "preferences.json");
     expect(existsSync(preferencesPath)).toBe(true);
     const preferences = JSON.parse(readFileSync(preferencesPath, "utf-8"));
     expect(preferences).toMatchObject({

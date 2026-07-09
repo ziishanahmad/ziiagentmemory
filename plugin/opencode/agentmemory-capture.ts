@@ -1,12 +1,12 @@
 import type { Plugin } from "@opencode-ai/plugin";
 
-const API = process.env.AGENTMEMORY_URL || "http://localhost:3111";
+const API = process.env.ZIIAGENTMEMORY_URL || "http://localhost:3111";
 const FILE_TOOLS = new Set(["Read", "Write", "Edit", "Glob", "Grep"]);
 const FILE_KEYS = ["filePath", "file_path", "path", "file", "pattern"];
 const MAX_STASHED_FILES = 20;
 
 const DEBUG = process.env.OPENCODE_AGENTMEMORY_DEBUG === "1";
-const SECRET = process.env.AGENTMEMORY_SECRET || "";
+const SECRET = process.env.ZIIAGENTMEMORY_SECRET || "";
 
 function authHeaders(): Record<string, string> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -16,20 +16,20 @@ function authHeaders(): Record<string, string> {
 
 async function post(path: string, body: Record<string, unknown>, timeoutMs = 5000): Promise<void> {
   try {
-    await fetch(`${API}/agentmemory${path}`, {
+    await fetch(`${API}/ZiiAgentMemory${path}`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (e) {
-    if (DEBUG) console.error(`[agentmemory] POST ${path} failed:`, (e as Error).message);
+    if (DEBUG) console.error(`[ZiiAgentMemory] POST ${path} failed:`, (e as Error).message);
   }
 }
 
 async function postJson(path: string, body: Record<string, unknown>): Promise<unknown | null> {
   try {
-    const res = await fetch(`${API}/agentmemory${path}`, {
+    const res = await fetch(`${API}/ZiiAgentMemory${path}`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(body),
@@ -37,7 +37,7 @@ async function postJson(path: string, body: Record<string, unknown>): Promise<un
     });
     return res.ok ? await res.json() : null;
   } catch (e) {
-    if (DEBUG) console.error(`[agentmemory] POST ${path} failed:`, (e as Error).message);
+    if (DEBUG) console.error(`[ZiiAgentMemory] POST ${path} failed:`, (e as Error).message);
     return null;
   }
 }
@@ -101,8 +101,8 @@ function safeSlice(v: unknown, max: number): string {
   try { return JSON.stringify(v).slice(0, max); } catch { return ""; }
 }
 
-const AGENTMEMORY_INSTRUCTIONS = `<agentmemory-instructions>
-You have access to agentmemory for persistent cross-session memory. Use these tools proactively.
+const ZIIAGENTMEMORY_INSTRUCTIONS = `<ZiiAgentMemory-instructions>
+You have access to ZiiAgentMemory for persistent cross-session memory. Use these tools proactively.
 
 CORE TOOLS:
 
@@ -139,7 +139,7 @@ memory_consolidate — Run the 4-tier memory consolidation pipeline.
   Use when: you want to compress and organize accumulated session observations.
 
 All memory tools start with \`agentmemory_memory_\`. Use the exact names as they appear in your tool list. Tool results are JSON. Always check what was returned before presenting to the user.
-</agentmemory-instructions>`;
+</ZiiAgentMemory-instructions>`;
 
 function extractFilePaths(args: Record<string, unknown>): string[] {
   const files: string[] = [];
@@ -265,7 +265,7 @@ export const AgentmemoryCapturePlugin: Plugin = async (ctx) => {
       if (type === "session.deleted") {
         const sid = props.info?.id || props.sessionID || activeSessionId;
         if (!sid) {
-          if (DEBUG) console.error("[agentmemory] session.deleted with no session ID");
+          if (DEBUG) console.error("[ZiiAgentMemory] session.deleted with no session ID");
           return;
         }
         await post("/session/end", { sessionId: sid });
@@ -604,7 +604,7 @@ export const AgentmemoryCapturePlugin: Plugin = async (ctx) => {
 
       if (!contextInjectedSessions.has(sid)) {
         if (!Array.isArray(output.system)) return;
-        output.system.push(AGENTMEMORY_INSTRUCTIONS);
+        output.system.push(ZIIAGENTMEMORY_INSTRUCTIONS);
         // prefer the context already fetched at session.created;
         // fall back to a fresh /context call if the cache missed (e.g.
         // session resumed across plugin reloads).

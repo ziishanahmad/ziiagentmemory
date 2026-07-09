@@ -13,24 +13,24 @@ interface Cmd {
 const SIMPLE: Cmd[] = [
   {
     label: "1. INSTALL ONCE",
-    cmd: "npm install -g @agentmemory/agentmemory",
-    hint: "PUTS `agentmemory` ON YOUR PATH · STEPS 2/3 NEED THIS",
+    cmd: "npm install -g ziiagentmemory",
+    hint: "PUTS `ziiagentmemory` ON YOUR PATH · STEPS 2/3 NEED THIS",
   },
   {
     label: "2. START THE MEMORY SERVER",
-    cmd: "agentmemory",
+    cmd: "ZiiAgentMemory",
     hint: "RUNS ON :3111 · VIEWER ON :3113",
   },
   {
     label: "3. SEE SEMANTIC RECALL INSTANTLY",
-    cmd: "agentmemory demo",
+    cmd: "ziiagentmemory demo",
     hint: "SEEDS 3 SESSIONS · PROVES HYBRID SEARCH WORKS",
   },
 ];
 
 const NPX_FALLBACK: Cmd = {
   label: "PREFER ZERO-INSTALL? USE NPX",
-  cmd: "npx @agentmemory/agentmemory",
+  cmd: "npx ziiagentmemory",
   hint: "REPLACES STEPS 1+2 · USES NPX CACHE — SEE README FOR CAVEAT",
 };
 
@@ -90,7 +90,7 @@ export function Install() {
       <div className={styles.cta}>
         <a
           className="btn btn--accent"
-          href="https://github.com/rohitg00/agentmemory#quick-start"
+          href="https://github.com/rohitg00/ZiiAgentMemory#quick-start"
           target="_blank"
           rel="noopener"
         >
@@ -98,7 +98,7 @@ export function Install() {
         </a>
         <a
           className="btn btn--ghost"
-          href="https://www.npmjs.com/package/@agentmemory/agentmemory"
+          href="https://www.npmjs.com/package/ziiagentmemory"
           target="_blank"
           rel="noopener"
         >
@@ -106,7 +106,7 @@ export function Install() {
         </a>
         <a
           className="btn btn--ghost"
-          href="https://github.com/rohitg00/agentmemory/tree/main/integrations"
+          href="https://github.com/ziishanahmad/ziiagentmemory/tree/main/integrations"
           target="_blank"
           rel="noopener"
         >

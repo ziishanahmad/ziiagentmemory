@@ -8,7 +8,7 @@ import { fetchWithTimeout } from './_fetch.js'
  * The Anthropic SDK automatically injects `x-stainless-*` headers that MiniMax
  * rejects with 403. This provider bypasses the SDK and calls the API directly.
  *
- * Required env vars (loaded from ~/.agentmemory/.env or process.env):
+ * Required env vars (loaded from ~/.ziiagentmemory/.env or process.env):
  *   MINIMAX_API_KEY  — your MiniMax API key
  *   MINIMAX_MODEL    — model name (default: MiniMax-M2.7)
  *   MAX_TOKENS       — max output tokens (default: 800; MiniMax-M2.7 needs ≤800)

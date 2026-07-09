@@ -44,7 +44,7 @@ describe("Codex plugin manifest (developers.openai.com/codex/plugins)", () => {
       mcpServers?: string;
       hooks?: string;
     }>(manifestPath);
-    expect(manifest.name).toBe("agentmemory");
+    expect(manifest.name).toBe("ZiiAgentMemory");
     expect(manifest.name).toMatch(/^[a-z][a-z0-9-]*$/);
     expect(manifest.version).toMatch(/^\d+\.\d+\.\d+/);
     expect(manifest.skills).toBeDefined();
@@ -69,7 +69,7 @@ describe("Codex plugin manifest (developers.openai.com/codex/plugins)", () => {
     expect(existsSync(join(pluginRoot, manifest.hooks))).toBe(true);
   });
 
-  it("plugin MCP server inherits remote agentmemory environment overrides", () => {
+  it("plugin MCP server inherits remote ZiiAgentMemory environment overrides", () => {
     const mcp = readJson<{
       mcpServers: Record<
         string,
@@ -84,11 +84,11 @@ describe("Codex plugin manifest (developers.openai.com/codex/plugins)", () => {
     // env interpolation must include defaults so Claude Code (and
     // any other MCP host that fails parse on unset ${VAR}) doesn't drop
     // the server silently when the user hasn't exported the var.
-    expect(mcp.mcpServers.agentmemory?.env?.AGENTMEMORY_URL).toMatch(
-      /\$\{AGENTMEMORY_URL:-/,
+    expect(mcp.mcpServers.ZiiAgentMemory?.env?.ZIIAGENTMEMORY_URL).toMatch(
+      /\$\{ZIIAGENTMEMORY_URL:-/,
     );
-    expect(mcp.mcpServers.agentmemory?.env?.AGENTMEMORY_SECRET).toMatch(
-      /\$\{AGENTMEMORY_SECRET:-/,
+    expect(mcp.mcpServers.ZiiAgentMemory?.env?.ZIIAGENTMEMORY_SECRET).toMatch(
+      /\$\{ZIIAGENTMEMORY_SECRET:-/,
     );
   });
 
@@ -148,12 +148,12 @@ describe("Codex marketplace.json (.codex-plugin/marketplace.json at repo root)",
         source: { source: string; url: string; path: string; ref?: string };
       }>;
     }>(marketplacePath);
-    expect(marketplace.name).toBe("agentmemory");
+    expect(marketplace.name).toBe("ZiiAgentMemory");
     expect(marketplace.plugins).toHaveLength(1);
     const entry = marketplace.plugins[0];
-    expect(entry.name).toBe("agentmemory");
+    expect(entry.name).toBe("ZiiAgentMemory");
     expect(entry.source.source).toBe("git-subdir");
     expect(entry.source.path).toBe("./plugin");
-    expect(entry.source.url).toMatch(/rohitg00\/agentmemory/);
+    expect(entry.source.url).toMatch(/rohitg00\/ziiagentmemory/);
   });
 });

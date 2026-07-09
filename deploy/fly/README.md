@@ -1,31 +1,31 @@
-# Deploy agentmemory on fly.io
+# Deploy ZiiAgentMemory on fly.io
 
-This template runs agentmemory on a single fly.io machine with a 1 GB
+This template runs ZiiAgentMemory on a single fly.io machine with a 1 GB
 persistent volume mounted at `/data`. The HMAC secret is generated on
 first boot and persisted to the volume — you capture it from the deploy
 logs exactly once.
 
 ## What you get
 
-- A public HTTPS endpoint serving the agentmemory REST API on port 3111
+- A public HTTPS endpoint serving the ZiiAgentMemory REST API on port 3111
 - A 1 GB Fly Volume at `/data` for memories, BM25 index, and stream backlog
 - `auto_stop_machines = "stop"` and `min_machines_running = 0` — the
   machine sleeps when idle, so cost floor approaches $0 for low traffic
-- HTTP healthcheck at `/agentmemory/livez` every 30 s
+- HTTP healthcheck at `/ziiagentmemory/livez` every 30 s
 - The HMAC bearer secret is generated on first boot inside the
   container and persisted to `/data/.hmac` (chmod 600); the operator
   copies it from the deploy logs once.
 
 ## One-time setup
 
-Pick a unique Fly app name first — `agentmemory` itself is likely taken.
+Pick a unique Fly app name first — `ziiagentmemory` itself is likely taken.
 Every command below references `$APP`, so set it once and the rest of the
 flow stays consistent:
 
 ```bash
 # 1. Install flyctl: https://fly.io/docs/flyctl/install/
 # 2. Pick your unique app name (and matching volume name):
-export APP="agentmemory-$(whoami)"     # or any other globally-unique name
+export APP="ZiiAgentMemory-$(whoami)"     # or any other globally-unique name
 export VOLUME="${APP//-/_}_data"       # Fly volume names can't contain '-'
 
 # 3. From this directory:
@@ -46,10 +46,10 @@ re-export, and re-run.
 Right after the first deploy succeeds:
 
 ```bash
-fly logs --app "$APP" | grep -A1 AGENTMEMORY_SECRET=
+fly logs --app "$APP" | grep -A1 ZIIAGENTMEMORY_SECRET=
 ```
 
-You will see exactly one line of the form `AGENTMEMORY_SECRET=<64 hex chars>`.
+You will see exactly one line of the form `ZIIAGENTMEMORY_SECRET=<64 hex chars>`.
 Copy it into your client environment (`~/.bashrc`, Claude Desktop config,
 the viewer unlock prompt, etc.). The secret is never printed again on
 subsequent boots.
@@ -64,7 +64,7 @@ fly ssh console --app "$APP" -C "sh -lc 'cat /data/.hmac'"
 ## Verify the deployment
 
 ```bash
-curl "https://$APP.fly.dev/agentmemory/livez"
+curl "https://$APP.fly.dev/ziiagentmemory/livez"
 # {"status":"ok"}
 ```
 
@@ -83,7 +83,7 @@ fly proxy 3113:3113 --app "$APP"
 viewer's bearer token still has to ride a loopback connection on your
 laptop — the v0.9.12 plaintext-bearer guard stays satisfied.
 
-The entrypoint sets `AGENTMEMORY_VIEWER_HOST=::` **only when it detects
+The entrypoint sets `ZIIAGENTMEMORY_VIEWER_HOST=::` **only when it detects
 Fly's runtime variables** (`FLY_APP_NAME` / `FLY_ALLOC_ID`). That makes
 the viewer listen on the machine's `fly-local-6pn` WireGuard interface
 as well as loopback so `fly proxy` can reach it. The same branch
@@ -91,19 +91,19 @@ pre-seeds `VIEWER_ALLOWED_HOSTS=localhost:3113,127.0.0.1:3113,[::1]:3113`,
 which are the Host headers `fly proxy 3113:3113` actually emits on
 your laptop.
 
-When `AGENTMEMORY_VIEWER_HOST` is non-loopback the viewer enforces two
+When `ZIIAGENTMEMORY_VIEWER_HOST` is non-loopback the viewer enforces two
 extra guards: it refuses to start unless `VIEWER_ALLOWED_HOSTS` is
-explicitly set, and every request to `/agentmemory/*` must present
-`Authorization: Bearer $AGENTMEMORY_SECRET`. Static HTML and the
+explicitly set, and every request to `/ziiagentmemory/*` must present
+`Authorization: Bearer $ZIIAGENTMEMORY_SECRET`. Static HTML and the
 favicon are still served unauthenticated. If a proxied viewer request
-gets a 401, the browser UI prompts for `AGENTMEMORY_SECRET` and stores
+gets a 401, the browser UI prompts for `ZIIAGENTMEMORY_SECRET` and stores
 it in session storage so subsequent viewer API calls include the bearer.
 Use the value printed in the first-boot logs or read `/data/.hmac`
 inside the machine.
 
-> **Security warning.** Setting `AGENTMEMORY_VIEWER_HOST=0.0.0.0` or
+> **Security warning.** Setting `ZIIAGENTMEMORY_VIEWER_HOST=0.0.0.0` or
 > `::` turns the viewer into a network-reachable proxy that signs every
-> upstream call with `AGENTMEMORY_SECRET`. Never enable that outside a
+> upstream call with `ZIIAGENTMEMORY_SECRET`. Never enable that outside a
 > network you trust (Fly's WireGuard mesh in this template), and never
 > set it in a plain `docker run -p 3113:3113 …` on a shared host — the
 > entrypoint deliberately skips the override when Fly env vars are
@@ -116,7 +116,7 @@ fly ssh console --app "$APP"
 rm /data/.hmac
 exit
 fly machine restart <machine-id>
-fly logs --app "$APP" | grep AGENTMEMORY_SECRET=
+fly logs --app "$APP" | grep ZIIAGENTMEMORY_SECRET=
 ```
 
 Update every client with the new secret. Old tokens stop working
@@ -158,9 +158,9 @@ See <https://fly.io/docs/about/pricing/> for the up-to-date rate card.
 - First deploy lands on a **shared IPv4 + dedicated IPv6** by default
   (free). If you need a dedicated IPv4 for legacy clients without SNI,
   run `fly ips allocate-v4 --app "$APP"` — costs $2/month.
-- Cold-start (from machine launch to passing `/agentmemory/livez`) is
+- Cold-start (from machine launch to passing `/ziiagentmemory/livez`) is
   ~9 seconds measured. `grace_period = "30s"` on the health check
   gives a 3x safety margin.
-- Bump `AGENTMEMORY_VERSION` or `III_VERSION` in the Dockerfile to
-  upgrade. `fly deploy --build-arg AGENTMEMORY_VERSION=<x>` also works
+- Bump `ZIIAGENTMEMORY_VERSION` or `III_VERSION` in the Dockerfile to
+  upgrade. `fly deploy --build-arg ZIIAGENTMEMORY_VERSION=<x>` also works
   for a one-off without editing the file.

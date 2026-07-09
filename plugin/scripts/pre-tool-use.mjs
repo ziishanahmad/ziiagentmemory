@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 //#region src/hooks/pre-tool-use.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const INJECT_CONTEXT = process.env["AGENTMEMORY_INJECT_CONTEXT"] === "true";
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const INJECT_CONTEXT = process.env["ZIIAGENTMEMORY_INJECT_CONTEXT"] === "true";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
 	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
@@ -59,7 +59,7 @@ async function main() {
 	const sessionId = typeof rawSessionId === "string" && rawSessionId.length > 0 ? rawSessionId : "unknown";
 	const project = typeof data.project === "string" && data.project.trim().length > 0 ? data.project.trim() : void 0;
 	try {
-		const res = await fetch(`${REST_URL}/agentmemory/enrich`, {
+		const res = await fetch(`${REST_URL}/ziiagentmemory/enrich`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify({
@@ -78,7 +78,7 @@ async function main() {
 	} catch {}
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=pre-tool-use.mjs.map

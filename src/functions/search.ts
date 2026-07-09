@@ -350,7 +350,7 @@ export function registerSearchFunction(sdk: ISdk, kv: StateKV): void {
       const cwdFilter = typeof data.cwd === 'string' && data.cwd.trim().length > 0 ? data.cwd.trim() : undefined
       // #817: agent-scope isolation. mem::search backs REST /search,
       // memory_recall and recall_context. Without filtering here a
-      // worker booted with AGENT_ID=B + AGENTMEMORY_AGENT_SCOPE=isolated
+      // worker booted with AGENT_ID=B + ZIIAGENTMEMORY_AGENT_SCOPE=isolated
       // could read A's memories — the cross-agent leak the issue
       // documented. Mirrors the smart-search pattern: wildcard "*"
       // bypasses, explicit agentId pins, isolated mode falls back to
@@ -378,7 +378,7 @@ export function registerSearchFunction(sdk: ISdk, kv: StateKV): void {
         !envAgentId
       ) {
         throw new Error(
-          "mem::search: AGENTMEMORY_AGENT_SCOPE=isolated is set but no " +
+          "mem::search: ZIIAGENTMEMORY_AGENT_SCOPE=isolated is set but no " +
             "agent id is available (env AGENT_ID unset and no explicit " +
             "agentId in the call). Refusing to read cross-agent rows. " +
             'Pass agentId: "*" to opt in to a wildcard read.',

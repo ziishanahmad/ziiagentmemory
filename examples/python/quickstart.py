@@ -1,8 +1,8 @@
-"""Minimal agentmemory usage via iii-sdk.
+"""Minimal ZiiAgentMemory usage via iii-sdk.
 
 Prerequisites:
     pip install iii-sdk
-    npx -y @agentmemory/agentmemory  # daemon at ws://localhost:49134
+    npx -y ziiagentmemory  # daemon at ws://localhost:49134
 
 Run:
     python examples/python/quickstart.py

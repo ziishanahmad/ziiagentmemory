@@ -32,7 +32,7 @@ export function registerEventTriggers(sdk: ISdk, kv: StateKV): void {
   sdk.registerTrigger({
     type: "durable:subscriber",
     function_id: "event::session::started",
-    config: { topic: "agentmemory.session.started" },
+    config: { topic: "ZiiAgentMemory.session.started" },
   });
 
   sdk.registerFunction("event::observation", async (data: HookPayload) =>
@@ -41,7 +41,7 @@ export function registerEventTriggers(sdk: ISdk, kv: StateKV): void {
   sdk.registerTrigger({
     type: "durable:subscriber",
     function_id: "event::observation",
-    config: { topic: "agentmemory.observation" },
+    config: { topic: "ZiiAgentMemory.observation" },
   });
 
   sdk.registerFunction("event::session::stopped", async (data: { sessionId: string }) => {
@@ -85,7 +85,7 @@ export function registerEventTriggers(sdk: ISdk, kv: StateKV): void {
   sdk.registerTrigger({
     type: "durable:subscriber",
     function_id: "event::session::stopped",
-    config: { topic: "agentmemory.session.stopped" },
+    config: { topic: "ZiiAgentMemory.session.stopped" },
   });
 
   sdk.registerFunction(
@@ -101,7 +101,7 @@ export function registerEventTriggers(sdk: ISdk, kv: StateKV): void {
   sdk.registerTrigger({
     type: "durable:subscriber",
     function_id: "event::session::ended",
-    config: { topic: "agentmemory.session.ended" },
+    config: { topic: "ZiiAgentMemory.session.ended" },
   });
 
   // React to observation count changes and emit a lightweight live event for dashboards/viewer.

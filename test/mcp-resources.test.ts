@@ -86,7 +86,7 @@ describe("MCP Resources", () => {
     expect(result.body.resources).toHaveLength(6);
   });
 
-  it("reads agentmemory://status", async () => {
+  it("reads ZiiAgentMemory://status", async () => {
     const session: Session = {
       id: "ses_1",
       project: "/test",
@@ -98,7 +98,7 @@ describe("MCP Resources", () => {
     await kv.set("mem:sessions", "ses_1", session);
 
     const fn = sdk.getFunction("mcp::resources::read")!;
-    const result = (await fn(makeReq({ uri: "agentmemory://status" }))) as {
+    const result = (await fn(makeReq({ uri: "ZiiAgentMemory://status" }))) as {
       status_code: number;
       body: { contents: Array<{ text: string }> };
     };
@@ -108,7 +108,7 @@ describe("MCP Resources", () => {
     expect(data.sessionCount).toBe(1);
   });
 
-  it("reads agentmemory://project/{name}/profile", async () => {
+  it("reads ZiiAgentMemory://project/{name}/profile", async () => {
     sdk.overrideTrigger("mem::profile", async () => ({
       project: "/myapp",
       topConcepts: [{ concept: "auth", frequency: 5 }],
@@ -116,7 +116,7 @@ describe("MCP Resources", () => {
 
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
-      makeReq({ uri: "agentmemory://project/myapp/profile" }),
+      makeReq({ uri: "ZiiAgentMemory://project/myapp/profile" }),
     )) as {
       status_code: number;
       body: { contents: Array<{ text: string }> };
@@ -127,7 +127,7 @@ describe("MCP Resources", () => {
     expect(data.project).toBe("/myapp");
   });
 
-  it("reads agentmemory://project/{name}/recent with sorted summaries", async () => {
+  it("reads ZiiAgentMemory://project/{name}/recent with sorted summaries", async () => {
     const summaries: SessionSummary[] = [
       {
         sessionId: "ses_1",
@@ -169,7 +169,7 @@ describe("MCP Resources", () => {
 
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
-      makeReq({ uri: "agentmemory://project/myapp/recent" }),
+      makeReq({ uri: "ZiiAgentMemory://project/myapp/recent" }),
     )) as {
       status_code: number;
       body: { contents: Array<{ text: string }> };
@@ -181,7 +181,7 @@ describe("MCP Resources", () => {
     expect(data[0].sessionId).toBe("ses_2");
   });
 
-  it("reads agentmemory://memories/latest", async () => {
+  it("reads ZiiAgentMemory://memories/latest", async () => {
     const memories: Memory[] = [
       {
         id: "mem_1",
@@ -218,7 +218,7 @@ describe("MCP Resources", () => {
 
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
-      makeReq({ uri: "agentmemory://memories/latest" }),
+      makeReq({ uri: "ZiiAgentMemory://memories/latest" }),
     )) as {
       status_code: number;
       body: { contents: Array<{ text: string }> };
@@ -234,7 +234,7 @@ describe("MCP Resources", () => {
   it("returns 404 for unknown URI", async () => {
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
-      makeReq({ uri: "agentmemory://nonexistent" }),
+      makeReq({ uri: "ZiiAgentMemory://nonexistent" }),
     )) as { status_code: number };
 
     expect(result.status_code).toBe(404);
@@ -264,7 +264,7 @@ describe("MCP Resources", () => {
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
       makeReq({
-        uri: "agentmemory://project/my%20app%2Fsubdir/profile",
+        uri: "ZiiAgentMemory://project/my%20app%2Fsubdir/profile",
       }),
     )) as {
       status_code: number;
@@ -280,7 +280,7 @@ describe("MCP Resources", () => {
     const fn = sdk.getFunction("mcp::resources::read")!;
     const result = (await fn(
       makeReq({
-        uri: "agentmemory://project/bad%E0encoding/profile",
+        uri: "ZiiAgentMemory://project/bad%E0encoding/profile",
       }),
     )) as { status_code: number; body: { error: string } };
 

@@ -231,7 +231,7 @@ function generateReport(systems: SystemResult[], obsCount: number): string {
   const lines: string[] = [];
   const w = (s: string) => lines.push(s);
 
-  w("# agentmemory v0.6.0 — Real Embeddings Quality Evaluation");
+  w("# ZiiAgentMemory v0.6.0 — Real Embeddings Quality Evaluation");
   w("");
   w(`**Date:** ${new Date().toISOString()}`);
   w(`**Platform:** ${process.platform} ${process.arch}, Node ${process.version}`);
@@ -336,7 +336,7 @@ function generateReport(systems: SystemResult[], obsCount: number): string {
   w("## Recommendation");
   w("");
   w("Enable local embeddings by default (`EMBEDDING_PROVIDER=local` or install `@xenova/transformers`).");
-  w("This gives agentmemory genuine semantic search that built-in agent memories cannot match —");
+  w("This gives ZiiAgentMemory genuine semantic search that built-in agent memories cannot match —");
   w("understanding that \"database performance optimization\" relates to \"N+1 query fix\" and \"eager loading\".");
   w("");
 
@@ -347,7 +347,7 @@ function generateReport(systems: SystemResult[], obsCount: number): string {
 }
 
 async function main() {
-  console.log("=== agentmemory Real Embeddings Benchmark ===\n");
+  console.log("=== ZiiAgentMemory Real Embeddings Benchmark ===\n");
 
   console.log("Loading Xenova/all-MiniLM-L6-v2 model (first run downloads ~80MB)...");
   let provider: EmbeddingProvider;

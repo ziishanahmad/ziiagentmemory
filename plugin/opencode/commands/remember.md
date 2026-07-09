@@ -1,4 +1,4 @@
-Explicitly save an insight, decision, or learning to agentmemory for future sessions. Wraps the `memory_save` MCP tool.
+Explicitly save an insight, decision, or learning to ZiiAgentMemory for future sessions. Wraps the `memory_save` MCP tool.
 
 ## Usage
 

@@ -1,6 +1,6 @@
-# agentmemory website
+# ZiiAgentMemory website
 
-Next.js 15 App Router landing page for agentmemory. Lamborghini-inspired
+Next.js 15 App Router landing page for ZiiAgentMemory. Lamborghini-inspired
 black + gold design system. Deploys to Vercel with zero config.
 
 ## Stack
@@ -43,7 +43,7 @@ website/
     Stats.tsx       — counter-up on intersect
     Primitives.tsx  — three cards with 3D mouse tilt
     LiveTerminal.tsx — typewriter replay of memory.recall + consolidate
-    Compare.tsx     — agentmemory vs Mem0/Letta/Cognee table
+    Compare.tsx     — ZiiAgentMemory vs Mem0/Letta/Cognee table
     Agents.tsx      — supported-agents grid
     Install.tsx     — click-to-copy npm + console commands
     Footer.tsx      — source / changelog / license links

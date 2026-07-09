@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/docs",
-      "destination": "https://agentmemory.mintlify.dev/docs"
+      "destination": "https://ZiiAgentMemory.mintlify.dev/docs"
     },
     {
       "source": "/docs/:match*",
-      "destination": "https://agentmemory.mintlify.dev/docs/:match*"
+      "destination": "https://ZiiAgentMemory.mintlify.dev/docs/:match*"
     }
   ]
 }

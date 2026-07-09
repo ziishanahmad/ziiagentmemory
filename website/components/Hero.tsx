@@ -32,7 +32,7 @@ export async function Hero() {
               SEE IT MOVE
             </a>
             <GitHubStarButton
-              repo="rohitg00/agentmemory"
+              repo="ziishanahmad/ziiagentmemory"
               initialStars={stats.stars > 0 ? stats.stars : undefined}
             />
           </div>

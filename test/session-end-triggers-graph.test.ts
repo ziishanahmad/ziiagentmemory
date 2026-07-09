@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 // #666: api::session::end must publish the session-stopped lifecycle so
 // summarize + slot-reflect + graph extraction actually fire. Before this
 // fix the `event::session::stopped` handler in events.ts was a dead
-// subscriber — no code published `agentmemory.session.stopped`, so graph
+// subscriber — no code published `ZiiAgentMemory.session.stopped`, so graph
 // nodes / lessons / crystals never materialized despite the handler
 // existing. Direct fire-and-forget trigger keeps the HTTP response fast
 // (kv.update runs synchronously, downstream pipeline fan-outs without
@@ -31,7 +31,7 @@ describe("api::session::end → event::session::stopped (#666)", () => {
   });
 });
 
-// #666: viewer's "Build Graph" button used to POST /agentmemory/graph/build
+// #666: viewer's "Build Graph" button used to POST /ziiagentmemory/graph/build
 // which returned 404 because the endpoint was never registered. Backfill
 // the knowledge graph from existing compressed observations across every
 // session in batches.
@@ -42,9 +42,9 @@ describe("api::graph-build endpoint (#666)", () => {
     expect(api).toMatch(/registerFunction\("api::graph-build"/);
   });
 
-  it("registers HTTP trigger at /agentmemory/graph/build", () => {
+  it("registers HTTP trigger at /ziiagentmemory/graph/build", () => {
     expect(api).toMatch(
-      /api_path:\s*"\/agentmemory\/graph\/build",\s*http_method:\s*"POST"/,
+      /api_path:\s*"\/ZiiAgentMemory\/graph\/build",\s*http_method:\s*"POST"/,
     );
   });
 
@@ -69,11 +69,11 @@ describe("api::graph-build endpoint (#666)", () => {
   });
 });
 
-// #666: `agentmemory status` showed Memories/Observations as 0 because it
-// fetched /agentmemory/export which times out on iii-engine's file-based
+// #666: `ziiagentmemory status` showed Memories/Observations as 0 because it
+// fetched /ziiagentmemory/export which times out on iii-engine's file-based
 // KV under concurrent kv.list() pressure. Switch to /memories for the
 // memory count and derive observation count from sessions[].observationCount.
-describe("agentmemory status no longer depends on /export (#666)", () => {
+describe("ziiagentmemory status no longer depends on /export (#666)", () => {
   const cli = readFileSync("src/cli.ts", "utf-8");
 
   it("status uses count-only memories endpoint instead of export", () => {

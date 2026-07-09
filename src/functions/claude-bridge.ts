@@ -39,7 +39,7 @@ function serializeToMemoryMd(
   lineBudget: number,
 ): string {
   const lines: string[] = [];
-  lines.push("# Agent Memory (auto-synced by agentmemory)");
+  lines.push("# Agent Memory (auto-synced by ZiiAgentMemory)");
   lines.push("");
 
   if (projectSummary) {

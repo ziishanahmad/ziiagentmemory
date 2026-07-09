@@ -1,6 +1,6 @@
-# agentmemory-evals
+# ZiiAgentMemory-evals
 
-Public benchmarks for agentmemory's hybrid memory stack (BM25 + embeddings + consolidation + graph).
+Public benchmarks for ZiiAgentMemory's hybrid memory stack (BM25 + embeddings + consolidation + graph).
 
 Two families, both reproducible:
 
@@ -13,20 +13,20 @@ Two families, both reproducible:
 |---|---|---|
 | `grep` | Tokenized substring match | none |
 | `vector` | OpenAI `text-embedding-3-small` + cosine | `OPENAI_API_KEY` |
-| `agentmemory` | Running agentmemory server, smart-search endpoint | none (auth optional via `AGENTMEMORY_SECRET`) |
+| `ziiagentmemory` | Running ziiagentmemory server, smart-search endpoint | none (auth optional via `ZIIAGENTMEMORY_SECRET`) |
 
 ## Sandbox first
 
-Running the `agentmemory` adapter against your real `~/.agentmemory` directory pollutes the eval with pre-existing memories AND pollutes your real store with eval test data. Always sandbox.
+Running the `ziiagentmemory` adapter against your real `~/.ziiagentmemory` directory pollutes the eval with pre-existing memories AND pollutes your real store with eval test data. Always sandbox.
 
-`eval/scripts/sandbox.sh` spins up a clean agentmemory + iii-engine on ports 3411/3412 with state in `/tmp/agentmemory-eval-sandbox/`, exports `AGENTMEMORY_BASE_URL`, and tears down on exit.
+`eval/scripts/sandbox.sh` spins up a clean ZiiAgentMemory + iii-engine on ports 3411/3412 with state in `/tmp/ZiiAgentMemory-eval-sandbox/`, exports `ZIIAGENTMEMORY_BASE_URL`, and tears down on exit.
 
 ```sh
 source eval/scripts/sandbox.sh
-npm run eval:coding-life -- --adapters grep,agentmemory
+npm run eval:coding-life -- --adapters grep,ZiiAgentMemory
 ```
 
-Requires iii v0.11.2 on PATH (agentmemory pin). If you already have a different version installed, install the pinned build into `~/.local/bin` and make sure that directory comes first on `PATH`:
+Requires iii v0.11.2 on PATH (ZiiAgentMemory pin). If you already have a different version installed, install the pinned build into `~/.local/bin` and make sure that directory comes first on `PATH`:
 
 ```sh
 mkdir -p ~/.local/bin
@@ -42,9 +42,9 @@ export PATH="$HOME/.local/bin:$PATH"  # add to ~/.zshrc or ~/.bashrc for persist
 # grep baseline, no sandbox needed
 npm run eval:coding-life -- --adapters grep
 
-# add agentmemory + vector (sandbox + OpenAI key)
+# add ZiiAgentMemory + vector (sandbox + OpenAI key)
 source eval/scripts/sandbox.sh
-OPENAI_API_KEY=sk-... npm run eval:coding-life -- --adapters grep,vector,agentmemory
+OPENAI_API_KEY=sk-... npm run eval:coding-life -- --adapters grep,vector,ZiiAgentMemory
 ```
 
 ### LongMemEval `_s` (public, 278MB download)
@@ -77,7 +77,7 @@ eval/
 │   ├── adapters/
 │   │   ├── grep.ts                tokenized substring baseline
 │   │   ├── vector.ts              OpenAI embeddings + cosine
-│   │   └── agentmemory.ts         POST /agentmemory/{remember,smart-search}
+│   │   └── ZiiAgentMemory.ts         POST /ziiagentmemory/{remember,smart-search}
 │   ├── longmemeval.ts             public benchmark runner
 │   └── coding-life.ts             in-house benchmark runner
 └── data/
@@ -104,8 +104,8 @@ Published scorecards land in `docs/benchmarks/YYYY-MM-DD-<bench>.md`.
 2. Register in `eval/runner/{longmemeval,coding-life}.ts` `ADAPTERS` map.
 3. Run against `coding-agent-life-v1` to sanity-check before committing OpenAI spend on LongMemEval.
 
-## Why a benchmark for agentmemory
+## Why a benchmark for ZiiAgentMemory
 
-agentmemory ships BM25 + embeddings + consolidation + graph retrieval. Numbers from those layers should be measured against grep/vector baselines so the value of each layer is provable.
+ZiiAgentMemory ships BM25 + embeddings + consolidation + graph retrieval. Numbers from those layers should be measured against grep/vector baselines so the value of each layer is provable.
 
 The in-house corpus is small on purpose (15 sessions) — covers single-session, multi-session, preference, and temporal question types without taking 15 minutes to run. LongMemEval gives the public-comparison axis.

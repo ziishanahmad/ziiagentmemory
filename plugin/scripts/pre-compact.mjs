@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
 import { basename } from "node:path";
-
 //#region src/hooks/_project.ts
 function resolveProject(cwd) {
-	const explicit = process.env["AGENTMEMORY_PROJECT_NAME"];
+	const explicit = process.env["ZIIAGENTMEMORY_PROJECT_NAME"];
 	if (explicit && explicit.trim()) return explicit.trim();
 	const dir = cwd && cwd.trim() ? cwd : process.cwd();
 	try {
@@ -21,16 +20,15 @@ function resolveProject(cwd) {
 	} catch {}
 	return basename(dir);
 }
-
 //#endregion
 //#region src/hooks/pre-compact.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
 	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
@@ -49,7 +47,7 @@ async function main() {
 	const sessionId = data.session_id || data.sessionId || "unknown";
 	const project = resolveProject(data.cwd);
 	if (process.env["CLAUDE_MEMORY_BRIDGE"] === "true") try {
-		await fetch(`${REST_URL}/agentmemory/claude-bridge/sync`, {
+		await fetch(`${REST_URL}/ziiagentmemory/claude-bridge/sync`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify({}),
@@ -57,7 +55,7 @@ async function main() {
 		});
 	} catch {}
 	try {
-		const res = await fetch(`${REST_URL}/agentmemory/context`, {
+		const res = await fetch(`${REST_URL}/ziiagentmemory/context`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify({
@@ -74,7 +72,7 @@ async function main() {
 	} catch {}
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=pre-compact.mjs.map

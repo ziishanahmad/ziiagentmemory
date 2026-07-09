@@ -6,7 +6,7 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.mjs\"",
-            "statusMessage": "agentmemory: loading session context"
+            "statusMessage": "ZiiAgentMemory: loading session context"
           }
         ]
       }
@@ -17,7 +17,7 @@
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/prompt-submit.mjs\"",
-            "statusMessage": "agentmemory: recalling relevant memories"
+            "statusMessage": "ZiiAgentMemory: recalling relevant memories"
           }
         ]
       }

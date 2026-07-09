@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import * as p from "@clack/prompts";
 import type { ConnectAdapter, ConnectOptions, ConnectResult } from "./types.js";
 import {
-  AGENTMEMORY_COPILOT_MCP_BLOCK,
+  ZIIAGENTMEMORY_COPILOT_MCP_BLOCK,
   backupFile,
   logAlreadyWired,
   logBackup,
@@ -16,7 +16,7 @@ import {
 const COPILOT_DIR = process.env["COPILOT_HOME"] || join(homedir(), ".copilot");
 const COPILOT_MCP_JSON = join(COPILOT_DIR, "mcp-config.json");
 
-type CopilotMcpEntry = typeof AGENTMEMORY_COPILOT_MCP_BLOCK;
+type CopilotMcpEntry = typeof ZIIAGENTMEMORY_COPILOT_MCP_BLOCK;
 type CopilotConfig = {
   mcpServers?: Record<string, CopilotMcpEntry>;
   [key: string]: unknown;
@@ -24,14 +24,14 @@ type CopilotConfig = {
 
 function entryMatches(entry: unknown): boolean {
   if (!entry || typeof entry !== "object") return false;
-  return JSON.stringify(entry) === JSON.stringify(AGENTMEMORY_COPILOT_MCP_BLOCK);
+  return JSON.stringify(entry) === JSON.stringify(ZIIAGENTMEMORY_COPILOT_MCP_BLOCK);
 }
 
 export const adapter: ConnectAdapter = {
   name: "copilot-cli",
   displayName: "GitHub Copilot CLI",
   category: "native",
-  docs: "https://github.com/rohitg00/agentmemory#github-copilot-cli",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#github-copilot-cli",
   protocolNote:
     "→ Using MCP. Install the plugin too for full hooks/skills coverage.",
 
@@ -46,7 +46,7 @@ export const adapter: ConnectAdapter = {
       ...((next.mcpServers as Record<string, CopilotMcpEntry>) ?? {}),
     };
 
-    const alreadyHas = entryMatches(servers["agentmemory"]);
+    const alreadyHas = entryMatches(servers["ZiiAgentMemory"]);
     if (alreadyHas && !opts.force) {
       logAlreadyWired("GitHub Copilot CLI", COPILOT_MCP_JSON);
       return { kind: "already-wired", mutatedPath: COPILOT_MCP_JSON };
@@ -54,7 +54,7 @@ export const adapter: ConnectAdapter = {
 
     if (opts.dryRun) {
       p.log.info(
-        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers.agentmemory in ${COPILOT_MCP_JSON}`,
+        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers.ZiiAgentMemory in ${COPILOT_MCP_JSON}`,
       );
       return { kind: "installed", mutatedPath: COPILOT_MCP_JSON };
     }
@@ -67,14 +67,14 @@ export const adapter: ConnectAdapter = {
       mkdirSync(dirname(COPILOT_MCP_JSON), { recursive: true });
     }
 
-    servers["agentmemory"] = AGENTMEMORY_COPILOT_MCP_BLOCK;
+    servers["ZiiAgentMemory"] = ZIIAGENTMEMORY_COPILOT_MCP_BLOCK;
     next.mcpServers = servers;
     writeJsonAtomic(COPILOT_MCP_JSON, next);
 
     const verify = readJsonSafe<CopilotConfig>(COPILOT_MCP_JSON);
-    if (!entryMatches(verify?.mcpServers?.["agentmemory"])) {
+    if (!entryMatches(verify?.mcpServers?.["ZiiAgentMemory"])) {
       p.log.error(
-        `Verification failed: ${COPILOT_MCP_JSON} did not contain mcpServers.agentmemory after write.`,
+        `Verification failed: ${COPILOT_MCP_JSON} did not contain mcpServers.ZiiAgentMemory after write.`,
       );
       return { kind: "skipped", reason: "verification-failed" };
     }

@@ -61,7 +61,7 @@ describe("buildMergedHooks against plugin/hooks/hooks.json (Claude Code)", () =>
     ).toBe(true);
   });
 
-  it("re-install strips previous agentmemory entries (idempotent)", () => {
+  it("re-install strips previous ZiiAgentMemory entries (idempotent)", () => {
     const first = buildMergedHooks(null, PLUGIN_ROOT, "hooks.json");
     const second = buildMergedHooks(first, PLUGIN_ROOT, "hooks.json");
     for (const event of Object.keys(first.hooks)) {

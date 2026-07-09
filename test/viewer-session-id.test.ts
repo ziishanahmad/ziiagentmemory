@@ -180,7 +180,7 @@ describe("viewer session rendering", () => {
   it("attaches the saved viewer bearer to API calls", async () => {
     const { sandbox } = loadViewerSandbox();
     const requests: Array<{ url: string; opts: { headers?: Record<string, string> } }> = [];
-    sandbox.sessionStorage.setItem("agentmemory-viewer-token", "viewer-secret");
+    sandbox.sessionStorage.setItem("ZiiAgentMemory-viewer-token", "viewer-secret");
     sandbox.fetch = async (url: string, opts: { headers?: Record<string, string> }) => {
       requests.push({ url, opts });
       return { ok: true, json: async () => ({ ok: true }) };
@@ -192,7 +192,7 @@ describe("viewer session rendering", () => {
     expect(requests[0].opts.headers?.Authorization).toBe("Bearer viewer-secret");
   });
 
-  it("shows where to find AGENTMEMORY_SECRET after a viewer auth failure", async () => {
+  it("shows where to find ZIIAGENTMEMORY_SECRET after a viewer auth failure", async () => {
     const { sandbox, getElement } = loadViewerSandbox();
     sandbox.fetch = async () => ({ ok: false, status: 401, json: async () => ({}) });
 
@@ -200,7 +200,7 @@ describe("viewer session rendering", () => {
 
     const prompt = getElement("viewer-auth");
     expect(prompt.classList.contains("open")).toBe(true);
-    expect(prompt.innerHTML).toContain("AGENTMEMORY_SECRET");
+    expect(prompt.innerHTML).toContain("ZIIAGENTMEMORY_SECRET");
     expect(prompt.innerHTML).toContain("unlock viewer API access");
     expect(prompt.innerHTML).not.toContain("fly logs");
     expect(prompt.innerHTML).not.toContain("/data/.hmac");

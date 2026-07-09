@@ -46,7 +46,7 @@ export function findPluginRoot(startUrl: string = import.meta.url): string {
     dir = parent;
   }
   throw new Error(
-    `agentmemory: could not locate bundled plugin/ directory (searched up from ${here})`,
+    `ZiiAgentMemory: could not locate bundled plugin/ directory (searched up from ${here})`,
   );
 }
 

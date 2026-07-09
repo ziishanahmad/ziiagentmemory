@@ -7,9 +7,9 @@ const envCfg = configFromEnv(process.env);
 const roots = cliArgs.length > 0 ? cliArgs : envCfg.roots;
 if (!roots || roots.length === 0) {
   process.stderr.write(
-    "agentmemory-fs-watcher: no directories to watch.\n" +
-      "Usage: agentmemory-fs-watcher <dir> [<dir>...]\n" +
-      "Or set AGENTMEMORY_FS_WATCH_DIRS=path1,path2\n",
+    "ZiiAgentMemory-fs-watcher: no directories to watch.\n" +
+      "Usage: ZiiAgentMemory-fs-watcher <dir> [<dir>...]\n" +
+      "Or set ZIIAGENTMEMORY_FS_WATCH_DIRS=path1,path2\n",
   );
   process.exit(2);
 }

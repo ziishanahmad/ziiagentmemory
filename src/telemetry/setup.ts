@@ -7,7 +7,7 @@ interface OtelConfig {
 }
 
 export const OTEL_CONFIG: OtelConfig = {
-  serviceName: "agentmemory",
+  serviceName: "ZiiAgentMemory",
   serviceVersion: VERSION,
   metricsExportIntervalMs: 30_000,
 };
@@ -129,7 +129,7 @@ export function initMetrics(getMeter?: (name: string) => Meter): {
   counters: Counters;
   histograms: Histograms;
 } {
-  const meter = getMeter?.("agentmemory");
+  const meter = getMeter?.("ZiiAgentMemory");
 
   counters = Object.fromEntries(
     COUNTER_NAMES.map(([key, name]) => [

@@ -19,7 +19,7 @@ function requireEnvVar(key: string): string {
   const value = getEnvVar(key);
   if (!value) {
     throw new Error(
-      `Missing required environment variable: ${key}. Set it in ~/.agentmemory/.env or as an environment variable.`,
+      `Missing required environment variable: ${key}. Set it in ~/.ziiagentmemory/.env or as an environment variable.`,
     );
   }
   return value;

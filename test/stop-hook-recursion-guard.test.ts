@@ -3,22 +3,22 @@ import { isSdkChildContext } from "../src/hooks/sdk-guard.js";
 import { NoopProvider } from "../src/providers/noop.js";
 
 describe("isSdkChildContext — Stop hook recursion guard", () => {
-  const originalEnv = process.env.AGENTMEMORY_SDK_CHILD;
+  const originalEnv = process.env.ZIIAGENTMEMORY_SDK_CHILD;
 
   beforeEach(() => {
-    delete process.env.AGENTMEMORY_SDK_CHILD;
+    delete process.env.ZIIAGENTMEMORY_SDK_CHILD;
   });
 
   afterEach(() => {
     if (originalEnv === undefined) {
-      delete process.env.AGENTMEMORY_SDK_CHILD;
+      delete process.env.ZIIAGENTMEMORY_SDK_CHILD;
     } else {
-      process.env.AGENTMEMORY_SDK_CHILD = originalEnv;
+      process.env.ZIIAGENTMEMORY_SDK_CHILD = originalEnv;
     }
   });
 
-  it("returns true when AGENTMEMORY_SDK_CHILD=1 is in env", () => {
-    process.env.AGENTMEMORY_SDK_CHILD = "1";
+  it("returns true when ZIIAGENTMEMORY_SDK_CHILD=1 is in env", () => {
+    process.env.ZIIAGENTMEMORY_SDK_CHILD = "1";
     expect(isSdkChildContext({})).toBe(true);
   });
 
@@ -38,7 +38,7 @@ describe("isSdkChildContext — Stop hook recursion guard", () => {
   });
 
   it("env marker wins over payload shape", () => {
-    process.env.AGENTMEMORY_SDK_CHILD = "1";
+    process.env.ZIIAGENTMEMORY_SDK_CHILD = "1";
     expect(isSdkChildContext({ entrypoint: "cli" })).toBe(true);
   });
 });

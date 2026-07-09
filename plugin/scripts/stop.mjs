@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 //#region src/hooks/stop.ts
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
 	if (SECRET) h["Authorization"] = `Bearer ${SECRET}`;
@@ -23,13 +23,13 @@ async function main() {
 	}
 	if (isSdkChildContext(data)) return;
 	const sessionId = data.session_id || data.sessionId || "unknown";
-	fetch(`${REST_URL}/agentmemory/summarize`, {
+	fetch(`${REST_URL}/ziiagentmemory/summarize`, {
 		method: "POST",
 		headers: authHeaders(),
 		body: JSON.stringify({ sessionId }),
 		signal: AbortSignal.timeout(12e4)
 	}).catch(() => {});
-	fetch(`${REST_URL}/agentmemory/session/end`, {
+	fetch(`${REST_URL}/ziiagentmemory/session/end`, {
 		method: "POST",
 		headers: authHeaders(),
 		body: JSON.stringify({ sessionId }),
@@ -38,7 +38,7 @@ async function main() {
 	setTimeout(() => process.exit(0), 1500).unref();
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=stop.mjs.map

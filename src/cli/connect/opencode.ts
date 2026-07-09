@@ -22,13 +22,13 @@ const DETECT_DIR = join(homedir(), ".config", "opencode");
 
 // No `environment` block: OpenCode does not expand shell-style
 // `${VAR:-default}` values, and writing them literally would override the
-// user's real shell AGENTMEMORY_URL with an unexpanded string. The stdio
-// child inherits the shell environment (an exported AGENTMEMORY_URL /
-// AGENTMEMORY_SECRET still reaches the server), and the @agentmemory/mcp
+// user's real shell ZIIAGENTMEMORY_URL with an unexpanded string. The stdio
+// child inherits the shell environment (an exported ZIIAGENTMEMORY_URL /
+// ZIIAGENTMEMORY_SECRET still reaches the server), and the ziiagentmemory
 // shim defaults unset vars (URL -> localhost:3111, no secret, all tools).
 const OPENCODE_ENTRY = {
   type: "local",
-  command: ["npx", "-y", "@agentmemory/mcp"],
+  command: ["npx", "-y", "ziiagentmemory"],
   enabled: true,
 };
 
@@ -38,14 +38,14 @@ type McpEntry = Record<string, unknown>;
 function entryMatches(entry: unknown): boolean {
   if (!entry || typeof entry !== "object") return false;
   const command = (entry as McpEntry)["command"];
-  return Array.isArray(command) && command.includes("@agentmemory/mcp");
+  return Array.isArray(command) && command.includes("ziiagentmemory");
 }
 
 export const adapter: ConnectAdapter = {
   name: "opencode",
   displayName: "OpenCode",
   category: "mcp",
-  docs: "https://github.com/rohitg00/agentmemory#other-agents",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#other-agents",
   protocolNote:
     "Using MCP via ~/.config/opencode/opencode.json (top-level `mcp` key). For full auto-capture, also install the bundled plugin in plugin/opencode/.",
 
@@ -64,7 +64,7 @@ export const adapter: ConnectAdapter = {
         ? { ...(existingMcp as Record<string, McpEntry>) }
         : {};
 
-    const alreadyHas = entryMatches(mcp["agentmemory"]);
+    const alreadyHas = entryMatches(mcp["ZiiAgentMemory"]);
     if (alreadyHas && !opts.force) {
       logAlreadyWired(this.displayName, CONFIG_PATH);
       return { kind: "already-wired", mutatedPath: CONFIG_PATH };
@@ -72,7 +72,7 @@ export const adapter: ConnectAdapter = {
 
     if (opts.dryRun) {
       p.log.info(
-        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcp.agentmemory in ${CONFIG_PATH}`,
+        `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcp.ZiiAgentMemory in ${CONFIG_PATH}`,
       );
       return { kind: "installed", mutatedPath: CONFIG_PATH };
     }
@@ -85,15 +85,15 @@ export const adapter: ConnectAdapter = {
       mkdirSync(dirname(CONFIG_PATH), { recursive: true });
     }
 
-    mcp["agentmemory"] = { ...OPENCODE_ENTRY };
+    mcp["ZiiAgentMemory"] = { ...OPENCODE_ENTRY };
     next["mcp"] = mcp;
     writeJsonAtomic(CONFIG_PATH, next);
 
     const verify = readJsonSafe<OpencodeConfig>(CONFIG_PATH);
     const verifyMcp = verify?.["mcp"] as Record<string, McpEntry> | undefined;
-    if (!entryMatches(verifyMcp?.["agentmemory"])) {
+    if (!entryMatches(verifyMcp?.["ZiiAgentMemory"])) {
       p.log.error(
-        `Verification failed: ${CONFIG_PATH} did not contain mcp.agentmemory after write.`,
+        `Verification failed: ${CONFIG_PATH} did not contain mcp.ZiiAgentMemory after write.`,
       );
       return { kind: "skipped", reason: "verification-failed" };
     }

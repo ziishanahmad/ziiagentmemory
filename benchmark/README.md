@@ -14,7 +14,7 @@ Two kinds of numbers live in this directory:
 ## load-100k.ts
 
 Hand-rolled, dependency-free load harness. Issues real HTTP against a
-local agentmemory daemon at `http://localhost:3111`, records per-request
+local ZiiAgentMemory daemon at `http://localhost:3111`, records per-request
 latency with `performance.now()`, and writes a JSON report per run.
 
 ### What it measures
@@ -31,9 +31,9 @@ Default matrix:
   cell runs.
 - `C` ∈ {1, 10, 100} — concurrent in-flight requests during the cell.
 - Endpoints under test:
-  - `POST /agentmemory/remember`
-  - `POST /agentmemory/smart-search`
-  - `GET  /agentmemory/memories?latest=true`
+  - `POST /ziiagentmemory/remember`
+  - `POST /ziiagentmemory/smart-search`
+  - `GET  /ziiagentmemory/memories?latest=true`
 
 Each cell issues `BENCH_OPS=200` requests by default — enough samples
 for stable p99 without dragging a 100k-seed run past tens of minutes.
@@ -50,7 +50,7 @@ number to plan against. p50 will lie to you.
 
 ```bash
 # 1. Start the daemon however you normally do (npx, Docker, etc.)
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 
 # 2. From the repo root, in another shell:
 npm run bench:load
@@ -65,12 +65,12 @@ BENCH_N=1000 BENCH_C=1,10 BENCH_OPS=100 npm run bench:load
 To have the harness spawn a daemon for the run (after `npm run build`):
 
 ```bash
-AGENTMEMORY_BENCH_AUTOSTART=1 npm run bench:load
+ZIIAGENTMEMORY_BENCH_AUTOSTART=1 npm run bench:load
 ```
 
 Other env knobs (see the file header for the canonical list):
 
-- `AGENTMEMORY_URL` — base URL of the daemon (default
+- `ZIIAGENTMEMORY_URL` — base URL of the daemon (default
   `http://localhost:3111`).
 - `BENCH_SEED` — seed for the `mulberry32` content RNG. Same seed +
   same daemon build = byte-identical seed corpus.

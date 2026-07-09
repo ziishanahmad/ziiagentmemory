@@ -18,7 +18,7 @@ export async function Nav() {
   const stats = await fetchRepoStats();
   return (
     <header className={styles.nav}>
-      <a href="#top" className={styles.brand} aria-label="agentmemory home">
+      <a href="#top" className={styles.brand} aria-label="ZiiAgentMemory home">
         <Image
           src="/icon.svg"
           width={36}
@@ -41,10 +41,10 @@ export async function Nav() {
       <div className={styles.right}>
         <a
           className={styles.gh}
-          href="https://github.com/rohitg00/agentmemory"
+          href="https://github.com/ziishanahmad/ziiagentmemory"
           target="_blank"
           rel="noopener"
-          aria-label={`agentmemory on GitHub — ${stats.stars} stars`}
+          aria-label={`ZiiAgentMemory on GitHub — ${stats.stars} stars`}
         >
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
             <path

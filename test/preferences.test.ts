@@ -15,7 +15,7 @@ async function freshPrefs() {
 
 describe("cli preferences", () => {
   beforeEach(() => {
-    sandboxHome = mkdtempSync(join(tmpdir(), "agentmemory-prefs-"));
+    sandboxHome = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-prefs-"));
     process.env["HOME"] = sandboxHome;
     process.env["USERPROFILE"] = sandboxHome;
   });

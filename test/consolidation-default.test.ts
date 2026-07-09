@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 const ENV_KEYS = [
   "CONSOLIDATION_ENABLED",
-  "AGENTMEMORY_PROVIDER",
+  "ZIIAGENTMEMORY_PROVIDER",
   "ANTHROPIC_API_KEY",
   "OPENAI_API_KEY",
   "OPENAI_API_KEY_FOR_LLM",
@@ -28,14 +28,14 @@ async function freshConfig() {
 }
 
 function writeEnv(contents: string) {
-  const dir = join(sandboxHome, ".agentmemory");
+  const dir = join(sandboxHome, ".ziiagentmemory");
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, ".env"), contents);
 }
 
 describe("isConsolidationEnabled default behavior", () => {
   beforeEach(() => {
-    sandboxHome = mkdtempSync(join(tmpdir(), "agentmemory-consolidation-"));
+    sandboxHome = mkdtempSync(join(tmpdir(), "ZiiAgentMemory-consolidation-"));
     process.env["HOME"] = sandboxHome;
     process.env["USERPROFILE"] = sandboxHome;
     for (const k of ENV_KEYS) {
@@ -80,8 +80,8 @@ describe("isConsolidationEnabled default behavior", () => {
     expect(cfg.isConsolidationEnabled()).toBe(true);
   });
 
-  it("returns true by default when AGENTMEMORY_PROVIDER=agent-sdk", async () => {
-    writeEnv("AGENTMEMORY_PROVIDER=agent-sdk");
+  it("returns true by default when ZIIAGENTMEMORY_PROVIDER=agent-sdk", async () => {
+    writeEnv("ZIIAGENTMEMORY_PROVIDER=agent-sdk");
     const cfg = await freshConfig();
     expect(cfg.isConsolidationEnabled()).toBe(true);
   });
@@ -98,8 +98,8 @@ describe("isConsolidationEnabled default behavior", () => {
     expect(cfg.isConsolidationEnabled()).toBe(true);
   });
 
-  it("AGENTMEMORY_PROVIDER=noop returns false even with API key set", async () => {
-    writeEnv("AGENTMEMORY_PROVIDER=noop\nANTHROPIC_API_KEY=sk-test-123");
+  it("ZIIAGENTMEMORY_PROVIDER=noop returns false even with API key set", async () => {
+    writeEnv("ZIIAGENTMEMORY_PROVIDER=noop\nANTHROPIC_API_KEY=sk-test-123");
     const cfg = await freshConfig();
     expect(cfg.isConsolidationEnabled()).toBe(false);
   });

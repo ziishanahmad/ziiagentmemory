@@ -195,9 +195,9 @@ describe("Disk Size Manager", () => {
   });
 
   it("should trigger cleanup when total exceeds max bytes", async () => {
-    const originalEnv = process.env.AGENTMEMORY_IMAGE_STORE_MAX_BYTES;
+    const originalEnv = process.env.ZIIAGENTMEMORY_IMAGE_STORE_MAX_BYTES;
     try {
-      process.env.AGENTMEMORY_IMAGE_STORE_MAX_BYTES = "5000";
+      process.env.ZIIAGENTMEMORY_IMAGE_STORE_MAX_BYTES = "5000";
 
       const localKv = mockKV() as any;
       const localTrigger = vi.fn().mockResolvedValue(undefined);
@@ -226,9 +226,9 @@ describe("Disk Size Manager", () => {
       );
     } finally {
       if (originalEnv === undefined) {
-        delete process.env.AGENTMEMORY_IMAGE_STORE_MAX_BYTES;
+        delete process.env.ZIIAGENTMEMORY_IMAGE_STORE_MAX_BYTES;
       } else {
-        process.env.AGENTMEMORY_IMAGE_STORE_MAX_BYTES = originalEnv;
+        process.env.ZIIAGENTMEMORY_IMAGE_STORE_MAX_BYTES = originalEnv;
       }
     }
   });

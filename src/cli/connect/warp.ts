@@ -5,7 +5,7 @@ import { createJsonMcpAdapter } from "./json-mcp-adapter.js";
 // Warp stores MCP server config at ~/.warp/.mcp.json with the
 // canonical `mcpServers` wrapper — identical schema to Claude Code.
 // Warp also auto-discovers skills from .claude/skills/ so the
-// agentmemory plugin's 8 skills are surfaced natively once the
+// ZiiAgentMemory plugin's 8 skills are surfaced natively once the
 // Claude Code plugin is installed.
 // Source: docs.warp.dev/agent-platform/capabilities/mcp/
 export const adapter = createJsonMcpAdapter({
@@ -13,7 +13,7 @@ export const adapter = createJsonMcpAdapter({
   displayName: "Warp",
   detectDir: join(homedir(), ".warp"),
   configPath: join(homedir(), ".warp", ".mcp.json"),
-  docs: "https://github.com/rohitg00/agentmemory#other-agents",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#other-agents",
   protocolNote:
     "→ Using MCP via ~/.warp/.mcp.json. Skills auto-discover from .claude/skills/ if the Claude Code plugin is also installed.",
 });

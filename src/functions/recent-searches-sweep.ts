@@ -48,7 +48,7 @@ export function registerRecentSearchesSweepFunction(
     },
   );
 
-  // #771: read-back surface for `agentmemory status` and external
+  // #771: read-back surface for `ziiagentmemory status` and external
   // dashboards that don't go through the OTEL collector.
   sdk.registerFunction(
     "mem::diagnostic::followup-stats",

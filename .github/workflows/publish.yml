@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       packages:
-        description: "Packages to publish (comma-separated: agentmemory,mcp,fs-watcher)"
+        description: "Packages to publish (comma-separated: ZiiAgentMemory,mcp,fs-watcher)"
         required: false
-        default: "agentmemory,mcp,fs-watcher"
+        default: "ZiiAgentMemory,mcp,fs-watcher"
 
 # Workflow-level permissions stay minimal — only `contents: read`
 # is required to check out the repo. `id-token: write` is granted on
@@ -45,9 +45,9 @@ jobs:
       - run: npm run build
       - run: npm test
 
-      - name: Publish @agentmemory/agentmemory
+      - name: Publish ziiagentmemory
         run: |
-          if npm view "@agentmemory/agentmemory@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+          if npm view "ziiagentmemory@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
             echo "Version already published, skipping"
           else
             npm publish --provenance --access public
@@ -59,7 +59,7 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           for i in $(seq 1 24); do
-            if npm view "@agentmemory/agentmemory@$VERSION" version >/dev/null 2>&1; then
+            if npm view "ziiagentmemory@$VERSION" version >/dev/null 2>&1; then
               echo "Registry propagated after ${i} attempt(s)"
               exit 0
             fi
@@ -69,11 +69,11 @@ jobs:
           echo "ERROR: registry never propagated after 2 minutes" >&2
           exit 1
 
-      - name: Publish @agentmemory/mcp shim
+      - name: Publish ziiagentmemory shim
         working-directory: packages/mcp
         run: |
           SHIM_VERSION=$(node -p "require('./package.json').version")
-          if npm view "@agentmemory/mcp@$SHIM_VERSION" version >/dev/null 2>&1; then
+          if npm view "ziiagentmemory@$SHIM_VERSION" version >/dev/null 2>&1; then
             echo "Shim version already published, skipping"
           else
             npm publish --provenance --access public
@@ -81,12 +81,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Wait for @agentmemory/mcp registry propagation
+      - name: Wait for ziiagentmemory registry propagation
         working-directory: packages/mcp
         run: |
           SHIM_VERSION=$(node -p "require('./package.json').version")
           for i in $(seq 1 24); do
-            if npm view "@agentmemory/mcp@$SHIM_VERSION" version >/dev/null 2>&1; then
+            if npm view "ziiagentmemory@$SHIM_VERSION" version >/dev/null 2>&1; then
               echo "Shim propagated after ${i} attempt(s)"
               exit 0
             fi
@@ -96,11 +96,11 @@ jobs:
           echo "ERROR: shim never propagated after 2 minutes" >&2
           exit 1
 
-      - name: Publish @agentmemory/fs-watcher connector
+      - name: Publish @ZiiAgentMemory/fs-watcher connector
         working-directory: integrations/filesystem-watcher
         run: |
           FSW_VERSION=$(node -p "require('./package.json').version")
-          if npm view "@agentmemory/fs-watcher@$FSW_VERSION" version >/dev/null 2>&1; then
+          if npm view "@ZiiAgentMemory/fs-watcher@$FSW_VERSION" version >/dev/null 2>&1; then
             echo "fs-watcher version already published, skipping"
           else
             npm publish --provenance --access public
@@ -108,12 +108,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Wait for @agentmemory/fs-watcher registry propagation
+      - name: Wait for @ZiiAgentMemory/fs-watcher registry propagation
         working-directory: integrations/filesystem-watcher
         run: |
           FSW_VERSION=$(node -p "require('./package.json').version")
           for i in $(seq 1 24); do
-            if npm view "@agentmemory/fs-watcher@$FSW_VERSION" version >/dev/null 2>&1; then
+            if npm view "@ZiiAgentMemory/fs-watcher@$FSW_VERSION" version >/dev/null 2>&1; then
               echo "fs-watcher propagated after ${i} attempt(s)"
               exit 0
             fi

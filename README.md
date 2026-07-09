@@ -1,6 +1,14 @@
 <p align="center">
-  <img src="assets/banner.png" alt="agentmemory — Persistent memory for AI coding agents" width="720" />
+  <img src="assets/banner.png" alt="ZiiAgentMemory — Persistent memory for AI coding agents" width="720" />
 </p>
+
+> **⚠️ This is `ziiagentmemory`, a fork of [`@agentmemory/agentmemory`](https://github.com/rohitg00/agentmemory) by Rohit Ghumare.**
+>
+> ZiiAgentMemory is a maintained rebrand by Zeeshan Ahmad <ziishanahmad@gmail.com>,
+> distributed under the same Apache-2.0 license. All upstream copyright and
+> license notices are preserved. See [NOTICE](./NOTICE) for the full
+> attribution. For the original project, bug reports, and the upstream
+> maintainer, visit [rohitg00/agentmemory](https://github.com/rohitg00/agentmemory).
 
 <p align="center">
   <strong>
@@ -44,14 +52,14 @@
 </p>
 
 <p align="center">
-  <em>The gist extends Karpathy's LLM Wiki pattern with confidence scoring, lifecycle, knowledge graphs, and hybrid search: agentmemory is the implementation.</em>
+  <em>The gist extends Karpathy's LLM Wiki pattern with confidence scoring, lifecycle, knowledge graphs, and hybrid search: ZiiAgentMemory is the implementation.</em>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@agentmemory/agentmemory"><img src="https://img.shields.io/npm/v/@agentmemory/agentmemory?color=CB3837&label=npm&style=for-the-badge&logo=npm" alt="npm version" /></a>
-  <a href="https://github.com/rohitg00/agentmemory/actions"><img src="https://img.shields.io/github/actions/workflow/status/rohitg00/agentmemory/ci.yml?label=tests&style=for-the-badge&logo=github" alt="CI" /></a>
-  <a href="https://github.com/rohitg00/agentmemory/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rohitg00/agentmemory?color=blue&style=for-the-badge" alt="License" /></a>
-  <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=for-the-badge&color=yellow&logo=github" alt="Stars" /></a>
+  <a href="https://www.npmjs.com/package/ziiagentmemory"><img src="https://img.shields.io/npm/v/ziiagentmemory?color=CB3837&label=npm&style=for-the-badge&logo=npm" alt="npm version" /></a>
+  <a href="https://github.com/ziishanahmad/ziiagentmemory/actions"><img src="https://img.shields.io/github/actions/workflow/status/ziishanahmad/ziiagentmemory/ci.yml?label=tests&style=for-the-badge&logo=github" alt="CI" /></a>
+  <a href="https://github.com/ziishanahmad/ziiagentmemory/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ziishanahmad/ziiagentmemory?color=blue&style=for-the-badge" alt="License" /></a>
+  <a href="https://github.com/ziishanahmad/ziiagentmemory/stargazers"><img src="https://img.shields.io/github/stars/ziishanahmad/ziiagentmemory?style=for-the-badge&color=yellow&logo=github" alt="Stars" /></a>
 </p>
 
 <p align="center">
@@ -64,7 +72,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="agentmemory demo" width="720" />
+  <img src="assets/demo.gif" alt="ziiagentmemory demo" width="720" />
 </p>
 
 <p align="center">
@@ -86,32 +94,32 @@
 
 ## Install
 
-Fastest path if you use a coding agent: hand it this one instruction and it installs, wires, and verifies agentmemory end to end.
+Fastest path if you use a coding agent: hand it this one instruction and it installs, wires, and verifies ZiiAgentMemory end to end.
 
-> Retrieve and follow the instructions at: https://raw.githubusercontent.com/rohitg00/agentmemory/main/INSTALL_FOR_AGENTS.md
+> Retrieve and follow the instructions at: https://raw.githubusercontent.com/ziishanahmad/ziiagentmemory/main/INSTALL_FOR_AGENTS.md
 
-On Windows the fast path is WSL2. Native Windows engine setup is manual (about 10 to 20 minutes) and `agentmemory connect` is currently unsupported there. See the [Windows notes](#windows) below for the step-by-step.
+On Windows the fast path is WSL2. Native Windows engine setup is manual (about 10 to 20 minutes) and `ziiagentmemory connect` is currently unsupported there. See the [Windows notes](#windows) below for the step-by-step.
 
 ```bash
-npm install -g @agentmemory/agentmemory   # once — bare `agentmemory` on PATH
+npm install -g ziiagentmemory   # once — bare `ziiagentmemory` on PATH
 # If you hit EACCES on macOS/Linux system Node installs, retry with:
-# sudo npm install -g @agentmemory/agentmemory
-agentmemory                                      # start the memory server on :3111
-agentmemory demo                                 # seed sample sessions + prove recall
-agentmemory demo --serve                         # one command: boot server, run demo, tear down (no second terminal)
-agentmemory connect claude-code                  # wire MCP into your agent (also: copilot-cli, codex, cursor, gemini-cli, ...)
-npx skills add rohitg00/agentmemory -y           # install 15 native skills (8 you can invoke, 7 reference) so your agent knows when to use the tools
+# sudo npm install -g ziiagentmemory
+ZiiAgentMemory                                      # start the memory server on :3111
+ziiagentmemory demo                                 # seed sample sessions + prove recall
+ziiagentmemory demo --serve                         # one command: boot server, run demo, tear down (no second terminal)
+ziiagentmemory connect claude-code                  # wire MCP into your agent (also: copilot-cli, codex, cursor, gemini-cli, ...)
+npx skills add ziishanahmad/ziiagentmemory -y           # install 15 native skills (8 you can invoke, 7 reference) so your agent knows when to use the tools
 ```
 
 Or via `npx` (no install):
 
 ```bash
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 ```
 
-Heads-up — npx caches per version. If a bare `npx @agentmemory/agentmemory` serves an older release, force the latest with `npx -y @agentmemory/agentmemory@latest`, or clear the cache once with `rm -rf ~/.npm/_npx` (macOS/Linux; on Windows delete `%LOCALAPPDATA%\npm-cache\_npx`). The first npx run from v0.9.16+ prompts to install globally inline so the bare `agentmemory` command works everywhere afterwards.
+Heads-up — npx caches per version. If a bare `npx ziiagentmemory` serves an older release, force the latest with `npx -y ziiagentmemory@latest`, or clear the cache once with `rm -rf ~/.npm/_npx` (macOS/Linux; on Windows delete `%LOCALAPPDATA%\npm-cache\_npx`). The first npx run from v0.9.16+ prompts to install globally inline so the bare `ziiagentmemory` command works everywhere afterwards.
 
-Already running your own `iii` engine? agentmemory pins iii-engine v0.11.2 and won't attach to a different version (the worker can't speak another engine's protocol). Stop the other engine, then run `npx -y @agentmemory/agentmemory@latest` — it installs and runs the pinned v0.11.2 in `~/.agentmemory/bin`, leaving your own `iii` untouched.
+Already running your own `iii` engine? ZiiAgentMemory pins iii-engine v0.11.2 and won't attach to a different version (the worker can't speak another engine's protocol). Stop the other engine, then run `npx -y ziiagentmemory@latest` — it installs and runs the pinned v0.11.2 in `~/.ziiagentmemory/bin`, leaving your own `iii` untouched.
 
 Full options at [Quick Start](#quick-start) below. Agent-specific wiring at [Works with every agent](#works-with-every-agent).
 
@@ -119,7 +127,7 @@ Full options at [Quick Start](#quick-start) below. Agent-specific wiring at [Wor
 
 <h2 id="works-with-every-agent"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-agents.svg"><img src="assets/tags/section-agents.svg" alt="Works with every agent" height="32" /></picture></h2>
 
-agentmemory works with any agent that supports hooks, MCP, or REST API. All agents share the same memory server.
+ZiiAgentMemory works with any agent that supports hooks, MCP, or REST API. All agents share the same memory server.
 
 <table>
 <tr>
@@ -226,12 +234,12 @@ agentmemory works with any agent that supports hooks, MCP, or REST API. All agen
 
 ---
 
-You explain the same architecture every session. You re-discover the same bugs. You re-teach the same preferences. Built-in memory (CLAUDE.md, .cursorrules) caps out at 200 lines and goes stale. agentmemory fixes this. It silently captures what your agent does, compresses it into searchable memory, and injects the right context when the next session starts. One command. Works across agents.
+You explain the same architecture every session. You re-discover the same bugs. You re-teach the same preferences. Built-in memory (CLAUDE.md, .cursorrules) caps out at 200 lines and goes stale. ZiiAgentMemory fixes this. It silently captures what your agent does, compresses it into searchable memory, and injects the right context when the next session starts. One command. Works across agents.
 
 **What changes:** Session 1 you set up JWT auth. Session 2 you ask for rate limiting. The agent already knows your auth uses jose middleware in `src/middleware/auth.ts`, your tests cover token validation, and you chose jose over jsonwebtoken for Edge compatibility. No re-explaining. No copy-pasting. The agent just *knows*.
 
 ```bash
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 ```
 
 Latest release notes: [CHANGELOG.md](CHANGELOG.md).
@@ -250,7 +258,7 @@ Latest release notes: [CHANGELOG.md](CHANGELOG.md).
 
 | Adapter | P@5 | R@5 | Top-5 hit rate | p50 latency |
 |---|---|---|---|---|
-| **agentmemory hybrid** | **0.240** | **1.000** | **15 / 15** | 14 ms |
+| **ZiiAgentMemory hybrid** | **0.240** | **1.000** | **15 / 15** | 14 ms |
 | grep baseline | 0.227 | 0.967 | 15 / 15 | 0 ms |
 
 100% top-5 hit rate at the **P@5 math ceiling** for this corpus (0.240, see scorecard). Hybrid retrieves every gold session; grep misses 1 of 2 gold on the multi-session temporal query. Lift is **recall + temporal**, not aggregate precision — this benchmark is small + gold-sparse, the larger LongMemEval-S below differentiates better. Full per-type breakdown + correction note: [`docs/benchmarks/2026-05-20-coding-agent-life-v1.md`](docs/benchmarks/2026-05-20-coding-agent-life-v1.md).
@@ -259,7 +267,7 @@ Latest release notes: [CHANGELOG.md](CHANGELOG.md).
 
 | System | R@5 | R@10 | MRR |
 |---|---|---|---|
-| **agentmemory** | **95.2%** | **98.6%** | **88.2%** |
+| **ZiiAgentMemory** | **95.2%** | **98.6%** | **88.2%** |
 | BM25-only fallback | 86.2% | 94.6% | 71.5% |
 
 </td>
@@ -271,18 +279,18 @@ Latest release notes: [CHANGELOG.md](CHANGELOG.md).
 |---|---|---|
 | Paste full context | 19.5M+ | Impossible (exceeds window) |
 | LLM-summarized | ~650K | ~$500 |
-| **agentmemory** | **~170K** | **~$10** |
-| agentmemory + local embeddings | ~170K | **$0** |
+| **ZiiAgentMemory** | **~170K** | **~$10** |
+| ZiiAgentMemory + local embeddings | ~170K | **$0** |
 
 </td>
 </tr>
 </table>
 
-> Embedding model: `all-MiniLM-L6-v2` (local, free, no API key). Full reports: [`benchmark/LONGMEMEVAL.md`](benchmark/LONGMEMEVAL.md), [`benchmark/QUALITY.md`](benchmark/QUALITY.md), [`benchmark/SCALE.md`](benchmark/SCALE.md). Competitor comparison: [`benchmark/COMPARISON.md`](benchmark/COMPARISON.md) covering agentmemory vs mem0, Letta, Khoj, supermemory, MemPalace, Hippo.
+> Embedding model: `all-MiniLM-L6-v2` (local, free, no API key). Full reports: [`benchmark/LONGMEMEVAL.md`](benchmark/LONGMEMEVAL.md), [`benchmark/QUALITY.md`](benchmark/QUALITY.md), [`benchmark/SCALE.md`](benchmark/SCALE.md). Competitor comparison: [`benchmark/COMPARISON.md`](benchmark/COMPARISON.md) covering ZiiAgentMemory vs mem0, Letta, Khoj, supermemory, MemPalace, Hippo.
 
-**Reproduce locally:** [`eval/README.md`](eval/README.md) — adapter-pluggable harness for LongMemEval `_s` (public 500-Q) + `coding-agent-life-v1` (in-house 15-session corpus). Grep / vector / agentmemory adapters score side-by-side, NDJSON output, published scorecards land in [`docs/benchmarks/`](docs/benchmarks/).
+**Reproduce locally:** [`eval/README.md`](eval/README.md) — adapter-pluggable harness for LongMemEval `_s` (public 500-Q) + `coding-agent-life-v1` (in-house 15-session corpus). Grep / vector / ZiiAgentMemory adapters score side-by-side, NDJSON output, published scorecards land in [`docs/benchmarks/`](docs/benchmarks/).
 
-**Pairs with [codegraph](https://github.com/colbymchenry/codegraph), [Understand Anything](https://github.com/Lum1104/Understand-Anything), and [Graphify](https://github.com/safishamsi/graphify).** Code-graph indexing, multi-agent build pipelines, and broader knowledge graphs across docs / PDFs / images / videos. agentmemory remembers the work; those three projects light up the rest of the context layer. Recipes + question-routing table: [`docs/recipes/pairings.md`](docs/recipes/pairings.md).
+**Pairs with [codegraph](https://github.com/colbymchenry/codegraph), [Understand Anything](https://github.com/Lum1104/Understand-Anything), and [Graphify](https://github.com/safishamsi/graphify).** Code-graph indexing, multi-agent build pipelines, and broader knowledge graphs across docs / PDFs / images / videos. ZiiAgentMemory remembers the work; those three projects light up the rest of the context layer. Recipes + question-routing table: [`docs/recipes/pairings.md`](docs/recipes/pairings.md).
 
 ---
 
@@ -291,7 +299,7 @@ Latest release notes: [CHANGELOG.md](CHANGELOG.md).
 <table>
 <tr>
 <th></th>
-<th>agentmemory</th>
+<th>ZiiAgentMemory</th>
 <th>mem0 (58K ⭐)</th>
 <th>Letta / MemGPT (23K ⭐)</th>
 <th>Khoj (35K ⭐)</th>
@@ -435,7 +443,7 @@ Latest release notes: [CHANGELOG.md](CHANGELOG.md).
 </tr>
 </table>
 
-<sub>Benchmark note: only agentmemory's R@5 is our own measured result (LongMemEval-S, reproducible from <a href="benchmark/COMPARISON.md"><code>benchmark/COMPARISON.md</code></a>). The mem0 and Letta figures are their published LoCoMo numbers (a different dataset); the MemPalace, supermemory, and oracleagentmemory figures are vendor self-reported claims we have not independently reproduced (oracleagentmemory's run used GPT-5.5 against an Oracle AI Database). Shown side by side for ballpark only, not a head-to-head on identical data. Star counts are approximate and drift over time.</sub>
+<sub>Benchmark note: only ZiiAgentMemory's R@5 is our own measured result (LongMemEval-S, reproducible from <a href="benchmark/COMPARISON.md"><code>benchmark/COMPARISON.md</code></a>). The mem0 and Letta figures are their published LoCoMo numbers (a different dataset); the MemPalace, supermemory, and oracleagentmemory figures are vendor self-reported claims we have not independently reproduced (oracleagentmemory's run used GPT-5.5 against an Oracle AI Database). Shown side by side for ballpark only, not a head-to-head on identical data. Star counts are approximate and drift over time.</sub>
 
 ---
 
@@ -447,10 +455,10 @@ Compatibility: this release targets stable `iii-sdk` `^0.11.0` and iii-engine v0
 
 ```bash
 # Terminal 1: start the server
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 
 # Terminal 2: seed sample data and see recall in action
-npx @agentmemory/agentmemory demo
+npx ziiagentmemory demo
 ```
 
 `demo` seeds 3 realistic sessions (JWT auth, N+1 query fix, rate limiting) and runs semantic searches against them. You'll see it find "N+1 query fix" when you search "database performance optimization" — keyword matching can't do that.
@@ -459,52 +467,52 @@ Open `http://localhost:3113` to watch the memory build live.
 
 ### Recommended: install globally
 
-`npx` caches per-version. If you ran `npx @agentmemory/agentmemory@0.9.14` last week, a bare `npx @agentmemory/agentmemory` may serve the stale 0.9.14 from `~/.npm/_npx/`, not the latest release. Install once and the bare `agentmemory` command works everywhere:
+`npx` caches per-version. If you ran `npx ziiagentmemory@0.9.14` last week, a bare `npx ziiagentmemory` may serve the stale 0.9.14 from `~/.npm/_npx/`, not the latest release. Install once and the bare `ziiagentmemory` command works everywhere:
 
 ```bash
-npm install -g @agentmemory/agentmemory
+npm install -g ziiagentmemory
 # If you hit EACCES on macOS/Linux system Node installs, retry with:
-# sudo npm install -g @agentmemory/agentmemory
-agentmemory                    # start the server (same as the npx form)
-agentmemory stop               # tear it down
-agentmemory remove             # uninstall everything we created
-agentmemory connect claude-code   # wire one agent
-agentmemory doctor             # interactive diagnostics + fix prompts
+# sudo npm install -g ziiagentmemory
+ZiiAgentMemory                    # start the server (same as the npx form)
+ziiagentmemory stop               # tear it down
+ziiagentmemory remove             # uninstall everything we created
+ziiagentmemory connect claude-code   # wire one agent
+ziiagentmemory doctor             # interactive diagnostics + fix prompts
 ```
 
 From v0.9.16 onward, the first npx run prompts you to install globally inline — answer `Y` once and you're set. If you skip, fall back to either of these for a fresh fetch:
 
 ```bash
-npx -y @agentmemory/agentmemory@latest                 # forces latest from npm (cross-platform)
-rm -rf ~/.npm/_npx && npx @agentmemory/agentmemory     # macOS/Linux only (POSIX shell)
+npx -y ziiagentmemory@latest                 # forces latest from npm (cross-platform)
+rm -rf ~/.npm/_npx && npx ziiagentmemory     # macOS/Linux only (POSIX shell)
 ```
 
 On Windows / PowerShell, the equivalent cache clear is `Remove-Item -Recurse -Force "$env:LOCALAPPDATA\npm-cache\_npx"` — the `npx -y ...@latest` form above is the cross-platform option.
 
 ### Session Replay
 
-Every session agentmemory records is replayable. Open the viewer, pick the **Replay** tab, and scrub through the timeline: prompts, tool calls, tool results, and responses render as discrete events with play/pause, speed control (0.5×–4×), and keyboard shortcuts (space to toggle, arrows to step).
+Every session ZiiAgentMemory records is replayable. Open the viewer, pick the **Replay** tab, and scrub through the timeline: prompts, tool calls, tool results, and responses render as discrete events with play/pause, speed control (0.5×–4×), and keyboard shortcuts (space to toggle, arrows to step).
 
 Already have older Claude Code JSONL transcripts you want to bring in?
 
 ```bash
 # Import everything under the default ~/.claude/projects
-npx @agentmemory/agentmemory import-jsonl
+npx ziiagentmemory import-jsonl
 
 # Or import a single file
-npx @agentmemory/agentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
+npx ziiagentmemory import-jsonl ~/.claude/projects/-my-project/abc123.jsonl
 ```
 
 Imported sessions show up in the Replay picker alongside native ones. Under the hood each entry routes through the `mem::replay::load`, `mem::replay::sessions`, and `mem::replay::import-jsonl` iii functions — no side-channel servers.
 
-> **Heads-up if you rely on `import-jsonl` as your primary capture path:** Claude Code's `cleanupPeriodDays` (in `~/.claude/settings.json`, default **30**) auto-deletes JSONL transcripts older than that window from `~/.claude/projects/`. If you install agentmemory fresh on a months-old Claude Code history, anything older than 30 days is already gone before the first import. Either run `import-jsonl` on a cron, raise `cleanupPeriodDays` to something higher, or wire the auto-capture hooks (the default plugin install path) so each turn lands in agentmemory while the session is live and the JSONL cleanup stops mattering.
+> **Heads-up if you rely on `import-jsonl` as your primary capture path:** Claude Code's `cleanupPeriodDays` (in `~/.claude/settings.json`, default **30**) auto-deletes JSONL transcripts older than that window from `~/.claude/projects/`. If you install ZiiAgentMemory fresh on a months-old Claude Code history, anything older than 30 days is already gone before the first import. Either run `import-jsonl` on a cron, raise `cleanupPeriodDays` to something higher, or wire the auto-capture hooks (the default plugin install path) so each turn lands in ZiiAgentMemory while the session is live and the JSONL cleanup stops mattering.
 
 ### Upgrade / Maintenance
 
 Use the maintenance command when you intentionally want to update your local runtime:
 
 ```bash
-npx @agentmemory/agentmemory upgrade
+npx ziiagentmemory upgrade
 ```
 
 Warning: this command mutates the current workspace/runtime. It can update JavaScript dependencies and pull the pinned `iiidev/iii:0.11.2` Docker image. It never installs an unpinned or newer iii engine.
@@ -514,36 +522,36 @@ Implementation details live in `src/cli.ts` (see `runUpgrade` around the `src/cl
 ### Claude Code (one block, paste it)
 
 ```text
-Install agentmemory: run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 15 skills, AND auto-wires the `@agentmemory/mcp` stdio server via its `.mcp.json`, so you get 53 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/agentmemory/health`. The real-time viewer is at http://localhost:3113.
+Install ZiiAgentMemory: run `npx ziiagentmemory` in a separate terminal to start the memory server. Then run `/plugin marketplace add rohitg00/agentmemory` and `/plugin install agentmemory` — the plugin registers all 12 hooks, 15 skills, AND auto-wires the `ziiagentmemory` stdio server via its `.mcp.json`, so you get 53 MCP tools (memory_smart_search, memory_save, memory_sessions, memory_governance_delete, etc.) without any extra config step. Verify with `curl http://localhost:3111/ziiagentmemory/health`. The real-time viewer is at http://localhost:3113.
 ```
 
 #### Claude Code without the plugin install (MCP-standalone path)
 
-If you wire agentmemory's MCP server through `~/.claude.json` directly instead of using `/plugin install`, Claude Code never resolves `${CLAUDE_PLUGIN_ROOT}` and you have to point hook scripts at absolute paths in `~/.claude/settings.json`. Those paths typically embed the agentmemory version (e.g. `~/.codex/plugins/cache/agentmemory/agentmemory/0.9.22/scripts/…`), so the next upgrade silently breaks every hook.
+If you wire ZiiAgentMemory's MCP server through `~/.claude.json` directly instead of using `/plugin install`, Claude Code never resolves `${CLAUDE_PLUGIN_ROOT}` and you have to point hook scripts at absolute paths in `~/.claude/settings.json`. Those paths typically embed the ziiagentmemory version (e.g. `~/.codex/plugins/cache/agentmemory/agentmemory/0.9.22/scripts/…`), so the next upgrade silently breaks every hook.
 
 Workaround:
 
 ```bash
-agentmemory connect claude-code --with-hooks
+ziiagentmemory connect claude-code --with-hooks
 ```
 
-This merges the same hook commands into `~/.claude/settings.json` with absolute paths resolved to the bundled `plugin/` directory of the currently installed `@agentmemory/agentmemory` package. Re-run the command after upgrading agentmemory to refresh the paths. User entries in the same file are preserved; only previous agentmemory entries are replaced. Using the `/plugin install` path remains the recommended approach.
-For remote or protected deployments, launch Claude Code with `AGENTMEMORY_URL` and `AGENTMEMORY_SECRET` set. The plugin passes both values through to its bundled MCP server; when `AGENTMEMORY_URL` is empty, the MCP shim uses `http://localhost:3111`.
+This merges the same hook commands into `~/.claude/settings.json` with absolute paths resolved to the bundled `plugin/` directory of the currently installed `ziiagentmemory` package. Re-run the command after upgrading ZiiAgentMemory to refresh the paths. User entries in the same file are preserved; only previous ZiiAgentMemory entries are replaced. Using the `/plugin install` path remains the recommended approach.
+For remote or protected deployments, launch Claude Code with `ZIIAGENTMEMORY_URL` and `ZIIAGENTMEMORY_SECRET` set. The plugin passes both values through to its bundled MCP server; when `ZIIAGENTMEMORY_URL` is empty, the MCP shim uses `http://localhost:3111`.
 
 ### Codex CLI (Codex plugin platform)
 
 ```bash
 # 1. start the memory server in a separate terminal
-npx @agentmemory/agentmemory
+npx ziiagentmemory
 
-# 2. register the agentmemory marketplace and install the plugin
+# 2. register the ziiagentmemory marketplace and install the plugin
 codex plugin marketplace add rohitg00/agentmemory
 codex plugin add agentmemory@agentmemory
 ```
 
 The Codex plugin ships from the same `plugin/` directory as the Claude Code plugin. It registers:
 
-- `@agentmemory/mcp` as an MCP server (proxies all 53 tools when `AGENTMEMORY_URL` points at a running agentmemory server; falls back to 7 tools locally when no server is reachable)
+- `ziiagentmemory` as an MCP server (proxies all 53 tools when `ZIIAGENTMEMORY_URL` points at a running ziiagentmemory server; falls back to 7 tools locally when no server is reachable)
 - 6 lifecycle hooks: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `Stop`
 - 8 invocable skills: `/recall`, `/remember`, `/session-history`, `/forget`, `/recap`, `/handoff`, `/commit-context`, `/commit-history`, plus 7 reference skills the agent loads on demand (MCP tools, REST API, config, agents, hooks, architecture, and the skill-authoring guide)
 
@@ -556,42 +564,42 @@ Codex's hook engine injects `CLAUDE_PLUGIN_ROOT` into hook subprocesses (per [`c
 Until upstream lands the fix, mirror the same hook commands into the global `~/.codex/hooks.json`:
 
 ```bash
-agentmemory connect codex --with-hooks
+ziiagentmemory connect codex --with-hooks
 ```
 
-This adds an idempotent block to `~/.codex/hooks.json` referencing absolute paths to the bundled scripts (no `${CLAUDE_PLUGIN_ROOT}` expansion needed at user-scope). Re-run the same command after upgrading agentmemory to refresh paths. User entries in the same file are preserved; only previous agentmemory entries are replaced.
+This adds an idempotent block to `~/.codex/hooks.json` referencing absolute paths to the bundled scripts (no `${CLAUDE_PLUGIN_ROOT}` expansion needed at user-scope). Re-run the same command after upgrading ZiiAgentMemory to refresh paths. User entries in the same file are preserved; only previous ZiiAgentMemory entries are replaced.
 
 ### GitHub Copilot CLI
 
 ```bash
 # MCP-only wiring
-agentmemory connect copilot-cli
+ziiagentmemory connect copilot-cli
 
 # Full hooks/skills plugin from the GitHub subdir
 copilot plugin install rohitg00/agentmemory:plugin
 ```
 
-`agentmemory connect copilot-cli` merges `mcpServers.agentmemory` into `~/.copilot/mcp-config.json` (or `$COPILOT_HOME/mcp-config.json` when `COPILOT_HOME` is set) and preserves existing servers. This adapter is Windows-safe even though other `connect` adapters still require manual Windows setup. Copilot picks up the MCP server on next launch or after `/mcp`. Install the plugin as well when you want the full hook/skill experience.
+`ziiagentmemory connect copilot-cli` merges `mcpServers.ZiiAgentMemory` into `~/.copilot/mcp-config.json` (or `$COPILOT_HOME/mcp-config.json` when `COPILOT_HOME` is set) and preserves existing servers. This adapter is Windows-safe even though other `connect` adapters still require manual Windows setup. Copilot picks up the MCP server on next launch or after `/mcp`. Install the plugin as well when you want the full hook/skill experience.
 
 <details>
 <summary><b>OpenClaw (paste this prompt)</b></summary>
 
 ```text
-Install agentmemory for OpenClaw. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so agentmemory is available with all 53 memory tools:
+Install ZiiAgentMemory for OpenClaw. Run `npx ziiagentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to my OpenClaw MCP config so ZiiAgentMemory is available with all 53 memory tools:
 
 {
   "mcpServers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "args": ["-y", "ziiagentmemory"],
       "env": {
-        "AGENTMEMORY_URL": "http://localhost:3111"
+        "ZIIAGENTMEMORY_URL": "http://localhost:3111"
       }
     }
   }
 }
 
-Restart OpenClaw. Verify with `curl http://localhost:3111/agentmemory/health`. Open http://localhost:3113 for the real-time viewer. For deeper memory-slot integration, copy `integrations/openclaw` to `~/.openclaw/extensions/agentmemory` and enable `plugins.slots.memory = "agentmemory"` in `~/.openclaw/openclaw.json`.
+Restart OpenClaw. Verify with `curl http://localhost:3111/ziiagentmemory/health`. Open http://localhost:3113 for the real-time viewer. For deeper memory-slot integration, copy `integrations/openclaw` to `~/.openclaw/extensions/ZiiAgentMemory` and enable `plugins.slots.memory = "ZiiAgentMemory"` in `~/.openclaw/openclaw.json`.
 ```
 
 Full guide: [`integrations/openclaw/`](integrations/openclaw/)
@@ -602,17 +610,17 @@ Full guide: [`integrations/openclaw/`](integrations/openclaw/)
 <summary><b>Hermes Agent (paste this prompt)</b></summary>
 
 ```text
-Install agentmemory for Hermes. Run `npx @agentmemory/agentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use agentmemory as an MCP server with all 53 memory tools:
+Install ZiiAgentMemory for Hermes. Run `npx ziiagentmemory` in a separate terminal to start the memory server on localhost:3111. Then add this to ~/.hermes/config.yaml so Hermes can use ZiiAgentMemory as an MCP server with all 53 memory tools:
 
 mcp_servers:
-  agentmemory:
+  ZiiAgentMemory:
     command: npx
-    args: ["-y", "@agentmemory/mcp"]
+    args: ["-y", "ziiagentmemory"]
 
 memory:
-  provider: agentmemory
+  provider: ZiiAgentMemory
 
-Verify with `curl http://localhost:3111/agentmemory/health`. Open http://localhost:3113 for the real-time viewer. For deeper 6-hook memory provider integration (pre-LLM context injection, turn capture, MEMORY.md mirroring, system prompt block), copy integrations/hermes from the agentmemory repo to ~/.hermes/plugins/agentmemory.
+Verify with `curl http://localhost:3111/ziiagentmemory/health`. Open http://localhost:3113 for the real-time viewer. For deeper 6-hook memory provider integration (pre-LLM context injection, turn capture, MEMORY.md mirroring, system prompt block), copy integrations/hermes from the ziiagentmemory repo to ~/.hermes/plugins/ZiiAgentMemory.
 ```
 
 Full guide: [`integrations/hermes/`](integrations/hermes/)
@@ -621,41 +629,41 @@ Full guide: [`integrations/hermes/`](integrations/hermes/)
 
 ### Other agents
 
-Start the memory server: `npx @agentmemory/agentmemory`
+Start the memory server: `npx ziiagentmemory`
 
 #### Native skills via `npx skills add` (50+ agents)
 
-agentmemory ships 15 skills in the Claude-Code-style `<dir>/SKILL.md` format: 8 invocable action skills (`remember`, `recall`, `recap`, `handoff`, `forget`, `commit-context`, `commit-history`, `session-history`) and 7 reference skills the agent loads on demand (`agentmemory-mcp-tools`, `agentmemory-rest-api`, `agentmemory-config`, `agentmemory-agents`, `agentmemory-hooks`, `agentmemory-architecture`, `write-agentmemory-skill`). The reference skills carry data tables generated from source, so they never drift. The [`skills`](https://npmjs.com/package/skills) CLI by vercel-labs auto-installs them into the calling agent's native skill directory across 50+ agents (Claude Code, Cursor, Cline, Continue, Droid, Warp, Codex, Antigravity, Kiro, OpenCode, Goose, Roo, Trae, Windsurf, and more):
+ZiiAgentMemory ships 15 skills in the Claude-Code-style `<dir>/SKILL.md` format: 8 invocable action skills (`remember`, `recall`, `recap`, `handoff`, `forget`, `commit-context`, `commit-history`, `session-history`) and 7 reference skills the agent loads on demand (`ZiiAgentMemory-mcp-tools`, `ZiiAgentMemory-rest-api`, `ZiiAgentMemory-config`, `ZiiAgentMemory-agents`, `ZiiAgentMemory-hooks`, `ZiiAgentMemory-architecture`, `write-ZiiAgentMemory-skill`). The reference skills carry data tables generated from source, so they never drift. The [`skills`](https://npmjs.com/package/skills) CLI by vercel-labs auto-installs them into the calling agent's native skill directory across 50+ agents (Claude Code, Cursor, Cline, Continue, Droid, Warp, Codex, Antigravity, Kiro, OpenCode, Goose, Roo, Trae, Windsurf, and more):
 
 ```bash
-npx skills add rohitg00/agentmemory -y          # auto-detects the calling agent
-npx skills add rohitg00/agentmemory -y -a warp  # explicit agent
-npx skills add rohitg00/agentmemory -y -a '*'   # install to every installed agent
+npx skills add ziishanahmad/ziiagentmemory -y          # auto-detects the calling agent
+npx skills add ziishanahmad/ziiagentmemory -y -a warp  # explicit agent
+npx skills add ziishanahmad/ziiagentmemory -y -a '*'   # install to every installed agent
 ```
 
-This is **complementary** to `agentmemory connect <agent>`:
+This is **complementary** to `ziiagentmemory connect <agent>`:
 
-- `agentmemory connect <agent>` writes the MCP server config so the tools are available.
+- `ziiagentmemory connect <agent>` writes the MCP server config so the tools are available.
 - `npx skills add rohitg00/agentmemory` installs the skills so the agent knows when to call them.
 
 For the few agents the skills CLI doesn't cover yet (Zed v1.3.x and below), drop the 15 SKILL.md files under the agent's native skill directory yourself — same format works everywhere.
 
 #### Standard MCP block
 
-The agentmemory entry is the **same MCP server block** across every host that uses the `mcpServers` shape (Cursor, Claude Desktop, Cline, Roo Code, Windsurf, Gemini CLI, OpenClaw):
+The ZiiAgentMemory entry is the **same MCP server block** across every host that uses the `mcpServers` shape (Cursor, Claude Desktop, Cline, Roo Code, Windsurf, Gemini CLI, OpenClaw):
 
 ```json
-"agentmemory": {
+"ZiiAgentMemory": {
   "command": "npx",
-  "args": ["-y", "@agentmemory/mcp"],
+  "args": ["-y", "ziiagentmemory"],
   "env": {
-    "AGENTMEMORY_URL": "${AGENTMEMORY_URL}",
-    "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET}"
+    "ZIIAGENTMEMORY_URL": "${ZIIAGENTMEMORY_URL}",
+    "ZIIAGENTMEMORY_SECRET": "${ZIIAGENTMEMORY_SECRET}"
   }
 }
 ```
 
-**Merge this entry into the existing `mcpServers` object** in the host's config file — don't replace the file. If the file already has other servers, add `agentmemory` next to them as another key inside `mcpServers`. If `mcpServers` is missing entirely, paste the block inside `{ "mcpServers": { ... } }`. The `${VAR}` placeholders inherit `AGENTMEMORY_URL` / `AGENTMEMORY_SECRET` from the shell at MCP-server launch — unset vars pass empty strings and the shim falls back to `http://localhost:3111`. One wired entry covers both local and remote (k8s / reverse-proxied) deployments.
+**Merge this entry into the existing `mcpServers` object** in the host's config file — don't replace the file. If the file already has other servers, add `ziiagentmemory` next to them as another key inside `mcpServers`. If `mcpServers` is missing entirely, paste the block inside `{ "mcpServers": { ... } }`. The `${VAR}` placeholders inherit `ZIIAGENTMEMORY_URL` / `ZIIAGENTMEMORY_SECRET` from the shell at MCP-server launch — unset vars pass empty strings and the shim falls back to `http://localhost:3111`. One wired entry covers both local and remote (k8s / reverse-proxied) deployments.
 
 | Agent | Config file | Notes |
 |---|---|---|
@@ -663,33 +671,33 @@ The agentmemory entry is the **same MCP server block** across every host that us
 | **Claude Desktop** | `claude_desktop_config.json` (Application Support) | Merge into `mcpServers`. Restart Claude Desktop after editing. |
 | **Cline / Roo Code / Kilo Code** | Cline MCP settings (Settings UI → MCP Servers → Edit) | Same `mcpServers` block. |
 | **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | Same `mcpServers` block. |
-| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add agentmemory npx -y @agentmemory/mcp --scope user` (auto-merges). |
-| **GitHub Copilot CLI (MCP only)** | `~/.copilot/mcp-config.json` | `agentmemory connect copilot-cli` merges `mcpServers.agentmemory`; Copilot picks it up on next launch or `/mcp`. |
+| **Gemini CLI** | `~/.gemini/settings.json` | `gemini mcp add ZiiAgentMemory npx -y ziiagentmemory --scope user` (auto-merges). |
+| **GitHub Copilot CLI (MCP only)** | `~/.copilot/mcp-config.json` | `ziiagentmemory connect copilot-cli` merges `mcpServers.ZiiAgentMemory`; Copilot picks it up on next launch or `/mcp`. |
 | **GitHub Copilot CLI (full plugin)** | Copilot plugin install | `copilot plugin install rohitg00/agentmemory:plugin` for the plugin from the GitHub subdir. |
 | **OpenClaw** | OpenClaw MCP config | Same `mcpServers` block, or use the deeper [memory plugin](integrations/openclaw/). |
-| **Codex CLI (MCP only)** | `.codex/config.toml` | TOML shape: `codex mcp add agentmemory -- npx -y @agentmemory/mcp`, or add `[mcp_servers.agentmemory]` manually. |
-| **Codex CLI (full plugin)** | Codex plugin marketplace | `codex plugin marketplace add rohitg00/agentmemory` then `codex plugin add agentmemory@agentmemory`. Registers MCP + 6 lifecycle hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PreCompact, Stop) + 15 skills. On Codex Desktop, also run `agentmemory connect codex --with-hooks` until [openai/codex#16430](https://github.com/openai/codex/issues/16430) lands — plugin hooks are currently silent there. |
-| **OpenCode (MCP only)** | `opencode.json` | Different shape — top-level `mcp` key, command as array: `{"mcp": {"agentmemory": {"type": "local", "command": ["npx", "-y", "@agentmemory/mcp"], "enabled": true}}}`. |
+| **Codex CLI (MCP only)** | `.codex/config.toml` | TOML shape: `codex mcp add ZiiAgentMemory -- npx -y ziiagentmemory`, or add `[mcp_servers.ZiiAgentMemory]` manually. |
+| **Codex CLI (full plugin)** | Codex plugin marketplace | `codex plugin marketplace add rohitg00/agentmemory` then `codex plugin add agentmemory@agentmemory`. Registers MCP + 6 lifecycle hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PreCompact, Stop) + 15 skills. On Codex Desktop, also run `ziiagentmemory connect codex --with-hooks` until [openai/codex#16430](https://github.com/openai/codex/issues/16430) lands — plugin hooks are currently silent there. |
+| **OpenCode (MCP only)** | `opencode.json` | Different shape — top-level `mcp` key, command as array: `{"mcp": {"ZiiAgentMemory": {"type": "local", "command": ["npx", "-y", "ziiagentmemory"], "enabled": true}}}`. |
 | **OpenCode (full plugin)** | `plugin/opencode/` | 22 auto-capture hooks covering session lifecycle, messages, tools, errors. Two slash commands (`/recall`, `/remember`). Copy `plugin/opencode/` into your OpenCode workspace and add the plugin entry to `opencode.json`. See [`plugin/opencode/README.md`](plugin/opencode/README.md) for the full hook table + gap analysis. |
-| **pi** | `~/.pi/agent/extensions/agentmemory` | Copy [`integrations/pi`](integrations/pi/) and restart pi. |
-| **Hermes Agent** | `~/.hermes/config.yaml` | Use the deeper [memory provider plugin](integrations/hermes/) with `memory.provider: agentmemory`. |
-| **Qwen Code** | `~/.qwen/settings.json` | `agentmemory connect qwen` writes the standard `mcpServers` block. Hook payload is field-compatible with Claude Code, so the existing 12-hook scripts work without modification — wire them via the `hooks` section in the same `settings.json`. |
-| **Antigravity** (replaces Gemini CLI) | `mcp_config.json` (in Antigravity's User dir) | `agentmemory connect antigravity` writes the standard `mcpServers` block. macOS: `~/Library/Application Support/Antigravity/User/`. Linux: `~/.config/Antigravity/User/`. Use after the 2026-06-18 Gemini CLI sunset. |
-| **Kiro** | `~/.kiro/settings/mcp.json` | `agentmemory connect kiro` writes the user-level config. Workspace overrides go in `.kiro/settings/mcp.json` next to your code. |
-| **Warp** | `~/.warp/.mcp.json` | `agentmemory connect warp` writes the standard `mcpServers` block. Warp also auto-discovers skills from `.claude/skills/` — once the Claude Code plugin is installed the 8 agentmemory skills (`remember`, `recall`, `recap`, `handoff`, `forget`, `commit-context`, `commit-history`, `session-history`) appear natively in Warp's slash-command palette. |
-| **Cline (CLI)** | `~/.cline/mcp.json` | `agentmemory connect cline` writes the standard `mcpServers` block. VS Code extension users: paste the same block via Cline Settings → MCP Servers → Edit JSON. |
-| **Continue.dev** | `~/.continue/config.yaml` (preferred) or `config.json` (legacy) | `agentmemory connect continue` creates `config.yaml` from scratch when neither exists, or modifies existing `config.json`. **If you already have `config.yaml`** the adapter prints the exact block to paste under `mcpServers:` — it won't silently rewrite your yaml because preserving comments and anchors safely needs a YAML parser the package doesn't ship. Continue uses array form (not object) for `mcpServers`. |
-| **Zed** | `~/.config/zed/settings.json` | `agentmemory connect zed` writes under `context_servers` (Zed's key, NOT `mcpServers`). Remote MCP servers can be wired via `{"url": "..."}` instead. |
-| **Droid (Factory.ai)** | `~/.factory/mcp.json` | `agentmemory connect droid` writes the standard `mcpServers` block. Project-scoped overrides go in `<repo>/.factory/mcp.json`. The `/mcp` slash command inside droid lists configured servers. |
+| **pi** | `~/.pi/agent/extensions/ZiiAgentMemory` | Copy [`integrations/pi`](integrations/pi/) and restart pi. |
+| **Hermes Agent** | `~/.hermes/config.yaml` | Use the deeper [memory provider plugin](integrations/hermes/) with `memory.provider: ZiiAgentMemory`. |
+| **Qwen Code** | `~/.qwen/settings.json` | `ziiagentmemory connect qwen` writes the standard `mcpServers` block. Hook payload is field-compatible with Claude Code, so the existing 12-hook scripts work without modification — wire them via the `hooks` section in the same `settings.json`. |
+| **Antigravity** (replaces Gemini CLI) | `mcp_config.json` (in Antigravity's User dir) | `ziiagentmemory connect antigravity` writes the standard `mcpServers` block. macOS: `~/Library/Application Support/Antigravity/User/`. Linux: `~/.config/Antigravity/User/`. Use after the 2026-06-18 Gemini CLI sunset. |
+| **Kiro** | `~/.kiro/settings/mcp.json` | `ziiagentmemory connect kiro` writes the user-level config. Workspace overrides go in `.kiro/settings/mcp.json` next to your code. |
+| **Warp** | `~/.warp/.mcp.json` | `ziiagentmemory connect warp` writes the standard `mcpServers` block. Warp also auto-discovers skills from `.claude/skills/` — once the Claude Code plugin is installed the 8 ZiiAgentMemory skills (`remember`, `recall`, `recap`, `handoff`, `forget`, `commit-context`, `commit-history`, `session-history`) appear natively in Warp's slash-command palette. |
+| **Cline (CLI)** | `~/.cline/mcp.json` | `ziiagentmemory connect cline` writes the standard `mcpServers` block. VS Code extension users: paste the same block via Cline Settings → MCP Servers → Edit JSON. |
+| **Continue.dev** | `~/.continue/config.yaml` (preferred) or `config.json` (legacy) | `ziiagentmemory connect continue` creates `config.yaml` from scratch when neither exists, or modifies existing `config.json`. **If you already have `config.yaml`** the adapter prints the exact block to paste under `mcpServers:` — it won't silently rewrite your yaml because preserving comments and anchors safely needs a YAML parser the package doesn't ship. Continue uses array form (not object) for `mcpServers`. |
+| **Zed** | `~/.config/zed/settings.json` | `ziiagentmemory connect zed` writes under `context_servers` (Zed's key, NOT `mcpServers`). Remote MCP servers can be wired via `{"url": "..."}` instead. |
+| **Droid (Factory.ai)** | `~/.factory/mcp.json` | `ziiagentmemory connect droid` writes the standard `mcpServers` block. Project-scoped overrides go in `<repo>/.factory/mcp.json`. The `/mcp` slash command inside droid lists configured servers. |
 | **Goose** | Goose MCP settings UI | Same `mcpServers` block — use `goose configure` → Add Extension → MCP. Direct YAML edit at `~/.config/goose/config.yaml` is supported but the schema uses `extensions:` + `cmd` (not `mcpServers:` + `command`). |
-| **Aider** | n/a | Talk to the REST API directly: `curl -X POST http://localhost:3111/agentmemory/smart-search -d '{"query": "auth"}'`. |
-| **Any agent (32+)** | n/a | `npx skillkit install agentmemory` auto-detects the host and merges. |
+| **Aider** | n/a | Talk to the REST API directly: `curl -X POST http://localhost:3111/ziiagentmemory/smart-search -d '{"query": "auth"}'`. |
+| **Any agent (32+)** | n/a | `npx skillkit install ZiiAgentMemory` auto-detects the host and merges. |
 
-**Sandboxed MCP clients** (Flatpak / Snap / restrictive containers) that can't reach the host's `localhost`: also set `"AGENTMEMORY_FORCE_PROXY": "1"` in the `env` block, and point `AGENTMEMORY_URL` at a route the sandbox can actually reach (e.g. your LAN IP).
+**Sandboxed MCP clients** (Flatpak / Snap / restrictive containers) that can't reach the host's `localhost`: also set `"ZIIAGENTMEMORY_FORCE_PROXY": "1"` in the `env` block, and point `ZIIAGENTMEMORY_URL` at a route the sandbox can actually reach (e.g. your LAN IP).
 
 ### Programmatic access (Python / Rust / Node)
 
-agentmemory registers its core operations as iii functions (`mem::remember`, `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Any language with an iii SDK can call them directly over `ws://localhost:49134` — no separate REST client per language.
+ZiiAgentMemory registers its core operations as iii functions (`mem::remember`, `mem::observe`, `mem::context`, `mem::smart-search`, `mem::forget`). Any language with an iii SDK can call them directly over `ws://localhost:49134` — no separate REST client per language.
 
 ```bash
 pip install iii-sdk         # Python
@@ -714,13 +722,13 @@ Worked example: [`examples/python/`](examples/python/) (quickstart + observation
 ### From source
 
 ```bash
-git clone https://github.com/rohitg00/agentmemory.git && cd agentmemory
+git clone https://github.com/ziishanahmad/ziiagentmemory.git && cd ZiiAgentMemory
 npm install && npm run build && npm start
 ```
 
-This starts agentmemory with a local `iii-engine` if `iii` is already installed, or falls back to Docker Compose if Docker is available. REST, streams, and the viewer bind to `127.0.0.1` by default.
+This starts ZiiAgentMemory with a local `iii-engine` if `iii` is already installed, or falls back to Docker Compose if Docker is available. REST, streams, and the viewer bind to `127.0.0.1` by default.
 
-Install `iii-engine` manually. **agentmemory currently pins `iii-engine` to `v0.11.2`** — `v0.11.6` introduces a new sandbox-everything-via-`iii worker add` model that agentmemory hasn't been refactored for yet. Pin lifts once the refactor lands. Override with `AGENTMEMORY_III_VERSION=<version>` if you've migrated to the sandbox model manually.
+Install `iii-engine` manually. **ZiiAgentMemory currently pins `iii-engine` to `v0.11.2`** — `v0.11.6` introduces a new sandbox-everything-via-`iii worker add` model that ZiiAgentMemory hasn't been refactored for yet. Pin lifts once the refactor lands. Override with `ZIIAGENTMEMORY_III_VERSION=<version>` if you've migrated to the sandbox model manually.
 
 - **macOS arm64:** `mkdir -p ~/.local/bin && curl -fsSL https://github.com/iii-hq/iii/releases/download/iii/v0.11.2/iii-aarch64-apple-darwin.tar.gz | tar -xz -C ~/.local/bin && chmod +x ~/.local/bin/iii`
 - **macOS x64:** swap `aarch64-apple-darwin` for `x86_64-apple-darwin`
@@ -732,25 +740,25 @@ Or use Docker (the bundled `docker-compose.yml` pulls `iiidev/iii:0.11.2`). Full
 
 ### Windows
 
-agentmemory runs on Windows 10/11, but the Node.js package alone isn't enough — you also need the `iii-engine` runtime (a separate native binary) as a background process. The official upstream installer is a `sh` script and there is no PowerShell installer or scoop/winget package today, so Windows users have two paths:
+ZiiAgentMemory runs on Windows 10/11, but the Node.js package alone isn't enough — you also need the `iii-engine` runtime (a separate native binary) as a background process. The official upstream installer is a `sh` script and there is no PowerShell installer or scoop/winget package today, so Windows users have two paths:
 
 **Option A — Prebuilt Windows binary (recommended):**
 
 ```powershell
 # 1. Open https://github.com/iii-hq/iii/releases/tag/iii%2Fv0.11.2 in your browser
-#    (we pin to v0.11.2 until agentmemory refactors for the new sandbox
+#    (we pin to v0.11.2 until ZiiAgentMemory refactors for the new sandbox
 #     model that engine v0.11.6+ requires)
 # 2. Download iii-x86_64-pc-windows-msvc.zip
 #    (or iii-aarch64-pc-windows-msvc.zip if you're on an ARM machine)
 # 3. Extract iii.exe somewhere on PATH, or place it at:
 #    %USERPROFILE%\.local\bin\iii.exe
-#    (agentmemory checks that location automatically)
+#    (ZiiAgentMemory checks that location automatically)
 # 4. Verify:
 iii --version
 # Should print: 0.11.2
 
-# 5. Then run agentmemory as usual:
-npx -y @agentmemory/agentmemory
+# 5. Then run ZiiAgentMemory as usual:
+npx -y ziiagentmemory
 ```
 
 **Option B — Docker Desktop:**
@@ -758,19 +766,19 @@ npx -y @agentmemory/agentmemory
 ```powershell
 # 1. Install Docker Desktop for Windows
 # 2. Start Docker Desktop and make sure the engine is running
-# 3. Run agentmemory — it will auto-start the bundled compose file:
-npx -y @agentmemory/agentmemory
+# 3. Run ZiiAgentMemory — it will auto-start the bundled compose file:
+npx -y ziiagentmemory
 ```
 
 **Option C — standalone MCP only (no engine):** if you only need the MCP tools for your agent and don't need the REST API, viewer, or cron jobs, skip the engine entirely:
 
 ```powershell
-npx -y @agentmemory/agentmemory mcp
+npx -y ziiagentmemory mcp
 # or via the shim package:
-npx -y @agentmemory/mcp
+npx -y ziiagentmemory
 ```
 
-**Diagnostics for Windows:** if `npx @agentmemory/agentmemory` fails, re-run with `--verbose` to see the actual engine stderr. Common failure modes:
+**Diagnostics for Windows:** if `npx ziiagentmemory` fails, re-run with `--verbose` to see the actual engine stderr. Common failure modes:
 
 | Symptom | Fix |
 |---|---|
@@ -779,21 +787,21 @@ npx -y @agentmemory/mcp
 | Port conflict | `netstat -ano \| findstr :3111` to see what's bound, then kill it or use `--port <N>` |
 | Docker fallback skipped even though Docker is installed | Make sure Docker Desktop is actually running (system tray icon) |
 
-> Note: the iii **engine** is a prebuilt binary, not a cargo crate — don't try to `cargo install` it. (The iii **SDKs** are published on crates.io, npm, and PyPI, but agentmemory doesn't need them.) Supported engine install methods, all pinned to v0.11.2: the prebuilt v0.11.2 binary above, the upstream sh install script **with the version pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.2 sh` (macOS/Linux), and the Docker image `iiidev/iii:0.11.2`. A bare `install.sh | sh` installs the **latest** engine, which agentmemory does not support — always pass `VERSION=0.11.2`. Easiest of all: just run `npx @agentmemory/agentmemory`, which fetches the pinned engine into `~/.agentmemory/bin` for you.
+> Note: the iii **engine** is a prebuilt binary, not a cargo crate — don't try to `cargo install` it. (The iii **SDKs** are published on crates.io, npm, and PyPI, but ZiiAgentMemory doesn't need them.) Supported engine install methods, all pinned to v0.11.2: the prebuilt v0.11.2 binary above, the upstream sh install script **with the version pin** `curl -fsSL https://install.iii.dev/iii/main/install.sh | VERSION=0.11.2 sh` (macOS/Linux), and the Docker image `iiidev/iii:0.11.2`. A bare `install.sh | sh` installs the **latest** engine, which ZiiAgentMemory does not support — always pass `VERSION=0.11.2`. Easiest of all: just run `npx ziiagentmemory`, which fetches the pinned engine into `~/.ziiagentmemory/bin` for you.
 
 ---
 
 <h2 id="deploy">Deploy</h2>
 
 One-click templates for managed hosts. Each one ships a self-contained
-Dockerfile that pulls `@agentmemory/agentmemory` from npm and copies
+Dockerfile that pulls `ziiagentmemory` from npm and copies
 the iii engine binary in from the official `iiidev/iii` Docker Hub
-image — no pre-built agentmemory image required. Persistent storage
+image — no pre-built ZiiAgentMemory image required. Persistent storage
 mounts at `/data`; the first-boot entrypoint overwrites the
 npm-bundled iii config (which binds `127.0.0.1`) with a deploy-tuned
 one that binds `0.0.0.0` and uses absolute `/data` paths, generates
 the HMAC secret, then drops privileges from `root` to `node` via
-`gosu` before exec'ing the agentmemory CLI.
+`gosu` before exec'ing the ziiagentmemory CLI.
 
 <p>
   <a href="https://fly.io/launch?repo=https://github.com/rohitg00/agentmemory&path=deploy/fly"><img src="https://img.shields.io/badge/Deploy%20to-fly.io-8b5cf6?style=for-the-badge&logo=fly.io&logoColor=white" alt="Deploy to fly.io" /></a>
@@ -821,14 +829,14 @@ SSH-tunnel pattern for reaching it.
 
 ---
 
-<h2 id="why-agentmemory"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-why.svg"><img src="assets/tags/section-why.svg" alt="Why agentmemory" height="32" /></picture></h2>
+<h2 id="why-ZiiAgentMemory"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-why.svg"><img src="assets/tags/section-why.svg" alt="Why ZiiAgentMemory" height="32" /></picture></h2>
 
-Every coding agent forgets everything when the session ends. You waste the first 5 minutes of every session re-explaining your stack. agentmemory runs in the background and eliminates that entirely.
+Every coding agent forgets everything when the session ends. You waste the first 5 minutes of every session re-explaining your stack. ZiiAgentMemory runs in the background and eliminates that entirely.
 
 ```text
 Session 1: "Add auth to the API"
   Agent writes code, runs tests, fixes bugs
-  agentmemory silently captures every tool use
+  ZiiAgentMemory silently captures every tool use
   Session ends -> observations compressed into structured memory
 
 Session 2: "Now add rate limiting"
@@ -841,9 +849,9 @@ Session 2: "Now add rate limiting"
 
 ### vs built-in agent memory
 
-Every AI coding agent ships with built-in memory — Claude Code has `MEMORY.md`, Cursor has notepads, Cline has memory bank. These work like sticky notes. agentmemory is the searchable database behind the sticky notes.
+Every AI coding agent ships with built-in memory — Claude Code has `MEMORY.md`, Cursor has notepads, Cline has memory bank. These work like sticky notes. ZiiAgentMemory is the searchable database behind the sticky notes.
 
-| | Built-in (CLAUDE.md) | agentmemory |
+| | Built-in (CLAUDE.md) | ZiiAgentMemory |
 |---|---|---|
 | Scale | 200-line cap | Unlimited |
 | Search | Loads everything into context | BM25 + vector + graph (top-K only) |
@@ -936,11 +944,11 @@ Triple-stream retrieval combining three signals:
 
 Fused with Reciprocal Rank Fusion (RRF, k=60) and session-diversified (max 3 results per session).
 
-BM25 tokenizes Greek, Cyrillic, Hebrew, Arabic, and accented Latin out of the box. For Chinese / Japanese / Korean memories, install the optional segmenters (`npm install @node-rs/jieba tiny-segmenter`) to split CJK runs into word-level tokens; without them, agentmemory soft-falls to whole-run tokenization and prints a one-time hint on stderr.
+BM25 tokenizes Greek, Cyrillic, Hebrew, Arabic, and accented Latin out of the box. For Chinese / Japanese / Korean memories, install the optional segmenters (`npm install @node-rs/jieba tiny-segmenter`) to split CJK runs into word-level tokens; without them, ZiiAgentMemory soft-falls to whole-run tokenization and prints a one-time hint on stderr.
 
 ### Embedding providers
 
-agentmemory auto-detects your provider. For best results, install local embeddings (free):
+ZiiAgentMemory auto-detects your provider. For best results, install local embeddings (free):
 
 ```bash
 npm install @xenova/transformers
@@ -961,7 +969,7 @@ npm install @xenova/transformers
 
 53 tools, 6 resources, 3 prompts, and 15 skills, the most comprehensive MCP memory toolkit for any agent.
 
-> **MCP shim vs full server:** the published `@agentmemory/mcp` package is a thin shim. It exposes the full 53-tool surface **only when it can reach a running agentmemory server** via `AGENTMEMORY_URL` (proxy mode). With no server reachable, the shim falls back to a 7-tool local set (`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`). The `AGENTMEMORY_TOOLS=core|all` env var is a *server-side* flag — setting it in the shim's `env` block has no effect. If you see only 7 tools in Cursor / OpenCode / Gemini CLI, start `npx @agentmemory/agentmemory` (or the Docker stack) and set `AGENTMEMORY_URL=http://localhost:3111`.
+> **MCP shim vs full server:** the published `ziiagentmemory` package is a thin shim. It exposes the full 53-tool surface **only when it can reach a running ziiagentmemory server** via `ZIIAGENTMEMORY_URL` (proxy mode). With no server reachable, the shim falls back to a 7-tool local set (`memory_save`, `memory_recall`, `memory_smart_search`, `memory_sessions`, `memory_export`, `memory_audit`, `memory_governance_delete`). The `ZIIAGENTMEMORY_TOOLS=core|all` env var is a *server-side* flag — setting it in the shim's `env` block has no effect. If you see only 7 tools in Cursor / OpenCode / Gemini CLI, start `npx ziiagentmemory` (or the Docker stack) and set `ZIIAGENTMEMORY_URL=http://localhost:3111`.
 
 ### 53 Tools
 
@@ -985,7 +993,7 @@ npm install @xenova/transformers
 </details>
 
 <details>
-<summary>Extended tools (53 total — set AGENTMEMORY_TOOLS=all)</summary>
+<summary>Extended tools (53 total — set ZIIAGENTMEMORY_TOOLS=all)</summary>
 
 | Tool | Description |
 |------|-------------|
@@ -1027,10 +1035,10 @@ npm install @xenova/transformers
 
 | Type | Name | Description |
 |------|------|-------------|
-| Resource | `agentmemory://status` | Health, session count, memory count |
-| Resource | `agentmemory://project/{name}/profile` | Per-project intelligence |
-| Resource | `agentmemory://memories/latest` | Latest 10 active memories |
-| Resource | `agentmemory://graph/stats` | Knowledge graph statistics |
+| Resource | `ZiiAgentMemory://status` | Health, session count, memory count |
+| Resource | `ZiiAgentMemory://project/{name}/profile` | Per-project intelligence |
+| Resource | `ZiiAgentMemory://memories/latest` | Latest 10 active memories |
+| Resource | `ZiiAgentMemory://graph/stats` | Knowledge graph statistics |
 | Prompt | `recall_context` | Search + return context messages |
 | Prompt | `session_handoff` | Handoff data between agents |
 | Prompt | `detect_patterns` | Analyze recurring patterns |
@@ -1044,8 +1052,8 @@ npm install @xenova/transformers
 Run without the full server — for any MCP client. Either of these works:
 
 ```bash
-npx -y @agentmemory/agentmemory mcp   # canonical (always available)
-npx -y @agentmemory/mcp                # shim package alias
+npx -y ziiagentmemory mcp   # canonical (always available)
+npx -y ziiagentmemory                # shim package alias
 ```
 
 Or add to your agent's MCP config:
@@ -1054,37 +1062,37 @@ Most agents (Cursor, Claude Desktop, Cline, Roo Code, Windsurf, Gemini CLI):
 ```json
 {
   "mcpServers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "args": ["-y", "ziiagentmemory"],
       "env": {
-        "AGENTMEMORY_URL": "http://localhost:3111"
+        "ZIIAGENTMEMORY_URL": "http://localhost:3111"
       }
     }
   }
 }
 ```
 
-Merge the `agentmemory` entry into your host's existing `mcpServers` object rather than replacing the file. For sandboxed clients that can't reach the host's `localhost`, add `"AGENTMEMORY_FORCE_PROXY": "1"` to the env block and set `AGENTMEMORY_URL` to a route the sandbox can reach.
+Merge the `ziiagentmemory` entry into your host's existing `mcpServers` object rather than replacing the file. For sandboxed clients that can't reach the host's `localhost`, add `"ZIIAGENTMEMORY_FORCE_PROXY": "1"` to the env block and set `ZIIAGENTMEMORY_URL` to a route the sandbox can reach.
 
 OpenCode (`opencode.json`):
 ```json
 {
   "mcp": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["npx", "-y", "ziiagentmemory"],
       "enabled": true
     }
   },
-  "plugin": ["./plugins/agentmemory-capture.ts"]
+  "plugin": ["./plugins/ziiagentmemory-capture.ts"]
 }
 ```
 
 Copy the plugin file from the repo:
 ```bash
 mkdir -p ~/.config/opencode/plugins
-cp plugin/opencode/agentmemory-capture.ts ~/.config/opencode/plugins/
+cp plugin/opencode/ziiagentmemory-capture.ts ~/.config/opencode/plugins/
 cp plugin/opencode/commands/*.md ~/.config/opencode/commands/
 ```
 
@@ -1098,7 +1106,7 @@ Auto-starts on port `3113`. Live observation stream, session explorer, memory br
 open http://localhost:3113
 ```
 
-The viewer server binds to `127.0.0.1` by default. The REST-served `/agentmemory/viewer` endpoint follows the normal `AGENTMEMORY_SECRET` bearer-token rules. CSP headers use a per-response script nonce and disable inline handler attributes (`script-src-attr 'none'`).
+The viewer server binds to `127.0.0.1` by default. The REST-served `/ziiagentmemory/viewer` endpoint follows the normal `ZIIAGENTMEMORY_SECRET` bearer-token rules. CSP headers use a per-response script nonce and disable inline handler attributes (`script-src-attr 'none'`).
 
 ---
 
@@ -1108,21 +1116,21 @@ The viewer at `:3113` shows what your agent **remembered**. The [iii console](ht
 
 Watch a `memory_smart_search` fire and see the BM25 scan → embedding lookup → RRF fusion → reranker as a waterfall. Edit a stuck consolidation timer in the KV browser. Replay a `PostToolUse` hook with a tweaked payload. Pin the WebSocket stream and watch observations land live.
 
-agentmemory ships this for free because every function call and trigger fires through iii — nothing custom, nothing to instrument.
+ZiiAgentMemory ships this for free because every function call and trigger fires through iii — nothing custom, nothing to instrument.
 
 <p align="center">
-  <img src="assets/iii-console/workers.png" alt="iii console Workers page — connected workers including agentmemory instances with live function counts and runtime metadata" width="720" />
+  <img src="assets/iii-console/workers.png" alt="iii console Workers page — connected workers including ZiiAgentMemory instances with live function counts and runtime metadata" width="720" />
   <br/>
-  <em>Workers page: every connected worker — including agentmemory itself — with PID, function count, runtime, and last-seen.</em>
+  <em>Workers page: every connected worker — including ZiiAgentMemory itself — with PID, function count, runtime, and last-seen.</em>
 </p>
 
 **Already installed.** The console ships with `iii` — no separate installer.
 
-**Launch alongside agentmemory:**
+**Launch alongside ZiiAgentMemory:**
 
 ```bash
-# agentmemory viewer holds port 3113, so run the console on 3114.
-# Engine REST (3111), WebSocket (3112), and bridge (49134) defaults match agentmemory.
+# ZiiAgentMemory viewer holds port 3113, so run the console on 3114.
+# Engine REST (3111), WebSocket (3112), and bridge (49134) defaults match ZiiAgentMemory.
 iii console --port 3114
 ```
 
@@ -1141,8 +1149,8 @@ iii console --port 3114 \
 
 | Page | Use it to |
 |------|-----------|
-| **Workers** | See every connected worker and its live metrics — including the agentmemory worker itself. |
-| **Functions** | Invoke any of agentmemory's functions directly with a JSON payload — handy for testing `memory.recall`, `memory.consolidate`, `graph.query` without wiring a client. |
+| **Workers** | See every connected worker and its live metrics — including the ziiagentmemory worker itself. |
+| **Functions** | Invoke any of ZiiAgentMemory's functions directly with a JSON payload — handy for testing `memory.recall`, `memory.consolidate`, `graph.query` without wiring a client. |
 | **Triggers** | Replay HTTP, cron, event, and state triggers — fire the consolidation cron manually, retry an HTTP route, emit a state change. |
 | **States** | KV browser with full CRUD — sessions, memory slots, lifecycle timers, embeddings index — edit values in place. |
 | **Streams** | Live WebSocket monitor for memory writes, hook events, and observation updates as they flow through iii streams. |
@@ -1160,7 +1168,7 @@ iii console --port 3114 \
 
 **Traces are already on:**
 
-`iii-config.yaml` ships with the `iii-observability` worker enabled (`exporter: memory`, `sampling_ratio: 1.0`, metrics + logs). No extra config needed — the moment agentmemory starts, every memory operation emits a trace span and a structured log the console can read.
+`iii-config.yaml` ships with the `iii-observability` worker enabled (`exporter: memory`, `sampling_ratio: 1.0`, metrics + logs). No extra config needed — the moment ZiiAgentMemory starts, every memory operation emits a trace span and a structured log the console can read.
 
 If you want to export to Jaeger/Honeycomb/Grafana Tempo instead, change `exporter: memory` to `exporter: otlp` and set the collector endpoint per iii's observability docs.
 
@@ -1170,11 +1178,11 @@ If you want to export to Jaeger/Honeycomb/Grafana Tempo instead, change `exporte
 
 <h2 id="powered-by-iii"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-architecture.svg"><img src="assets/tags/section-architecture.svg" alt="Powered by iii" height="32" /></picture></h2>
 
-agentmemory is **already a running [iii](https://iii.dev) instance**. Three primitives — worker, function, trigger — compose the runtime; KV state, streams, and OTEL traces come from iii-state, iii-stream, and iii-observability workers that ship with iii. You didn't install Postgres, Redis, Express, pm2, or Prometheus, because iii replaces them.
+ZiiAgentMemory is **already a running [iii](https://iii.dev) instance**. Three primitives — worker, function, trigger — compose the runtime; KV state, streams, and OTEL traces come from iii-state, iii-stream, and iii-observability workers that ship with iii. You didn't install Postgres, Redis, Express, pm2, or Prometheus, because iii replaces them.
 
-That means one more command extends agentmemory with an entire new capability.
+That means one more command extends ZiiAgentMemory with an entire new capability.
 
-### Extend agentmemory with one command
+### Extend ZiiAgentMemory with one command
 
 ```bash
 iii worker add iii-pubsub          # fan memory writes out to every connected instance
@@ -1183,12 +1191,12 @@ iii worker add iii-queue           # durable retries for embedding + compression
 iii worker add iii-observability   # OTEL traces on every memory op (default on)
 iii worker add iii-sandbox         # run recalled code inside an isolated microVM
 iii worker add iii-database        # swap in a SQL-backed state adapter
-iii worker add mcp                 # generic MCP host alongside the agentmemory MCP
+iii worker add mcp                 # generic MCP host alongside the ziiagentmemory MCP
 ```
 
-Each `iii worker add` registers new functions and triggers into the same engine agentmemory is already running on. The viewer and console pick them up immediately — no reload, no new integration, no new container.
+Each `iii worker add` registers new functions and triggers into the same engine ZiiAgentMemory is already running on. The viewer and console pick them up immediately — no reload, no new integration, no new container.
 
-| `iii worker add` | What you get on top of agentmemory |
+| `iii worker add` | What you get on top of ZiiAgentMemory |
 |---|---|
 | [`iii-pubsub`](https://workers.iii.dev/workers/iii-pubsub) | Multi-instance memory: every `remember` fans out, every `search` reads the union |
 | [`iii-cron`](https://workers.iii.dev/workers/iii-cron) | Scheduled lifecycle — nightly consolidation, weekly snapshots, decay on a fixed clock |
@@ -1196,13 +1204,13 @@ Each `iii worker add` registers new functions and triggers into the same engine 
 | [`iii-observability`](https://workers.iii.dev/workers/iii-observability) | OTEL traces, metrics, logs on every function — wired in `iii-config.yaml` from day one |
 | [`iii-sandbox`](https://workers.iii.dev/workers/iii-sandbox) | Code that came out of `memory_recall` runs inside a throwaway VM, not your shell |
 | [`iii-database`](https://workers.iii.dev/workers/iii-database) | SQL-backed state adapter when you outgrow the in-memory KV defaults |
-| [`mcp`](https://workers.iii.dev/workers/mcp) | Stand up extra MCP servers next to agentmemory's, share the same engine |
+| [`mcp`](https://workers.iii.dev/workers/mcp) | Stand up extra MCP servers next to ZiiAgentMemory's, share the same engine |
 
-Full registry: [workers.iii.dev](https://workers.iii.dev). Every worker there composes through the same primitives agentmemory uses — and the agentmemory you already have is one of them.
+Full registry: [workers.iii.dev](https://workers.iii.dev). Every worker there composes through the same primitives ZiiAgentMemory uses — and the ziiagentmemory you already have is one of them.
 
 ### What iii replaces
 
-| Traditional stack | agentmemory uses |
+| Traditional stack | ZiiAgentMemory uses |
 |---|---|
 | Express.js / Fastify | iii HTTP Triggers |
 | SQLite / Postgres + pgvector | iii KV State + in-memory vector index |
@@ -1211,7 +1219,7 @@ Full registry: [workers.iii.dev](https://workers.iii.dev). Every worker there co
 | Prometheus / Grafana | iii OTEL + health monitor |
 | Custom plugin systems | `iii worker add <name>` |
 
-**174 source files · ~37,800 LOC · 1,423+ tests · 258 functions · 44 KV scopes** — all on three primitives. No `agentmemory plugin install`. The plugin system is iii itself.
+**174 source files · ~37,800 LOC · 1,423+ tests · 258 functions · 44 KV scopes** — all on three primitives. No `ZiiAgentMemory plugin install`. The plugin system is iii itself.
 
 ---
 
@@ -1219,22 +1227,22 @@ Full registry: [workers.iii.dev](https://workers.iii.dev). Every worker there co
 
 ### LLM Providers
 
-agentmemory auto-detects from your environment. By default, no LLM calls are made unless you configure a provider or explicitly opt in to the Claude subscription fallback.
+ZiiAgentMemory auto-detects from your environment. By default, no LLM calls are made unless you configure a provider or explicitly opt in to the Claude subscription fallback.
 
 | Provider | Config | Notes |
 |----------|--------|-------|
-| **No-op (default)** | No config needed | LLM-backed compress/summarize is DISABLED. Synthetic BM25 compression + recall still work. See `AGENTMEMORY_ALLOW_AGENT_SDK` below if you used to rely on the Claude-subscription fallback. |
+| **No-op (default)** | No config needed | LLM-backed compress/summarize is DISABLED. Synthetic BM25 compression + recall still work. See `ZIIAGENTMEMORY_ALLOW_AGENT_SDK` below if you used to rely on the Claude-subscription fallback. |
 | Anthropic API | `ANTHROPIC_API_KEY` | Per-token billing |
 | MiniMax | `MINIMAX_API_KEY` | Anthropic-compatible |
 | Gemini | `GEMINI_API_KEY` | Also enables embeddings |
 | OpenRouter | `OPENROUTER_API_KEY` | Any model |
 | OpenAI API | `OPENAI_API_KEY` | Default `gpt-4o-mini`, override with `OPENAI_MODEL` |
 | **Local (Ollama / LM Studio / vLLM / llama.cpp)** | `OPENAI_API_KEY=local` + `OPENAI_BASE_URL=http://localhost:11434/v1` (Ollama) or `http://localhost:1234/v1` (LM Studio) + `OPENAI_MODEL=<your model>` | Anything OpenAI-API-compatible. Zero cost, runs on your hardware. See [Local models](#local-models-ollama-lm-studio-vllm) below. |
-| Claude subscription fallback | `AGENTMEMORY_ALLOW_AGENT_SDK=true` | Opt-in only. Spawns `@anthropic-ai/claude-agent-sdk` sessions — used to cause unbounded Stop-hook recursion so it is no longer the default. |
+| Claude subscription fallback | `ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true` | Opt-in only. Spawns `@anthropic-ai/claude-agent-sdk` sessions — used to cause unbounded Stop-hook recursion so it is no longer the default. |
 
 ### Local models (Ollama / LM Studio / vLLM)
 
-agentmemory talks to any OpenAI-API-compatible server, so anything that exposes `/v1/chat/completions` works without code changes. No paid keys, no cloud, no rate limits — runs entirely on your hardware.
+ZiiAgentMemory talks to any OpenAI-API-compatible server, so anything that exposes `/v1/chat/completions` works without code changes. No paid keys, no cloud, no rate limits — runs entirely on your hardware.
 
 **Ollama** (default port `11434`):
 
@@ -1244,7 +1252,7 @@ ollama serve
 ```
 
 ```env
-# ~/.agentmemory/.env
+# ~/.ziiagentmemory/.env
 OPENAI_API_KEY=ollama                          # any non-empty string; Ollama ignores it
 OPENAI_BASE_URL=http://localhost:11434/v1
 OPENAI_MODEL=qwen2.5-coder:7b
@@ -1255,7 +1263,7 @@ OPENAI_MODEL=qwen2.5-coder:7b
 Open LM Studio → Local Server tab → Start Server. Pick any chat model from the picker (Qwen 2.5 Coder, Llama 3.2, DeepSeek, etc.).
 
 ```env
-# ~/.agentmemory/.env
+# ~/.ziiagentmemory/.env
 OPENAI_API_KEY=lmstudio                        # any non-empty string; LM Studio ignores it
 OPENAI_BASE_URL=http://localhost:1234/v1
 OPENAI_MODEL=qwen2.5-coder-7b-instruct         # match the model name from LM Studio
@@ -1289,21 +1297,21 @@ Background compression runs on every observation, so model choice meaningfully c
 | Premium | `openai/gpt-4o` | $2.50 | $10.00 | ~$4.20 | Similar tier to Sonnet. |
 | Avoid | `anthropic/claude-opus-4.6` | $15.00 | $75.00 | ~$25+ | Reasoning-class model; massive overspend for compression. |
 
-agentmemory prints a runtime warning when `OPENROUTER_MODEL` matches a premium-tier pattern. Set `AGENTMEMORY_SUPPRESS_COST_WARNING=1` to silence once you've made an informed choice.
+ZiiAgentMemory prints a runtime warning when `OPENROUTER_MODEL` matches a premium-tier pattern. Set `ZIIAGENTMEMORY_SUPPRESS_COST_WARNING=1` to silence once you've made an informed choice.
 
 Quality vs cost tradeoff for memory work: compression is a summarization task with relatively loose quality bars (the agent re-reads the summary, not the user). DeepSeek-V4-Pro / Qwen3-Coder land within rounding error of Sonnet on this task while costing ~10× less. Save the premium-tier models for queries you read directly.
 
 Sources: [OpenRouter pricing for Sonnet 4.6](https://openrouter.ai/anthropic/claude-sonnet-4.6/pricing), [DeepSeek V4 Pro](https://openrouter.ai/deepseek/deepseek-v4-pro), [DeepSeek pricing notes](https://api-docs.deepseek.com/quick_start/pricing/).
 
-### Multi-agent memory (`AGENT_ID` + `AGENTMEMORY_AGENT_SCOPE`)
+### Multi-agent memory (`AGENT_ID` + `ZIIAGENTMEMORY_AGENT_SCOPE`)
 
-In multi-agent setups where several roles share one agentmemory server (architect / developer / reviewer / researcher / support-agent), `AGENT_ID` tags every write with the role that made it. `AGENTMEMORY_AGENT_SCOPE` controls whether recall filters by that tag.
+In multi-agent setups where several roles share one ziiagentmemory server (architect / developer / reviewer / researcher / support-agent), `AGENT_ID` tags every write with the role that made it. `ZIIAGENTMEMORY_AGENT_SCOPE` controls whether recall filters by that tag.
 
 ```env
 TEAM_ID=company
 USER_ID=engineering-team
 AGENT_ID=architect
-AGENTMEMORY_AGENT_SCOPE=isolated  # optional; default "shared"
+ZIIAGENTMEMORY_AGENT_SCOPE=isolated  # optional; default "shared"
 ```
 
 Two modes:
@@ -1315,7 +1323,7 @@ Two modes:
 
 What gets tagged when `AGENT_ID` is set: `Session.agentId`, `RawObservation.agentId`, `CompressedObservation.agentId`, `Memory.agentId`. The role flows from `api::session::start` → `mem::observe` → `mem::compress` → KV.
 
-What gets filtered in isolated mode: `mem::smart-search`, `/agentmemory/memories`, `/agentmemory/observations`, `/agentmemory/sessions`. Each endpoint accepts `?agentId=<role>` to override per-request, and `?agentId=*` to opt out of the env scope entirely. `/memories` also accepts `?includeOrphans=true` to surface pre-AGENT_ID memories whose `agentId` is undefined.
+What gets filtered in isolated mode: `mem::smart-search`, `/ziiagentmemory/memories`, `/ziiagentmemory/observations`, `/ziiagentmemory/sessions`. Each endpoint accepts `?agentId=<role>` to override per-request, and `?agentId=*` to opt out of the env scope entirely. `/memories` also accepts `?includeOrphans=true` to surface pre-AGENT_ID memories whose `agentId` is undefined.
 
 Per-call override at the SDK / REST layer: every mutating endpoint (`/session/start`, `/remember`) accepts an `agentId` field in the request body that wins over the env. Useful for runtimes routing many roles through one server process.
 
@@ -1323,13 +1331,13 @@ When `AGENT_ID` is unset, memory remains unscoped (legacy behavior, no tags, no 
 
 ### Ports
 
-agentmemory + iii-engine bind four ports by default. If a restart fails with `port in use`, this table tells you which process to look for.
+ZiiAgentMemory + iii-engine bind four ports by default. If a restart fails with `port in use`, this table tells you which process to look for.
 
 | Port | Process | Purpose | Env override |
 |------|---------|---------|--------------|
-| `3111` | agentmemory | REST API + MCP HTTP + `/agentmemory/health` + `/agentmemory/livez` | `III_REST_PORT` |
-| `3112` | iii-engine | Internal streams worker (consumed by agentmemory + viewer) | `III_STREAMS_PORT` |
-| `3113` | agentmemory | Real-time viewer (`http://localhost:3113`) | `AGENTMEMORY_VIEWER_PORT` |
+| `3111` | ZiiAgentMemory | REST API + MCP HTTP + `/ziiagentmemory/health` + `/ziiagentmemory/livez` | `III_REST_PORT` |
+| `3112` | iii-engine | Internal streams worker (consumed by ZiiAgentMemory + viewer) | `III_STREAMS_PORT` |
+| `3113` | ZiiAgentMemory | Real-time viewer (`http://localhost:3113`) | `ZIIAGENTMEMORY_VIEWER_PORT` |
 | `49134` | iii-engine | WebSocket — workers register here, OTel telemetry flows over it | `III_ENGINE_URL` (full URL, default `ws://localhost:49134`) |
 
 Stale-process cleanup when ports stay bound after a crashed run:
@@ -1337,7 +1345,7 @@ Stale-process cleanup when ports stay bound after a crashed run:
 ```bash
 # macOS / Linux — find whatever is on each port and kill it
 lsof -i :3111,3112,3113,49134
-pkill -f agentmemory || true
+pkill -f ZiiAgentMemory || true
 pkill -f 'iii ' || true
 
 # Windows
@@ -1345,26 +1353,26 @@ netstat -ano | findstr ":3111 :3112 :3113 :49134"
 taskkill /F /PID <pid>
 ```
 
-`agentmemory stop` reaps both the worker and the engine pidfile cleanly on graceful shutdown. The manual cleanup above is only for the post-crash case where neither pidfile is left behind.
+`ziiagentmemory stop` reaps both the worker and the engine pidfile cleanly on graceful shutdown. The manual cleanup above is only for the post-crash case where neither pidfile is left behind.
 
 ### Config File
 
-Put agentmemory runtime configuration in `~/.agentmemory/.env` instead of exporting variables in every shell. If the viewer shows a setup hint like `export ANTHROPIC_API_KEY=...`, copy it into this file as `ANTHROPIC_API_KEY=...` without the `export` prefix, then restart agentmemory.
+Put ZiiAgentMemory runtime configuration in `~/.ziiagentmemory/.env` instead of exporting variables in every shell. If the viewer shows a setup hint like `export ANTHROPIC_API_KEY=...`, copy it into this file as `ANTHROPIC_API_KEY=...` without the `export` prefix, then restart ZiiAgentMemory.
 
 Process environment variables still work and take precedence over values in the file.
 
-On Windows, the same file lives at `%USERPROFILE%\.agentmemory\.env`:
+On Windows, the same file lives at `%USERPROFILE%\.ziiagentmemory\.env`:
 
 ```powershell
-New-Item -ItemType Directory -Force $HOME\.agentmemory
-notepad $HOME\.agentmemory\.env
+New-Item -ItemType Directory -Force $HOME\.ziiagentmemory
+notepad $HOME\.ziiagentmemory\.env
 ```
 
 To test with a Claude Code Pro/Max subscription instead of an API key, opt in explicitly:
 
 ```env
-AGENTMEMORY_ALLOW_AGENT_SDK=true
-AGENTMEMORY_AUTO_COMPRESS=true
+ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true
+ZIIAGENTMEMORY_AUTO_COMPRESS=true
 ```
 
 Consolidation (graph nodes, lessons, crystals) is on by default whenever an LLM provider is configured. Explicitly opt out with `CONSOLIDATION_ENABLED=false` if you want LLM-free operation. Graph extraction is a separate flag:
@@ -1376,7 +1384,7 @@ GRAPH_EXTRACTION_ENABLED=true
 
 ### Environment Variables
 
-Create `~/.agentmemory/.env`:
+Create `~/.ziiagentmemory/.env`:
 
 ```env
 # LLM provider (pick one — default is the no-op provider: no LLM calls)
@@ -1397,9 +1405,9 @@ Create `~/.agentmemory/.env`:
 # OPENAI_API_VERSION=2024-08-01-preview    # Optional: Azure api-version query param
 # OPENAI_MODEL=gpt-4o-mini                 # Optional: default model
 # OPENAI_TIMEOUT_MS=60000                  # Optional: OpenAI-scoped alias for the outbound fetch
-#                                          # timeout. Takes precedence over AGENTMEMORY_LLM_TIMEOUT_MS
+#                                          # timeout. Takes precedence over ZIIAGENTMEMORY_LLM_TIMEOUT_MS
 #                                          # for back-compat with v0.9.17. New configs should
-#                                          # prefer the global AGENTMEMORY_LLM_TIMEOUT_MS below.
+#                                          # prefer the global ZIIAGENTMEMORY_LLM_TIMEOUT_MS below.
 # OPENAI_REASONING_EFFORT=none             # Optional: "low" | "medium" | "high" | "none"
 #                                          # Honored only by OpenAI's reasoning models (o1, o3,
 #                                          # gpt-*-reasoning) and providers that mirror that
@@ -1411,7 +1419,7 @@ Create `~/.agentmemory/.env`:
 #                                          # for LLM (useful if you only want OpenAI for embeddings)
 # Opt-in Claude-subscription fallback (spawns @anthropic-ai/claude-agent-sdk);
 # leave OFF unless you understand the Stop-hook recursion risk:
-# AGENTMEMORY_ALLOW_AGENT_SDK=true
+# ZIIAGENTMEMORY_ALLOW_AGENT_SDK=true
 
 # Embedding provider (auto-detected, or override)
 # EMBEDDING_PROVIDER=local
@@ -1422,7 +1430,7 @@ Create `~/.agentmemory/.env`:
 # OPENAI_EMBEDDING_DIMENSIONS=1536        # Required when the model is not in the known-models table
 
 # Outbound LLM / embedding timeout
-# AGENTMEMORY_LLM_TIMEOUT_MS=60000       # Default: 60 000 ms (60 s). Applies to every
+# ZIIAGENTMEMORY_LLM_TIMEOUT_MS=60000       # Default: 60 000 ms (60 s). Applies to every
                                           # raw-fetch provider (Gemini, OpenRouter, MiniMax,
                                           # OpenAI LLM, OpenAI/Cohere/Voyage/OpenRouter
                                           # embedding). For the OpenAI LLM path, the
@@ -1438,18 +1446,18 @@ Create `~/.agentmemory/.env`:
 # TOKEN_BUDGET=2000
 
 # Auth
-# AGENTMEMORY_SECRET=your-secret
+# ZIIAGENTMEMORY_SECRET=your-secret
 
 # Ports (defaults: 3111 API, 3113 viewer)
 # III_REST_PORT=3111
 
 # Features
-# AGENTMEMORY_AUTO_COMPRESS=false  # OFF by default. When on,
+# ZIIAGENTMEMORY_AUTO_COMPRESS=false  # OFF by default. When on,
                                    # every PostToolUse hook calls your
                                    # LLM provider to compress the
                                    # observation — expect significant
                                    # token spend on active sessions.
-# AGENTMEMORY_SLOTS=false          # OFF by default. Editable pinned
+# ZIIAGENTMEMORY_SLOTS=false          # OFF by default. Editable pinned
                                    # memory slots — persona,
                                    # user_preferences, tool_guidelines,
                                    # project_context, guidance,
@@ -1458,7 +1466,7 @@ Create `~/.agentmemory/.env`:
                                    # edits via memory_slot_* tools.
                                    # Pinned slots addressable for
                                    # SessionStart injection.
-# AGENTMEMORY_REFLECT=false        # OFF by default. Requires SLOTS=on.
+# ZIIAGENTMEMORY_REFLECT=false        # OFF by default. Requires SLOTS=on.
                                    # Stop hook fires mem::slot-reflect:
                                    # scans recent observations, auto-
                                    # appends TODOs to pending_items,
@@ -1466,14 +1474,14 @@ Create `~/.agentmemory/.env`:
                                    # session_patterns, records touched
                                    # files in project_context. Fire-
                                    # and-forget; does not block.
-# AGENTMEMORY_INJECT_CONTEXT=false # OFF by default. When on:
+# ZIIAGENTMEMORY_INJECT_CONTEXT=false # OFF by default. When on:
                                    # - SessionStart may inject ~1-2K
                                    #   chars of project context into
                                    #   the first turn of each session
                                    #   (this is what actually reaches
                                    #   the model — Claude Code treats
                                    #   SessionStart stdout as context)
-                                   # - PreToolUse fires /agentmemory/enrich
+                                   # - PreToolUse fires /ziiagentmemory/enrich
                                    #   on every file-touching tool call
                                    #   (resource cleanup, not a token
                                    #   fix — PreToolUse stdout is debug
@@ -1484,7 +1492,7 @@ Create `~/.agentmemory/.env`:
 # CONSOLIDATION_ENABLED=false   # on by default when an LLM provider is configured
 # LESSON_DECAY_ENABLED=true
 # OBSIDIAN_AUTO_EXPORT=false
-# AGENTMEMORY_EXPORT_ROOT=~/.agentmemory
+# ZIIAGENTMEMORY_EXPORT_ROOT=~/.ziiagentmemory
 # CLAUDE_MEMORY_BRIDGE=false
 # SNAPSHOT_ENABLED=false
 
@@ -1494,35 +1502,35 @@ Create `~/.agentmemory/.env`:
 # TEAM_MODE=private
 
 # Tool visibility: "core" (8 tools, lean fallback) or "all" (53 tools)
-# AGENTMEMORY_TOOLS=core
+# ZIIAGENTMEMORY_TOOLS=core
 ```
 
 ---
 
 <h2 id="api"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/tags/light/section-api.svg"><img src="assets/tags/section-api.svg" alt="API" height="32" /></picture></h2>
 
-128 endpoints on port `3111`. The REST API binds to `127.0.0.1` by default. Protected endpoints require `Authorization: Bearer <secret>` when `AGENTMEMORY_SECRET` is set, and mesh sync endpoints require `AGENTMEMORY_SECRET` on both peers.
+128 endpoints on port `3111`. The REST API binds to `127.0.0.1` by default. Protected endpoints require `Authorization: Bearer <secret>` when `ZIIAGENTMEMORY_SECRET` is set, and mesh sync endpoints require `ZIIAGENTMEMORY_SECRET` on both peers.
 
 <details>
 <summary>Key endpoints</summary>
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/agentmemory/health` | Health check (always public) |
-| `POST` | `/agentmemory/session/start` | Start session + get context |
-| `POST` | `/agentmemory/session/end` | End session |
-| `POST` | `/agentmemory/observe` | Capture observation |
-| `POST` | `/agentmemory/smart-search` | Hybrid search |
-| `POST` | `/agentmemory/context` | Generate context |
-| `POST` | `/agentmemory/remember` | Save to long-term memory |
-| `POST` | `/agentmemory/forget` | Delete observations |
-| `POST` | `/agentmemory/enrich` | File context + memories + bugs |
-| `GET` | `/agentmemory/profile` | Project profile |
-| `GET` | `/agentmemory/export` | Export all data |
-| `POST` | `/agentmemory/import` | Import from JSON |
-| `POST` | `/agentmemory/graph/query` | Knowledge graph query |
-| `POST` | `/agentmemory/team/share` | Share with team |
-| `GET` | `/agentmemory/audit` | Audit trail |
+| `GET` | `/ziiagentmemory/health` | Health check (always public) |
+| `POST` | `/ziiagentmemory/session/start` | Start session + get context |
+| `POST` | `/ziiagentmemory/session/end` | End session |
+| `POST` | `/ziiagentmemory/observe` | Capture observation |
+| `POST` | `/ziiagentmemory/smart-search` | Hybrid search |
+| `POST` | `/ziiagentmemory/context` | Generate context |
+| `POST` | `/ziiagentmemory/remember` | Save to long-term memory |
+| `POST` | `/ziiagentmemory/forget` | Delete observations |
+| `POST` | `/ziiagentmemory/enrich` | File context + memories + bugs |
+| `GET` | `/ziiagentmemory/profile` | Project profile |
+| `GET` | `/ziiagentmemory/export` | Export all data |
+| `POST` | `/ziiagentmemory/import` | Import from JSON |
+| `POST` | `/ziiagentmemory/graph/query` | Knowledge graph query |
+| `POST` | `/ziiagentmemory/team/share` | Share with team |
+| `GET` | `/ziiagentmemory/audit` | Audit trail |
 
 Full endpoint list: [`src/triggers/api.ts`](src/triggers/api.ts)
 

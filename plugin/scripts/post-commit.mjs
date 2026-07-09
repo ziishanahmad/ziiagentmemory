@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-
 //#region src/hooks/post-commit.ts
 const exec = promisify(execFile);
 function isSdkChildContext(payload) {
-	if (process.env["AGENTMEMORY_SDK_CHILD"] === "1") return true;
+	if (process.env["ZIIAGENTMEMORY_SDK_CHILD"] === "1") return true;
 	if (!payload || typeof payload !== "object") return false;
 	return payload.entrypoint === "sdk-ts";
 }
-const REST_URL = process.env["AGENTMEMORY_URL"] || "http://localhost:3111";
-const SECRET = process.env["AGENTMEMORY_SECRET"] || "";
+const REST_URL = process.env["ZIIAGENTMEMORY_URL"] || "http://localhost:3111";
+const SECRET = process.env["ZIIAGENTMEMORY_SECRET"] || "";
 const TIMEOUT_MS = 1500;
 function authHeaders() {
 	const h = { "Content-Type": "application/json" };
@@ -36,9 +35,9 @@ async function main() {
 		data = JSON.parse(input);
 	} catch {}
 	if (isSdkChildContext(data)) return;
-	const cwd = data.cwd || process.env["AGENTMEMORY_CWD"] || process.cwd();
-	const sessionId = data.session_id || process.env["AGENTMEMORY_SESSION_ID"] || void 0;
-	const sha = process.env["AGENTMEMORY_COMMIT_SHA"] || await git(["rev-parse", "HEAD"], cwd);
+	const cwd = data.cwd || process.env["ZIIAGENTMEMORY_CWD"] || process.cwd();
+	const sessionId = data.session_id || process.env["ZIIAGENTMEMORY_SESSION_ID"] || void 0;
+	const sha = process.env["ZIIAGENTMEMORY_COMMIT_SHA"] || await git(["rev-parse", "HEAD"], cwd);
 	if (!sha) return;
 	const branch = await git([
 		"rev-parse",
@@ -87,7 +86,7 @@ async function main() {
 		files
 	};
 	try {
-		await fetch(`${REST_URL}/agentmemory/session/commit`, {
+		await fetch(`${REST_URL}/ziiagentmemory/session/commit`, {
 			method: "POST",
 			headers: authHeaders(),
 			body: JSON.stringify(body),
@@ -96,7 +95,7 @@ async function main() {
 	} catch {}
 }
 main();
-
 //#endregion
-export {  };
+export {};
+
 //# sourceMappingURL=post-commit.mjs.map

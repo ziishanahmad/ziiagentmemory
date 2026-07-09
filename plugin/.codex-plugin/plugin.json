@@ -1,14 +1,14 @@
 {
-  "name": "agentmemory",
-  "version": "0.9.27",
-  "description": "Persistent memory for AI coding agents -- captures tool usage, compresses via LLM, injects context into future sessions. 6 hooks, 53 MCP tools, 8 skills, real-time viewer.",
+  "name": "ziiagentmemory",
+  "version": "0.1.0",
+  "description": "Persistent memory for AI coding agents -- captures tool usage, compresses via LLM, injects context into future sessions. 6 hooks, 53 MCP tools, 8 skills, real-time viewer. Fork of agentmemory by Rohit Ghumare.",
   "author": {
-    "name": "Rohit Ghumare",
-    "url": "https://github.com/rohitg00"
+    "name": "Zeeshan Ahmad",
+    "url": "https://github.com/ziishanahmad"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/rohitg00/agentmemory",
-  "repository": "https://github.com/rohitg00/agentmemory",
+  "homepage": "https://github.com/ziishanahmad/ziiagentmemory",
+  "repository": "https://github.com/ziishanahmad/ziiagentmemory",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "hooks": "./hooks/hooks.codex.json"

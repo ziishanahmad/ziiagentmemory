@@ -1,13 +1,13 @@
 {
   "mcpServers": {
-    "agentmemory": {
+    "ziiagentmemory": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "args": ["-y", "ziiagentmemory"],
       "env": {
-        "AGENTMEMORY_URL": "${AGENTMEMORY_URL:-http://localhost:3111}",
-        "AGENTMEMORY_SECRET": "${AGENTMEMORY_SECRET:-}",
-        "AGENTMEMORY_TOOLS": "${AGENTMEMORY_TOOLS:-all}"
+        "ZIIAGENTMEMORY_URL": "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
+        "ZIIAGENTMEMORY_SECRET": "${ZIIAGENTMEMORY_SECRET:-}",
+        "ZIIAGENTMEMORY_TOOLS": "${ZIIAGENTMEMORY_TOOLS:-all}"
       },
       "tools": ["*"]
     }

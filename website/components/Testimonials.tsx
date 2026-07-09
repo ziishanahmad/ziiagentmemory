@@ -1,13 +1,13 @@
 import styles from "./Testimonials.module.css";
 
-// PH launch discussion thread for agentmemory — every testimonial in
+// PH launch discussion thread for ZiiAgentMemory — every testimonial in
 // this section is a verbatim quote from that thread. The live
 // upvote badge lives in <FeaturedIn /> at the top of the page.
 const PH_DISCUSSION_URL =
-  "https://www.producthunt.com/p/agent-memory-dev/how-do-you-found-agentmemory-so-far-happy-to-help";
+  "https://www.producthunt.com/p/agent-memory-dev/how-do-you-found-ZiiAgentMemory-so-far-happy-to-help";
 
 // "Use cases" — quotes that describe how a builder is using
-// agentmemory in production. Each one carries an explicit
+// ZiiAgentMemory in production. Each one carries an explicit
 // `useCase` line so the framing is concrete (not just "I like it").
 interface UseCase {
   name: string;
@@ -22,7 +22,7 @@ const USE_CASES: UseCase[] = [
     useCase: "Backfilled a month of Cursor transcripts",
     quote:
       "I backfilled agent memory on my past month's Cursor agent transcripts. It was surprisingly accurate. Picked up on things that I moved away from.",
-    href: "https://www.producthunt.com/p/agent-memory-dev/how-do-you-found-agentmemory-so-far-happy-to-help?comment=5379518",
+    href: "https://www.producthunt.com/p/agent-memory-dev/how-do-you-found-ZiiAgentMemory-so-far-happy-to-help?comment=5379518",
   },
   {
     name: "Pranav Prakash",

@@ -687,7 +687,7 @@ describe("Graph Functions", () => {
     it("graph-snapshot-rebuild refuses on legacy corpus (no snapshot) without force", async () => {
       const localKv = mockKV();
       // Seed nodes but never persist a snapshot → simulates a corpus
-      // built on a pre-#814 agentmemory.
+      // built on a pre-#814 ZiiAgentMemory.
       await localKv.set("mem:graph:nodes", "legacy_n", {
         id: "legacy_n",
         type: "concept",

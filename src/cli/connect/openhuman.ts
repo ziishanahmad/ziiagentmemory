@@ -21,13 +21,13 @@ export const adapter: ConnectAdapter = {
 
   async install(_opts: ConnectOptions): Promise<ConnectResult> {
     p.log.warn(
-      "OpenHuman integration is not yet automated. No `integrations/openhuman/` folder exists in the agentmemory repo today.",
+      "OpenHuman integration is not yet automated. No `integrations/openhuman/` folder exists in the ZiiAgentMemory repo today.",
     );
     p.note(
       [
         "OpenHuman is a Memory-trait host. The expected wiring is the REST",
         "proxy at http://localhost:3111 plus an OpenHuman-side Memory trait",
-        "impl. Once integrations/openhuman/ lands in agentmemory we'll wire",
+        "impl. Once integrations/openhuman/ lands in ZiiAgentMemory we'll wire",
         "this up automatically.",
         "",
         `Tracking: ${DOCS}`,

@@ -12,10 +12,10 @@ interface Seg {
 function buildScript(mcpTools: number, hooks: number): Seg[] {
   return [
     { t: "prompt", text: "$ " },
-    { t: "typed", text: "npx @agentmemory/agentmemory\n" },
-    { t: "plain", text: "[agentmemory] iii-engine ready on :3111\n" },
-    { t: "plain", text: `[agentmemory] ${mcpTools} MCP tools registered\n` },
-    { t: "plain", text: `[agentmemory] ${hooks} autohooks armed\n\n` },
+    { t: "typed", text: "npx ziiagentmemory\n" },
+    { t: "plain", text: "[ZiiAgentMemory] iii-engine ready on :3111\n" },
+    { t: "plain", text: `[ZiiAgentMemory] ${mcpTools} MCP tools registered\n` },
+    { t: "plain", text: `[ZiiAgentMemory] ${hooks} autohooks armed\n\n` },
     { t: "prompt", text: "$ " },
     {
       t: "typed",
@@ -136,7 +136,7 @@ export function LiveTerminal({
           <span className={`${styles.dot} ${styles.red}`} />
           <span className={`${styles.dot} ${styles.yellow}`} />
           <span className={`${styles.dot} ${styles.green}`} />
-          <span className={styles.title}>agentmemory@localhost:3111</span>
+          <span className={styles.title}>ZiiAgentMemory@localhost:3111</span>
         </div>
         <pre className={styles.body}>
           <code ref={termRef} />

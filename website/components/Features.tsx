@@ -27,7 +27,7 @@ export function Features({ hooks, mcpTools, restEndpoints }: Props) {
       unit: "REST ENDPOINTS",
       title: "HTTP FIRST",
       text:
-        "Every MCP tool has a REST twin under /agentmemory/*. Curl it. Fetch it from the browser. Proxy it from your own agent.",
+        "Every MCP tool has a REST twin under /ziiagentmemory/*. Curl it. Fetch it from the browser. Proxy it from your own agent.",
     },
     {
       k: "BM25",
@@ -48,21 +48,21 @@ export function Features({ hooks, mcpTools, restEndpoints }: Props) {
       unit: "REPLAY",
       title: "JSONL SESSION IMPORT",
       text:
-        "Point agentmemory at a Claude Code JSONL transcript and it rehydrates the full session — observations, tool uses, timeline — into the store.",
+        "Point ZiiAgentMemory at a Claude Code JSONL transcript and it rehydrates the full session — observations, tool uses, timeline — into the store.",
     },
     {
       k: "GRAPH",
       unit: "EXTRACTION",
       title: "KNOWLEDGE GRAPH",
       text:
-        "Entities and relations extracted on compress. Query with /agentmemory/graph. Visualize in the viewer. Temporal edges supported.",
+        "Entities and relations extracted on compress. Query with /ziiagentmemory/graph. Visualize in the viewer. Temporal edges supported.",
     },
     {
       k: "MESH",
       unit: "FEDERATION",
       title: "PEER-TO-PEER SYNC",
       text:
-        "Register another agentmemory node, push / pull memories over authenticated HTTPS. Bearer-token required; no silent syncs.",
+        "Register another ZiiAgentMemory node, push / pull memories over authenticated HTTPS. Bearer-token required; no silent syncs.",
     },
     {
       k: "MD",

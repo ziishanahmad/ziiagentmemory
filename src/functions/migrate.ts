@@ -11,7 +11,7 @@ import type {
 } from "../types.js";
 import { logger } from "../logger.js";
 
-const ALLOWED_DIRS = [resolve(homedir(), ".agentmemory")];
+const ALLOWED_DIRS = [resolve(homedir(), ".ziiagentmemory")];
 
 function isAllowedPath(dbPath: string): boolean {
   const resolved = resolve(dbPath);

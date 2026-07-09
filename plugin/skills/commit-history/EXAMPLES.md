@@ -64,7 +64,7 @@ Present:
 REST fallback for this same call, with encoding:
 
 ```http
-GET /agentmemory/commits?branch=release-2.0&limit=100
+GET /ziiagentmemory/commits?branch=release-2.0&limit=100
 ```
 
 Build it with `URLSearchParams` so a branch like `feat/a&b` becomes

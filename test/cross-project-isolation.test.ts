@@ -133,7 +133,7 @@ describe("cross-project isolation — end-to-end", () => {
       project: "web",
     }) as { context: string };
 
-    expect(result.context).not.toContain("agentmemory-past-errors");
+    expect(result.context).not.toContain("ZiiAgentMemory-past-errors");
     expect(result.context).not.toContain("express-jwt");
   });
 
@@ -151,7 +151,7 @@ describe("cross-project isolation — end-to-end", () => {
       project: "api",
     }) as { context: string };
 
-    expect(result.context).toContain("agentmemory-past-errors");
+    expect(result.context).toContain("ZiiAgentMemory-past-errors");
     expect(result.context).toContain("express-jwt");
   });
 

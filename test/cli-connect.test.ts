@@ -14,14 +14,14 @@ const EXPECTED_COPILOT_MCP_COMMAND =
   process.platform === "win32"
     ? {
         command: process.env["ComSpec"] || process.env["COMSPEC"] || "cmd.exe",
-        args: ["/d", "/s", "/c", "npx", "-y", "@agentmemory/mcp"],
+        args: ["/d", "/s", "/c", "npx", "-y", "ziiagentmemory"],
       }
     : {
         command: "npx",
-        args: ["-y", "@agentmemory/mcp"],
+        args: ["-y", "ziiagentmemory"],
       };
 
-describe("agentmemory connect — dispatcher", () => {
+describe("ziiagentmemory connect — dispatcher", () => {
   it("resolves every known agent by lowercase name", () => {
     for (const name of knownAgents()) {
       const a = resolveAdapter(name);
@@ -85,7 +85,7 @@ describe("agentmemory connect — dispatcher", () => {
   });
 });
 
-describe("agentmemory connect — claude-code adapter (mock filesystem)", () => {
+describe("ziiagentmemory connect — claude-code adapter (mock filesystem)", () => {
   let tmpHome: string;
   let originalHome: string | undefined;
   let originalUserprofile: string | undefined;
@@ -119,7 +119,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     expect(a.detect()).toBe(false);
   });
 
-  it("install() writes mcpServers.agentmemory into ~/.claude.json and is idempotent", async () => {
+  it("install() writes mcpServers.ZiiAgentMemory into ~/.claude.json and is idempotent", async () => {
     const claudeDir = join(tmpHome, ".claude");
     require("node:fs").mkdirSync(claudeDir, { recursive: true });
     writeFileSync(
@@ -134,17 +134,17 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     expect(first.kind).toBe("installed");
 
     const config = JSON.parse(readFileSync(join(tmpHome, ".claude.json"), "utf-8"));
-    expect(config.mcpServers.agentmemory.command).toBe("npx");
-    expect(config.mcpServers.agentmemory.args).toContain("@agentmemory/mcp");
+    expect(config.mcpServers.ZiiAgentMemory.command).toBe("npx");
+    expect(config.mcpServers.ZiiAgentMemory.args).toContain("ziiagentmemory");
     expect(config.mcpServers.other.command).toBe("x");
 
     const second = await a.install({ dryRun: false, force: false });
     expect(second.kind).toBe("already-wired");
   });
 
-  it("install() writes env passthrough block for AGENTMEMORY_URL + AGENTMEMORY_SECRET (#375)", async () => {
-    // Remote deployments (k8s, reverse proxy) set AGENTMEMORY_URL +
-    // AGENTMEMORY_SECRET in the shell. The wired MCP entry must honour
+  it("install() writes env passthrough block for ZIIAGENTMEMORY_URL + ZIIAGENTMEMORY_SECRET (#375)", async () => {
+    // Remote deployments (k8s, reverse proxy) set ZIIAGENTMEMORY_URL +
+    // ZIIAGENTMEMORY_SECRET in the shell. The wired MCP entry must honour
     // those via ${VAR} expansion so a single entry covers both local
     // and remote without the user needing to add a duplicate config
     // that triggers a /doctor duplicate-server warning.
@@ -157,17 +157,17 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     expect(result.kind).toBe("installed");
 
     const config = JSON.parse(readFileSync(join(tmpHome, ".claude.json"), "utf-8"));
-    const entry = config.mcpServers.agentmemory;
+    const entry = config.mcpServers.ZiiAgentMemory;
     expect(entry.env).toBeDefined();
     // env interpolation must carry a default so Claude Code
     // doesn't silently drop the server when the user hasn't exported
-    // AGENTMEMORY_URL / AGENTMEMORY_SECRET. Defaults match the
+    // ZIIAGENTMEMORY_URL / ZIIAGENTMEMORY_SECRET. Defaults match the
     // documented runtime (localhost:3111, no auth, all tools).
-    expect(entry.env.AGENTMEMORY_URL).toBe(
-      "${AGENTMEMORY_URL:-http://localhost:3111}",
+    expect(entry.env.ZIIAGENTMEMORY_URL).toBe(
+      "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
     );
-    expect(entry.env.AGENTMEMORY_SECRET).toBe("${AGENTMEMORY_SECRET:-}");
-    expect(entry.env.AGENTMEMORY_TOOLS).toBe("${AGENTMEMORY_TOOLS:-all}");
+    expect(entry.env.ZIIAGENTMEMORY_SECRET).toBe("${ZIIAGENTMEMORY_SECRET:-}");
+    expect(entry.env.ZIIAGENTMEMORY_TOOLS).toBe("${ZIIAGENTMEMORY_TOOLS:-all}");
   });
 
   it("install() with --force re-writes even when already wired", async () => {
@@ -176,7 +176,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
       join(tmpHome, ".claude.json"),
       JSON.stringify({
         mcpServers: {
-          agentmemory: { command: "npx", args: ["-y", "@agentmemory/mcp"] },
+          ZiiAgentMemory: { command: "npx", args: ["-y", "ziiagentmemory"] },
         },
       }),
     );
@@ -199,7 +199,7 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     expect(after).toBe(before);
   });
 
-  it("install() creates a backup file under ~/.agentmemory/backups/", async () => {
+  it("install() creates a backup file under ~/.ziiagentmemory/backups/", async () => {
     require("node:fs").mkdirSync(join(tmpHome, ".claude"), { recursive: true });
     writeFileSync(
       join(tmpHome, ".claude.json"),
@@ -212,12 +212,12 @@ describe("agentmemory connect — claude-code adapter (mock filesystem)", () => 
     if (result.kind === "installed") {
       expect(result.backupPath).toBeDefined();
       expect(existsSync(result.backupPath!)).toBe(true);
-      expect(result.backupPath!).toContain(join(".agentmemory", "backups"));
+      expect(result.backupPath!).toContain(join(".ziiagentmemory", "backups"));
     }
   });
 });
 
-describe("agentmemory connect — opencode adapter (#872)", () => {
+describe("ziiagentmemory connect — opencode adapter (#872)", () => {
   let tmpHome: string;
   let originalHome: string | undefined;
   let originalUserprofile: string | undefined;
@@ -266,10 +266,10 @@ describe("agentmemory connect — opencode adapter (#872)", () => {
     expect(first.kind).toBe("installed");
 
     const config = JSON.parse(readFileSync(cfgPath(), "utf-8"));
-    const entry = config.mcp.agentmemory;
+    const entry = config.mcp.ZiiAgentMemory;
     expect(entry.type).toBe("local");
     expect(Array.isArray(entry.command)).toBe(true);
-    expect(entry.command).toContain("@agentmemory/mcp");
+    expect(entry.command).toContain("ziiagentmemory");
     expect(entry.enabled).toBe(true);
     expect(config.mcp.other.command).toEqual(["x"]);
 
@@ -291,7 +291,7 @@ describe("agentmemory connect — opencode adapter (#872)", () => {
   });
 });
 
-describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => {
+describe("ziiagentmemory connect — copilot-cli adapter (mock filesystem)", () => {
   let tmpHome: string;
   let originalHome: string | undefined;
   let originalUserprofile: string | undefined;
@@ -334,7 +334,7 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     expect(a.detect()).toBe(false);
   });
 
-  it("install() writes mcpServers.agentmemory into ~/.copilot/mcp-config.json and is idempotent", async () => {
+  it("install() writes mcpServers.ZiiAgentMemory into ~/.copilot/mcp-config.json and is idempotent", async () => {
     require("node:fs").mkdirSync(join(tmpHome, ".copilot"), { recursive: true });
 
     const a = await loadAdapter();
@@ -346,13 +346,13 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     const config = JSON.parse(
       readFileSync(join(tmpHome, ".copilot", "mcp-config.json"), "utf-8"),
     );
-    expect(config.mcpServers.agentmemory).toEqual({
+    expect(config.mcpServers.ZiiAgentMemory).toEqual({
       type: "local",
       ...EXPECTED_COPILOT_MCP_COMMAND,
       env: {
-        AGENTMEMORY_URL: "${AGENTMEMORY_URL:-http://localhost:3111}",
-        AGENTMEMORY_SECRET: "${AGENTMEMORY_SECRET:-}",
-        AGENTMEMORY_TOOLS: "${AGENTMEMORY_TOOLS:-all}",
+        ZIIAGENTMEMORY_URL: "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
+        ZIIAGENTMEMORY_SECRET: "${ZIIAGENTMEMORY_SECRET:-}",
+        ZIIAGENTMEMORY_TOOLS: "${ZIIAGENTMEMORY_TOOLS:-all}",
       },
       tools: ["*"],
     });
@@ -395,12 +395,12 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     );
     expect(config.otherTopLevel).toEqual({ keep: true });
     expect(config.mcpServers.other).toEqual({ type: "local", command: "other" });
-    expect(config.mcpServers.agentmemory.command).toBe(
+    expect(config.mcpServers.ZiiAgentMemory.command).toBe(
       EXPECTED_COPILOT_MCP_COMMAND.command,
     );
   });
 
-  it("install() writes env passthrough block for AGENTMEMORY_URL + AGENTMEMORY_SECRET", async () => {
+  it("install() writes env passthrough block for ZIIAGENTMEMORY_URL + ZIIAGENTMEMORY_SECRET", async () => {
     require("node:fs").mkdirSync(join(tmpHome, ".copilot"), { recursive: true });
 
     const a = await loadAdapter();
@@ -410,12 +410,12 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     const config = JSON.parse(
       readFileSync(join(tmpHome, ".copilot", "mcp-config.json"), "utf-8"),
     );
-    const entry = config.mcpServers.agentmemory;
-    expect(entry.env.AGENTMEMORY_URL).toBe(
-      "${AGENTMEMORY_URL:-http://localhost:3111}",
+    const entry = config.mcpServers.ZiiAgentMemory;
+    expect(entry.env.ZIIAGENTMEMORY_URL).toBe(
+      "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
     );
-    expect(entry.env.AGENTMEMORY_SECRET).toBe("${AGENTMEMORY_SECRET:-}");
-    expect(entry.env.AGENTMEMORY_TOOLS).toBe("${AGENTMEMORY_TOOLS:-all}");
+    expect(entry.env.ZIIAGENTMEMORY_SECRET).toBe("${ZIIAGENTMEMORY_SECRET:-}");
+    expect(entry.env.ZIIAGENTMEMORY_TOOLS).toBe("${ZIIAGENTMEMORY_TOOLS:-all}");
   });
 
   it("install() with --force rewrites even when already wired", async () => {
@@ -424,13 +424,13 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
       join(tmpHome, ".copilot", "mcp-config.json"),
       JSON.stringify({
         mcpServers: {
-          agentmemory: {
+          ZiiAgentMemory: {
             type: "local",
             ...EXPECTED_COPILOT_MCP_COMMAND,
             env: {
-              AGENTMEMORY_URL: "${AGENTMEMORY_URL:-http://localhost:3111}",
-              AGENTMEMORY_SECRET: "${AGENTMEMORY_SECRET:-}",
-              AGENTMEMORY_TOOLS: "${AGENTMEMORY_TOOLS:-all}",
+              ZIIAGENTMEMORY_URL: "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
+              ZIIAGENTMEMORY_SECRET: "${ZIIAGENTMEMORY_SECRET:-}",
+              ZIIAGENTMEMORY_TOOLS: "${ZIIAGENTMEMORY_TOOLS:-all}",
             },
             tools: ["memory_save"],
           },
@@ -445,7 +445,7 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     const config = JSON.parse(
       readFileSync(join(tmpHome, ".copilot", "mcp-config.json"), "utf-8"),
     );
-    expect(config.mcpServers.agentmemory.tools).toEqual(["*"]);
+    expect(config.mcpServers.ZiiAgentMemory.tools).toEqual(["*"]);
   });
 
   it("install() with --dry-run does not mutate the file", async () => {
@@ -477,12 +477,12 @@ describe("agentmemory connect — copilot-cli adapter (mock filesystem)", () => 
     if (result.kind === "installed") {
       expect(result.backupPath).toBeDefined();
       expect(existsSync(result.backupPath!)).toBe(true);
-      expect(result.backupPath!).toContain(join(".agentmemory", "backups"));
+      expect(result.backupPath!).toContain(join(".ziiagentmemory", "backups"));
     }
   });
 });
 
-describe("agentmemory connect — stub adapters log + return stub", () => {
+describe("ziiagentmemory connect — stub adapters log + return stub", () => {
   it("hermes adapter returns stub regardless of detect", async () => {
     const { adapter } = await import("../src/cli/connect/hermes.js");
     const result = await adapter.install({ dryRun: false, force: false });

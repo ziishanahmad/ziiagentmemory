@@ -56,7 +56,7 @@ describe("Copilot plugin manifest (plugin/plugin.json)", () => {
       mcpServers?: string;
       hooks?: string;
     }>(manifestPath);
-    expect(manifest.name).toBe("agentmemory");
+    expect(manifest.name).toBe("ziiagentmemory");
     expect(manifest.name).toMatch(/^[a-z][a-z0-9-]*$/);
     expect(manifest.version).toMatch(/^\d+\.\d+\.\d+/);
     expect(manifest.skills).toBeDefined();
@@ -101,7 +101,7 @@ describe("Copilot MCP config (.mcp.copilot.json)", () => {
     expect(existsSync(mcpPath)).toBe(true);
     const config = readJson<{
       mcpServers: {
-        agentmemory: {
+        ZiiAgentMemory: {
           type: string;
           command: string;
           args: string[];
@@ -110,15 +110,15 @@ describe("Copilot MCP config (.mcp.copilot.json)", () => {
         };
       };
     }>(mcpPath);
-    const server = config.mcpServers.agentmemory;
+    const server = config.mcpServers.ziiagentmemory;
     expect(server.type).toBe("local");
     expect(server.command).toBe("npx");
-    expect(server.args).toEqual(["-y", "@agentmemory/mcp"]);
-    expect(server.env["AGENTMEMORY_URL"]).toBe(
-      "${AGENTMEMORY_URL:-http://localhost:3111}",
+    expect(server.args).toEqual(["-y", "ziiagentmemory"]);
+    expect(server.env["ZIIAGENTMEMORY_URL"]).toBe(
+      "${ZIIAGENTMEMORY_URL:-http://localhost:3111}",
     );
-    expect(server.env["AGENTMEMORY_SECRET"]).toBe("${AGENTMEMORY_SECRET:-}");
-    expect(server.env["AGENTMEMORY_TOOLS"]).toBe("${AGENTMEMORY_TOOLS:-all}");
+    expect(server.env["ZIIAGENTMEMORY_SECRET"]).toBe("${ZIIAGENTMEMORY_SECRET:-}");
+    expect(server.env["ZIIAGENTMEMORY_TOOLS"]).toBe("${ZIIAGENTMEMORY_TOOLS:-all}");
     expect(server.tools).toContain("*");
   });
 });
@@ -247,8 +247,8 @@ describe("Copilot hook scripts", () => {
       const child = spawn(process.execPath, [join(pluginRoot, script)], {
         env: {
           ...process.env,
-          AGENTMEMORY_URL: `http://127.0.0.1:${address.port}`,
-          AGENTMEMORY_SECRET: "",
+          ZIIAGENTMEMORY_URL: `http://127.0.0.1:${address.port}`,
+          ZIIAGENTMEMORY_SECRET: "",
           ...env,
         },
         stdio: ["pipe", "pipe", "pipe"],
@@ -288,11 +288,11 @@ describe("Copilot hook scripts", () => {
     const result = await runHook(
       "scripts/session-start.mjs",
       { sessionId: "copilot-session", cwd: "C:\\repo" },
-      { AGENTMEMORY_INJECT_CONTEXT: "true" },
+      { ZIIAGENTMEMORY_INJECT_CONTEXT: "true" },
     );
 
     expect(result.stdout).toBe("remembered context");
-    expect(result.requests[0]?.path).toBe("/agentmemory/session/start");
+    expect(result.requests[0]?.path).toBe("/ziiagentmemory/session/start");
     expect(result.requests[0]?.body).toMatchObject({
       sessionId: "copilot-session",
       project: "C:\\repo",
@@ -308,11 +308,11 @@ describe("Copilot hook scripts", () => {
         toolName: "read",
         toolArgs: { path: "src/index.ts" },
       },
-      { AGENTMEMORY_INJECT_CONTEXT: "true" },
+      { ZIIAGENTMEMORY_INJECT_CONTEXT: "true" },
     );
 
     expect(result.stdout).toBe("remembered context");
-    expect(result.requests[0]?.path).toBe("/agentmemory/enrich");
+    expect(result.requests[0]?.path).toBe("/ziiagentmemory/enrich");
     expect(result.requests[0]?.body).toMatchObject({
       sessionId: "unknown",
       files: ["src/index.ts"],
@@ -328,7 +328,7 @@ describe("Copilot hook scripts", () => {
       userPrompt: "remember this prompt",
     });
 
-    expect(result.requests[0]?.path).toBe("/agentmemory/observe");
+    expect(result.requests[0]?.path).toBe("/ziiagentmemory/observe");
     expect(result.requests[0]?.body).toMatchObject({
       hookType: "prompt_submit",
       sessionId: "copilot-session",
@@ -345,7 +345,7 @@ describe("Copilot hook scripts", () => {
       errorMessage: "failed",
     });
 
-    expect(result.requests[0]?.path).toBe("/agentmemory/observe");
+    expect(result.requests[0]?.path).toBe("/ziiagentmemory/observe");
     expect(result.requests[0]?.body).toMatchObject({
       hookType: "post_tool_failure",
       sessionId: "copilot-session",
@@ -366,7 +366,7 @@ describe("Copilot hook scripts", () => {
       message: "Approve edit",
     });
 
-    expect(result.requests[0]?.path).toBe("/agentmemory/observe");
+    expect(result.requests[0]?.path).toBe("/ziiagentmemory/observe");
     expect(result.requests[0]?.body).toMatchObject({
       hookType: "notification",
       sessionId: "copilot-session",

@@ -1,14 +1,14 @@
 ---
-name: agentmemory-architecture
-description: How agentmemory is built, the iii engine primitives it runs on, its storage model, ports, and the viewer. Use when reasoning about how memory is stored or retrieved end to end, when extending the system, or when answering how agentmemory works under the hood.
+name: ZiiAgentMemory-architecture
+description: How ZiiAgentMemory is built, the iii engine primitives it runs on, its storage model, ports, and the viewer. Use when reasoning about how memory is stored or retrieved end to end, when extending the system, or when answering how ZiiAgentMemory works under the hood.
 user-invocable: false
 ---
 
-agentmemory is a memory server for coding agents. It runs locally, captures observations, indexes them for hybrid retrieval, and serves them back over REST and MCP. It is built on the iii engine.
+ZiiAgentMemory is a memory server for coding agents. It runs locally, captures observations, indexes them for hybrid retrieval, and serves them back over REST and MCP. It is built on the iii engine.
 
 ## iii primitives
 
-Everything is a function, a trigger, or worker state on the iii engine. There is no separate plugin system; the worker registers functions (`mem::*`) and HTTP triggers (`api::*`) and the engine routes calls. agentmemory does not bypass iii; new capability is a new function plus a trigger.
+Everything is a function, a trigger, or worker state on the iii engine. There is no separate plugin system; the worker registers functions (`mem::*`) and HTTP triggers (`api::*`) and the engine routes calls. ZiiAgentMemory does not bypass iii; new capability is a new function plus a trigger.
 
 ## Retrieval model
 
@@ -28,6 +28,6 @@ A real-time web viewer at `http://localhost:3113` shows memory building as sessi
 
 ## See also
 
-- agentmemory-mcp-tools and agentmemory-rest-api for the surfaces.
-- agentmemory-hooks for automatic capture.
-- agentmemory-config for ports and feature flags.
+- ZiiAgentMemory-mcp-tools and ZiiAgentMemory-rest-api for the surfaces.
+- ZiiAgentMemory-hooks for automatic capture.
+- ZiiAgentMemory-config for ports and feature flags.

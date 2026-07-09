@@ -7,7 +7,7 @@ export function fetchWithTimeout(
 ): Promise<Response> {
   const parsed =
     timeoutMs ??
-    Number.parseInt(getEnvVar("AGENTMEMORY_LLM_TIMEOUT_MS") ?? "60000", 10);
+    Number.parseInt(getEnvVar("ZIIAGENTMEMORY_LLM_TIMEOUT_MS") ?? "60000", 10);
   const ms = Number.isFinite(parsed) && parsed > 0 ? parsed : 60000;
 
   const ctl = new AbortController();

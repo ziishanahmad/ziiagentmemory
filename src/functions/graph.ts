@@ -665,8 +665,8 @@ export function registerGraphFunction(
           warning:
             "No graph snapshot available. Either no graph has been " +
             "extracted yet, or you are on a legacy corpus from a pre-#814 " +
-            "agentmemory build. Run POST /agentmemory/graph/snapshot-rebuild " +
-            "(safe up to ~25K nodes) or POST /agentmemory/graph/reset to " +
+            "ZiiAgentMemory build. Run POST /ziiagentmemory/graph/snapshot-rebuild " +
+            "(safe up to ~25K nodes) or POST /ziiagentmemory/graph/reset to " +
             "wipe and let future extracts repopulate.",
         };
       }
@@ -779,7 +779,7 @@ export function registerGraphFunction(
 
   // #814 v2: graph-stats reads the snapshot exclusively. The snapshot
   // is maintained inline by mem::graph-extract, so for any corpus built
-  // on a post-#814 agentmemory the stats are always current without an
+  // on a post-#814 ZiiAgentMemory the stats are always current without an
   // enumeration. Legacy corpora without a snapshot get an empty
   // envelope + a warning pointing at the snapshot-rebuild or graph-reset
   // endpoints — never a 500.
@@ -806,8 +806,8 @@ export function registerGraphFunction(
       edgesByType: {},
       fromSnapshot: false,
       warning:
-        "No graph snapshot available. Run POST /agentmemory/graph/snapshot-rebuild " +
-        "(safe up to ~25K nodes) or POST /agentmemory/graph/reset to wipe " +
+        "No graph snapshot available. Run POST /ziiagentmemory/graph/snapshot-rebuild " +
+        "(safe up to ~25K nodes) or POST /ziiagentmemory/graph/reset to wipe " +
         "and let future extracts repopulate.",
     };
   });
@@ -852,7 +852,7 @@ export function registerGraphFunction(
               "No prior snapshot found. Rebuild would call kv.list on " +
               "KV.graphNodes/Edges, which heartbeat-crashes the worker " +
               "on corpora past the iii state response budget (~25K nodes). " +
-              "Either (a) call POST /agentmemory/graph/reset to drop into " +
+              "Either (a) call POST /ziiagentmemory/graph/reset to drop into " +
               "incremental-only mode and rebuild from new extracts, or " +
               "(b) re-send with `force: true` if you're certain the " +
               "corpus is small.",
@@ -887,7 +887,7 @@ export function registerGraphFunction(
           ceiling: REBUILD_SAFE_NODE_CEILING,
           error:
             `Corpus has ${nodes.length} graph nodes; safe-rebuild ceiling ` +
-            `is ${REBUILD_SAFE_NODE_CEILING}. Run POST /agentmemory/graph/reset ` +
+            `is ${REBUILD_SAFE_NODE_CEILING}. Run POST /ziiagentmemory/graph/reset ` +
             `to wipe and let future extracts rebuild incrementally.`,
         };
       }

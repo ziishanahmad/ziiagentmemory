@@ -26,7 +26,7 @@ export interface StdioMessageParser {
 // (and the MCP transport contract) requires the server to NOT send a
 // response for notifications. Some clients tolerate spurious responses;
 // stricter clients (e.g. Codex CLI) treat them as protocol violations and
-// close the transport. See agentmemory#129.
+// close the transport. See ZiiAgentMemory#129.
 function isNotification(req: JsonRpcRequest): boolean {
   return req.id === undefined || req.id === null;
 }

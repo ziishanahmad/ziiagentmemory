@@ -20,7 +20,7 @@ describe("MinimaxProvider — base URL resolution (#285)", () => {
     );
   });
 
-  it("honors MINIMAX_BASE_URL via getEnvVar (merged ~/.agentmemory/.env + process.env)", () => {
+  it("honors MINIMAX_BASE_URL via getEnvVar (merged ~/.ziiagentmemory/.env + process.env)", () => {
     process.env["MINIMAX_BASE_URL"] = "https://custom.example.com/anthropic";
     const provider = new MinimaxProvider("test-key", "MiniMax-M2.7", 800);
     expect((provider as unknown as { baseUrl: string }).baseUrl).toBe(

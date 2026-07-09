@@ -102,9 +102,9 @@ export async function runConnect(args: string[]): Promise<void> {
   const allowWindowsAdapter =
     positional.length === 1 && positional[0]?.toLowerCase() === "copilot-cli";
   if (platform() === "win32" && !allowWindowsAdapter) {
-    p.intro("agentmemory connect");
+    p.intro("ziiagentmemory connect");
     p.log.warn(
-      "Windows: automated `connect` is not supported yet. See https://github.com/rohitg00/agentmemory#other-agents for manual install steps.",
+      "Windows: automated `connect` is not supported yet. See https://github.com/rohitg00/ZiiAgentMemory#other-agents for manual install steps.",
     );
     p.outro("Windows: manual install required — see docs");
     return;
@@ -112,7 +112,7 @@ export async function runConnect(args: string[]): Promise<void> {
 
   const opts: ConnectOptions = { dryRun, force, withHooks };
 
-  p.intro("agentmemory connect");
+  p.intro("ziiagentmemory connect");
 
   if (positional.length === 0 && !all) {
     const detected = ADAPTERS.filter((a) => a.detect());
@@ -122,7 +122,7 @@ export async function runConnect(args: string[]): Promise<void> {
       process.exit(1);
     }
     const picked = await p.multiselect<string>({
-      message: "Wire agentmemory into which agents?",
+      message: "Wire ZiiAgentMemory into which agents?",
       options: detected.map((a) => ({ value: a.name, label: a.displayName })),
       required: true,
     });
@@ -201,9 +201,9 @@ function summarize(
   );
   if (wiredAny) {
     p.log.info(
-      "Next: install agentmemory's 15 skills into the same agent(s) so they know when to call the tools:\n  npx skills add rohitg00/agentmemory -y",
+      "Next: install ZiiAgentMemory's 15 skills into the same agent(s) so they know when to call the tools:\n  npx skills add ziishanahmad/ziiagentmemory -y",
     );
   }
 
-  p.outro("Restart any wired agent (or open a new session) to pick up agentmemory.");
+  p.outro("Restart any wired agent (or open a new session) to pick up ZiiAgentMemory.");
 }

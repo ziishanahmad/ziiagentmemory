@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import * as p from "@clack/prompts";
 import type { ConnectAdapter, ConnectOptions, ConnectResult } from "./types.js";
 import {
-  AGENTMEMORY_MCP_BLOCK,
+  ZIIAGENTMEMORY_MCP_BLOCK,
   backupFile,
   logAlreadyWired,
   logBackup,
@@ -38,19 +38,19 @@ type ContinueJsonConfig = {
 
 function buildEntry(): ContinueEntry {
   return {
-    name: "agentmemory",
-    command: AGENTMEMORY_MCP_BLOCK.command,
-    args: [...AGENTMEMORY_MCP_BLOCK.args],
-    env: { ...AGENTMEMORY_MCP_BLOCK.env },
+    name: "ZiiAgentMemory",
+    command: ZIIAGENTMEMORY_MCP_BLOCK.command,
+    args: [...ZIIAGENTMEMORY_MCP_BLOCK.args],
+    env: { ...ZIIAGENTMEMORY_MCP_BLOCK.env },
   };
 }
 
 function entryIsAgentmemory(entry: ContinueEntry | undefined): boolean {
   if (!entry) return false;
-  return entry.name === "agentmemory" && entry.args.includes("@agentmemory/mcp");
+  return entry.name === "ZiiAgentMemory" && entry.args.includes("ziiagentmemory");
 }
 
-// Minimal YAML emitter for the agentmemory entry. Quotes string values
+// Minimal YAML emitter for the ZiiAgentMemory entry. Quotes string values
 // that contain ${ ... } expansion to keep parsers happy. Only used when
 // creating a fresh config.yaml — never when modifying an existing one.
 function renderFreshYaml(): string {
@@ -74,7 +74,7 @@ export const adapter: ConnectAdapter = {
   name: "continue",
   displayName: "Continue",
   category: "mcp",
-  docs: "https://github.com/rohitg00/agentmemory#other-agents",
+  docs: "https://github.com/rohitg00/ZiiAgentMemory#other-agents",
   protocolNote:
     "→ Using MCP via ~/.continue/config.yaml (preferred) or config.json (legacy, only when no yaml).",
 
@@ -93,7 +93,7 @@ export const adapter: ConnectAdapter = {
         .split("\n")
         .map((l) => (l ? `  ${l}` : l))
         .join("\n");
-      const manual = `\nMerge this block into ~/.continue/config.yaml (the snippet already includes the top-level mcpServers key — if your config already has a mcpServers list, append the agentmemory entry to it instead of duplicating the key):\n\n${indented}`;
+      const manual = `\nMerge this block into ~/.continue/config.yaml (the snippet already includes the top-level mcpServers key — if your config already has a mcpServers list, append the ZiiAgentMemory entry to it instead of duplicating the key):\n\n${indented}`;
       p.log.info(
         `Continue: ${YAML_PATH} already exists. Manual edit needed.${manual}`,
       );
@@ -108,7 +108,7 @@ export const adapter: ConnectAdapter = {
         ? [...next.mcpServers]
         : [];
 
-      const idx = servers.findIndex((s) => s?.name === "agentmemory");
+      const idx = servers.findIndex((s) => s?.name === "ZiiAgentMemory");
       const alreadyHas = idx >= 0 && entryIsAgentmemory(servers[idx]);
       if (alreadyHas && !opts.force) {
         logAlreadyWired("Continue", JSON_PATH);
@@ -117,7 +117,7 @@ export const adapter: ConnectAdapter = {
 
       if (opts.dryRun) {
         p.log.info(
-          `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers[agentmemory] in ${JSON_PATH}`,
+          `[dry-run] Would ${alreadyHas ? "overwrite" : "add"} mcpServers[ZiiAgentMemory] in ${JSON_PATH}`,
         );
         return { kind: "installed", mutatedPath: JSON_PATH };
       }
@@ -133,11 +133,11 @@ export const adapter: ConnectAdapter = {
 
       const verify = readJsonSafe<ContinueJsonConfig>(JSON_PATH);
       const verifyEntry = verify?.mcpServers?.find(
-        (s) => s?.name === "agentmemory",
+        (s) => s?.name === "ZiiAgentMemory",
       );
       if (!entryIsAgentmemory(verifyEntry)) {
         p.log.error(
-          `Verification failed: ${JSON_PATH} did not contain mcpServers[agentmemory] after write.`,
+          `Verification failed: ${JSON_PATH} did not contain mcpServers[ZiiAgentMemory] after write.`,
         );
         return { kind: "skipped", reason: "verification-failed" };
       }
@@ -152,7 +152,7 @@ export const adapter: ConnectAdapter = {
 
     // Branch 3: neither exists — create config.yaml from scratch (modern path).
     if (opts.dryRun) {
-      p.log.info(`[dry-run] Would create ${YAML_PATH} with agentmemory entry`);
+      p.log.info(`[dry-run] Would create ${YAML_PATH} with ZiiAgentMemory entry`);
       return { kind: "installed", mutatedPath: YAML_PATH };
     }
 

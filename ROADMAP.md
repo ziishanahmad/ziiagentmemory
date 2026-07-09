@@ -1,6 +1,6 @@
 # Roadmap
 
-This is agentmemory's public 12-month roadmap. It covers Q2 2026 through Q1 2027. The roadmap is the source of truth for where the project is heading; anything significant that lands in main should trace back to an item here or a ratified issue.
+This is ZiiAgentMemory's public 12-month roadmap. It covers Q2 2026 through Q1 2027. The roadmap is the source of truth for where the project is heading; anything significant that lands in main should trace back to an item here or a ratified issue.
 
 Items shift as evidence changes. Each quarter we publish a short retrospective on what landed, what slipped, and why — attached to the release notes.
 
@@ -27,7 +27,7 @@ Anything not on this list that a contributor wants to pursue is welcome — open
 - [x] Health severity gated on RSS floor (#158 / PR #160)
 - [x] Standalone MCP proxies to the running server (#159 / PR #161)
 - [x] Audit coverage for `mem::forget` + audit policy doc (#125 / PR #162)
-- [x] `@agentmemory/fs-watcher` filesystem connector (#62 / PR #163)
+- [x] `@ZiiAgentMemory/fs-watcher` filesystem connector (#62 / PR #163)
 - [x] Next.js website on Vercel (PR #164)
 - [x] CI publishes all three npm packages on release (PR #166)
 
@@ -36,7 +36,7 @@ Anything not on this list that a contributor wants to pursue is welcome — open
 - [ ] **Governance baseline** — this file, plus `GOVERNANCE.md`, `CONTRIBUTING.md`, `MAINTAINERS.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`
 
 ### Planned
-- [ ] **GitHub connector** (`@agentmemory/github-watcher`) — sync issues, PRs, discussions as observations. Shares the `POST /agentmemory/observe` wire format with the filesystem connector.
+- [ ] **GitHub connector** (`@ZiiAgentMemory/github-watcher`) — sync issues, PRs, discussions as observations. Shares the `POST /ziiagentmemory/observe` wire format with the filesystem connector.
 - [x] **OpenCode hook bus** (#156) — wired 22 hooks covering all 12 Claude Code hook types: session lifecycle (create/idle/status/compacted/update/diff/delete/error), messages & prompts (chat.message, message.updated user+assistant, message.removed), tool capture (before + rich ToolPart lifecycle in message.part.updated), memory injection (context + enrich via system.transform), part tracking (subtask, step-finish, reasoning, file, patch, compaction, agent, retry), file enrichment pipeline (stash via tool.execute.before + file.edited + file parts), permissions (updated + replied), task tracking (todo.updated w/ priority), commands (command.executed), config & model tracking (config + chat.params). Plus 2 slash commands (recall/remember). See `plugin/opencode/`.
 - [ ] **Session replay UI** in the real-time viewer — scrub the timeline, inspect per-observation payloads.
 - [ ] **Benchmark harness in CI** — keep the 95.2% R@5 number honest across releases by re-running LongMemEval-S on every minor tag.
@@ -48,7 +48,7 @@ Anything not on this list that a contributor wants to pursue is welcome — open
 - [ ] **Slack / Discord connector** — third source in the connector family.
 - [ ] **OpenSSF Scorecard** — enroll, reach a Silver-equivalent score. Badged in the README.
 - [ ] **Hermes integration hardening** — reach parity with the OpenClaw plugin surface (session lifecycle + tool-use hooks).
-- [ ] **Knowledge graph query language** — small DSL on top of `/agentmemory/graph` for multi-hop questions.
+- [ ] **Knowledge graph query language** — small DSL on top of `/ziiagentmemory/graph` for multi-hop questions.
 - [ ] **First conference talk** — submit to KubeCon / LlamaCon / similar.
 
 ### Candidate
@@ -77,15 +77,15 @@ Anything not on this list that a contributor wants to pursue is welcome — open
 
 ### Candidate
 - Hosted reference instance for the community to benchmark against.
-- Reference implementation in a second language (Rust or Go) for the MCP server — would expand the set of runtimes that can host agentmemory.
+- Reference implementation in a second language (Rust or Go) for the MCP server — would expand the set of runtimes that can host ZiiAgentMemory.
 
 ## Out of scope
 
 For transparency, these are deliberately *not* on the roadmap:
 
-- A cloud-hosted agentmemory SaaS.
+- A cloud-hosted ZiiAgentMemory SaaS.
 - Billing, subscription tiers, commercial licensing beyond Apache-2.0.
-- Agent frameworks themselves — agentmemory is a dependency, not a replacement for the agent runtime.
+- Agent frameworks themselves — ZiiAgentMemory is a dependency, not a replacement for the agent runtime.
 
 ## Feedback
 

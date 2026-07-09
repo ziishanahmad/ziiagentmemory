@@ -12,9 +12,9 @@
 // outcome before moving on.
 //
 // Doctor v2 surface:
-//   agentmemory doctor             # interactive: Fix/Skip/More/Quit per failed check
-//   agentmemory doctor --all       # apply every available fix without prompting (CI)
-//   agentmemory doctor --dry-run   # show what each fix WOULD do; execute nothing
+//   ziiagentmemory doctor             # interactive: Fix/Skip/More/Quit per failed check
+//   ziiagentmemory doctor --all       # apply every available fix without prompting (CI)
+//   ziiagentmemory doctor --dry-run   # show what each fix WOULD do; execute nothing
 
 export type DiagnosticStatus = {
   ok: boolean;
@@ -32,11 +32,11 @@ export type DoctorContext = {
   baseUrl: string;
   /** Viewer URL, e.g. http://localhost:3113 */
   viewerUrl: string;
-  /** Path to ~/.agentmemory/.env */
+  /** Path to ~/.ziiagentmemory/.env */
   envPath: string;
-  /** Path to ~/.agentmemory/iii.pid */
+  /** Path to ~/.ziiagentmemory/iii.pid */
   pidfilePath: string;
-  /** Path to ~/.agentmemory/engine-state.json */
+  /** Path to ~/.ziiagentmemory/engine-state.json */
   enginePath: string;
   /** Pinned engine version (e.g. "0.11.2"). */
   pinnedVersion: string;
@@ -147,9 +147,9 @@ export function placeholderProviderKeys(env: Record<string, string>): string[] {
  * from src/cli.ts.
  */
 export type DoctorEffects = {
-  /** Does ~/.agentmemory/.env exist? */
+  /** Does ~/.ziiagentmemory/.env exist? */
   envFileExists: () => boolean;
-  /** Read ~/.agentmemory/.env and return parsed key=value pairs. */
+  /** Read ~/.ziiagentmemory/.env and return parsed key=value pairs. */
   readEnvFile: () => Record<string, string>;
   /** Is the iii engine PID in the pidfile still alive? */
   pidfilePidIsAlive: () => boolean | null;
@@ -157,7 +157,7 @@ export type DoctorEffects = {
   pidfileExists: () => boolean;
   /** Resolve the iii binary on PATH; return null if not found. */
   findIiiBinary: () => string | null;
-  /** Path to ~/.agentmemory/bin/iii (the private install location). */
+  /** Path to ~/.ziiagentmemory/bin/iii (the private install location). */
   localBinIiiPath: () => string;
   /** Run `iii --version`; null if it fails. */
   iiiBinaryVersion: (binPath: string) => string | null;
@@ -181,10 +181,10 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
   return [
     {
       id: "env-missing",
-      message: "~/.agentmemory/.env is missing.",
-      fixPreview: "Copy .env.example into ~/.agentmemory/.env (your keys file).",
+      message: "~/.ziiagentmemory/.env is missing.",
+      fixPreview: "Copy .env.example into ~/.ziiagentmemory/.env (your keys file).",
       moreInfo:
-        "agentmemory reads provider API keys (Anthropic, OpenAI, Gemini, …) from ~/.agentmemory/.env. " +
+        "ZiiAgentMemory reads provider API keys (Anthropic, OpenAI, Gemini, …) from ~/.ziiagentmemory/.env. " +
         "Without this file the daemon falls back to BM25-only search and no LLM-backed enrichment runs.",
       check: async () => ({
         ok: effects.envFileExists(),
@@ -194,8 +194,8 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
     },
     {
       id: "no-llm-provider-key",
-      message: "No LLM provider API key found in ~/.agentmemory/.env.",
-      fixPreview: "Open ~/.agentmemory/.env in $EDITOR and paste your key, then re-check.",
+      message: "No LLM provider API key found in ~/.ziiagentmemory/.env.",
+      fixPreview: "Open ~/.ziiagentmemory/.env in $EDITOR and paste your key, then re-check.",
       moreInfo:
         "Set at least one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, " +
         "OPENROUTER_API_KEY, MINIMAX_API_KEY. The daemon picks the first that resolves " +
@@ -215,11 +215,11 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
     },
     {
       id: "engine-version-mismatch",
-      message: "iii binary on PATH doesn't match the version agentmemory pins to.",
+      message: "iii binary on PATH doesn't match the version ZiiAgentMemory pins to.",
       fixPreview:
         "Re-run the iii installer for the pinned version and restart the engine.",
       moreInfo:
-        "agentmemory pins the iii engine to a specific release because newer engines " +
+        "ZiiAgentMemory pins the iii engine to a specific release because newer engines " +
         "use a different worker model. Running a mismatched binary surfaces as EPIPE " +
         "reconnect loops and empty search results.",
       check: async (ctx) => {
@@ -262,10 +262,10 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
     {
       id: "stale-pidfile",
       message: "Stale pidfile: pid recorded but the process is gone.",
-      fixPreview: "Clear ~/.agentmemory/iii.pid + engine-state.json, then restart.",
+      fixPreview: "Clear ~/.ziiagentmemory/iii.pid + engine-state.json, then restart.",
       moreInfo:
         "When the engine crashes hard (kill -9, OOM, host reboot) the pidfile sticks " +
-        "around. agentmemory refuses to start a second engine on top of a stale pid, " +
+        "around. ZiiAgentMemory refuses to start a second engine on top of a stale pid, " +
         "so this state must be cleared explicitly.",
       check: async () => {
         if (!effects.pidfileExists()) return { ok: true, detail: "no pidfile" };
@@ -283,8 +283,8 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
     },
     {
       id: "env-placeholder-keys",
-      message: "~/.agentmemory/.env contains placeholder/empty API keys.",
-      fixPreview: "Open ~/.agentmemory/.env in $EDITOR to paste real values.",
+      message: "~/.ziiagentmemory/.env contains placeholder/empty API keys.",
+      fixPreview: "Open ~/.ziiagentmemory/.env in $EDITOR to paste real values.",
       moreInfo:
         "Lines like ANTHROPIC_API_KEY=sk-ant-... or =your-key-here are treated as " +
         "absent. The daemon will fall back to BM25-only search. Replace placeholders " +
@@ -308,13 +308,13 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
     {
       id: "iii-on-path-not-local-bin",
       message:
-        "iii is on PATH but not at agentmemory's private install path.",
+        "iii is on PATH but not at ZiiAgentMemory's private install path.",
       fixPreview:
-        "Install the pinned version to ~/.agentmemory/bin — won't touch your PATH.",
+        "Install the pinned version to ~/.ziiagentmemory/bin — won't touch your PATH.",
       moreInfo:
-        "agentmemory installs its pinned engine to ~/.agentmemory/bin/iii so a " +
+        "ZiiAgentMemory installs its pinned engine to ~/.ziiagentmemory/bin/iii so a " +
         "user-managed iii on PATH (homebrew, cargo, manual install) stays untouched. " +
-        "When agentmemory needs the pin and PATH doesn't have it, it falls back to the " +
+        "When ZiiAgentMemory needs the pin and PATH doesn't have it, it falls back to the " +
         "private install. If neither exists, run the installer.",
       manualOnly: true,
       check: async () => {
@@ -331,7 +331,7 @@ export function buildDiagnostics(effects: DoctorEffects): Diagnostic[] {
           ok: r.ok,
           message:
             r.message ??
-            "Installer wrote to ~/.agentmemory/bin/iii. Your PATH wasn't modified.",
+            "Installer wrote to ~/.ziiagentmemory/bin/iii. Your PATH wasn't modified.",
         })),
     },
   ];

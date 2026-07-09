@@ -1,5 +1,5 @@
 #!/bin/sh
-# agentmemory first-boot entrypoint.
+# ZiiAgentMemory first-boot entrypoint.
 #
 # Runs as root so it can:
 #   1. Overwrite the npm-bundled iii-config.yaml (which binds 127.0.0.1
@@ -10,15 +10,15 @@
 #   3. Generate the HMAC secret on first boot and persist it to
 #      /data/.hmac (chmod 600) so the secret survives restarts.
 #
-# Then it execs the agentmemory CLI under gosu as the unprivileged
+# Then it execs the ZiiAgentMemory CLI under gosu as the unprivileged
 # `node` user.
 
 set -eu
 
-DATA_DIR="${AGENTMEMORY_DATA_DIR:-/data}"
-HMAC_FILE="${AGENTMEMORY_HMAC_FILE:-/data/.hmac}"
+DATA_DIR="${ZIIAGENTMEMORY_DATA_DIR:-/data}"
+HMAC_FILE="${ZIIAGENTMEMORY_HMAC_FILE:-/data/.hmac}"
 RUN_AS="node:node"
-III_CONFIG="/opt/agentmemory/node_modules/@agentmemory/agentmemory/dist/iii-config.yaml"
+III_CONFIG="/opt/ziiagentmemory/node_modules/ziiagentmemory/dist/iii-config.yaml"
 
 mkdir -p "$DATA_DIR"
 chown -R "$RUN_AS" "$DATA_DIR"
@@ -68,7 +68,7 @@ workers:
   - name: iii-observability
     config:
       enabled: true
-      service_name: agentmemory
+      service_name: ZiiAgentMemory
       exporter: memory
       sampling_ratio: 1.0
       metrics_enabled: true
@@ -84,15 +84,15 @@ if [ ! -s "$HMAC_FILE" ]; then
   chmod 600 "$HMAC_FILE"
   chown "$RUN_AS" "$HMAC_FILE"
   echo "================================================================"
-  echo "agentmemory: generated HMAC secret on first boot"
-  echo "AGENTMEMORY_SECRET=$SECRET"
+  echo "ZiiAgentMemory: generated HMAC secret on first boot"
+  echo "ZIIAGENTMEMORY_SECRET=$SECRET"
   echo "Copy this value now. It will not be printed again."
   echo "Stored at: $HMAC_FILE (chmod 600)"
   echo "To rotate: delete $HMAC_FILE on the persistent volume and restart."
   echo "================================================================"
 fi
 
-AGENTMEMORY_SECRET="$(cat "$HMAC_FILE")"
-export AGENTMEMORY_SECRET
+ZIIAGENTMEMORY_SECRET="$(cat "$HMAC_FILE")"
+export ZIIAGENTMEMORY_SECRET
 
-exec gosu "$RUN_AS" agentmemory "$@"
+exec gosu "$RUN_AS" ZiiAgentMemory "$@"

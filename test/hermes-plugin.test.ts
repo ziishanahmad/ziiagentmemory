@@ -62,10 +62,10 @@ describe("Hermes plugin manifest", () => {
     expect(declaredHooks).toEqual(expectedHermesHooks);
   });
 
-  it("preloads AGENTMEMORY_URL default at import time", () => {
+  it("preloads ZIIAGENTMEMORY_URL default at import time", () => {
     const source = readFileSync("integrations/hermes/__init__.py", "utf8");
     expect(source).toMatch(
-      /os\.environ\.setdefault\(\s*["']AGENTMEMORY_URL["']\s*,\s*DEFAULT_BASE_URL\s*\)/,
+      /os\.environ\.setdefault\(\s*["']ZIIAGENTMEMORY_URL["']\s*,\s*DEFAULT_BASE_URL\s*\)/,
     );
   });
 });

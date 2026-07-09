@@ -5,7 +5,7 @@ import { registerVisionSearchFunctions } from "../src/functions/vision-search.js
 import type { EmbeddingProvider } from "../src/types.js";
 import { KV } from "../src/state/schema.js";
 
-const IMAGES_DIR = join(homedir(), ".agentmemory", "images");
+const IMAGES_DIR = join(homedir(), ".ziiagentmemory", "images");
 const LOGIN_REF = join(IMAGES_DIR, "login.png");
 const DASH_REF = join(IMAGES_DIR, "dashboard.png");
 const OTHER_REF = join(IMAGES_DIR, "other.png");

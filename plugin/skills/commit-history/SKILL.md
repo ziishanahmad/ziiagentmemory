@@ -43,7 +43,7 @@ WRONG (REST fallback): concatenate `?branch=` + raw branch name, so a name with
 `?`, `&`, or `#` corrupts the query string.
 
 RIGHT: URL-encode every value with `URLSearchParams`/`encodeURIComponent` before
-appending to `GET /agentmemory/commits`.
+appending to `GET /ziiagentmemory/commits`.
 
 ## Checklist
 

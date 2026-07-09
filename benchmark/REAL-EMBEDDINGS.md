@@ -1,4 +1,4 @@
-# agentmemory v0.6.0 — Real Embeddings Quality Evaluation
+# ZiiAgentMemory v0.6.0 — Real Embeddings Quality Evaluation
 
 **Date:** 2026-03-18T07:38:21.450Z
 **Platform:** darwin arm64, Node v20.20.0
@@ -60,7 +60,7 @@ Embedding is a one-time cost at ingestion. Search is sub-millisecond after index
 ## Recommendation
 
 Enable local embeddings by default (`EMBEDDING_PROVIDER=local` or install `@xenova/transformers`).
-This gives agentmemory genuine semantic search that built-in agent memories cannot match —
+This gives ZiiAgentMemory genuine semantic search that built-in agent memories cannot match —
 understanding that "database performance optimization" relates to "N+1 query fix" and "eager loading".
 
 ---

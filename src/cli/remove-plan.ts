@@ -1,4 +1,4 @@
-// `agentmemory remove` — destruction plan.
+// `ziiagentmemory remove` — destruction plan.
 //
 // Generating the plan is a pure function of the on-disk state (which files
 // exist, whether ~/.local/bin/iii matches the version we installed, the
@@ -7,9 +7,9 @@
 // touching $HOME.
 //
 // CLI surface:
-//   agentmemory remove                 # interactive, double-confirms
-//   agentmemory remove --force         # skip confirmations
-//   agentmemory remove --keep-data     # remove binaries+symlinks, keep memory data
+//   ziiagentmemory remove                 # interactive, double-confirms
+//   ziiagentmemory remove --force         # skip confirmations
+//   ziiagentmemory remove --keep-data     # remove binaries+symlinks, keep memory data
 
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -32,7 +32,7 @@ export type RemovePlanItem = {
 export type RemoveOptions = {
   /** Skip confirmations (still asks separately about always-ask items). */
   force: boolean;
-  /** Keep ~/.agentmemory/* user data; only remove binaries/symlinks. */
+  /** Keep ~/.ziiagentmemory/* user data; only remove binaries/symlinks. */
   keepData: boolean;
 };
 
@@ -51,8 +51,8 @@ export type RemoveContext = {
 };
 
 /**
- * The `agentmemory connect` PR writes this manifest at
- * ~/.agentmemory/backups/connect-manifest.json. We tolerate it being absent
+ * The `ziiagentmemory connect` PR writes this manifest at
+ * ~/.ziiagentmemory/backups/connect-manifest.json. We tolerate it being absent
  * (older versions, fresh installs) by treating it as `{ installed: [] }`.
  */
 export type ConnectManifest = {
@@ -67,27 +67,27 @@ export type ConnectManifest = {
 };
 
 export function pidfilePath(home: string): string {
-  return join(home, ".agentmemory", "iii.pid");
+  return join(home, ".ziiagentmemory", "iii.pid");
 }
 
 export function enginePath(home: string): string {
-  return join(home, ".agentmemory", "engine-state.json");
+  return join(home, ".ziiagentmemory", "engine-state.json");
 }
 
 export function envPath(home: string): string {
-  return join(home, ".agentmemory", ".env");
+  return join(home, ".ziiagentmemory", ".env");
 }
 
 export function preferencesPath(home: string): string {
-  return join(home, ".agentmemory", "preferences.json");
+  return join(home, ".ziiagentmemory", "preferences.json");
 }
 
 export function backupsDir(home: string): string {
-  return join(home, ".agentmemory", "backups");
+  return join(home, ".ziiagentmemory", "backups");
 }
 
 export function dataDir(home: string): string {
-  return join(home, ".agentmemory", "data");
+  return join(home, ".ziiagentmemory", "data");
 }
 
 // Platform-aware binary name. Windows requires the .exe suffix or the
@@ -96,16 +96,16 @@ function iiiBinFile(): string {
   return process.platform === "win32" ? "iii.exe" : "iii";
 }
 
-// Legacy install location. Older agentmemory versions wrote the pinned iii
-// engine here. Kept so `agentmemory remove` can still clean up after them.
+// Legacy install location. Older ZiiAgentMemory versions wrote the pinned iii
+// engine here. Kept so `ziiagentmemory remove` can still clean up after them.
 export function legacyLocalBinIii(home: string): string {
   return join(home, ".local", "bin", iiiBinFile());
 }
 
-// Current private install location. Lives under ~/.agentmemory/ so it
+// Current private install location. Lives under ~/.ziiagentmemory/ so it
 // stays isolated from any user-managed iii on PATH.
 export function privateIiiBin(home: string): string {
-  return join(home, ".agentmemory", "bin", iiiBinFile());
+  return join(home, ".ziiagentmemory", "bin", iiiBinFile());
 }
 
 // Back-compat shim for any caller still importing the old name.
@@ -128,7 +128,7 @@ function pathExists(path: string): boolean {
 }
 
 /**
- * Build the destruction plan for `agentmemory remove`.
+ * Build the destruction plan for `ziiagentmemory remove`.
  *
  * Plan items are returned regardless of whether `applicable` is true — the
  * caller can decide whether to skip-and-log or hide entirely. This keeps
@@ -198,7 +198,7 @@ export function buildRemovePlan(
   });
 
   // Iterate over connect-installed agent symlinks. We always honor these
-  // (even with --keep-data, since they're outside ~/.agentmemory/).
+  // (even with --keep-data, since they're outside ~/.ziiagentmemory/).
   if (connectManifest?.installed?.length) {
     for (const entry of connectManifest.installed) {
       plan.push({
@@ -212,7 +212,7 @@ export function buildRemovePlan(
     }
   }
 
-  // Private install (~/.agentmemory/bin/iii) — agentmemory owns this path,
+  // Private install (~/.ziiagentmemory/bin/iii) — ZiiAgentMemory owns this path,
   // so it's always safe to remove. The version check still gates the
   // legacy ~/.local/bin/iii path which may be a user-managed install we
   // don't own.
@@ -220,7 +220,7 @@ export function buildRemovePlan(
   if (pathExists(privIii)) {
     plan.push({
       id: "private-bin-iii",
-      description: `Delete ~/.agentmemory/bin/iii (agentmemory's private install)`,
+      description: `Delete ~/.ziiagentmemory/bin/iii (ZiiAgentMemory's private install)`,
       path: privIii,
       alwaysAsk: false,
       applicable: true,
@@ -229,7 +229,7 @@ export function buildRemovePlan(
   }
 
   // Legacy ~/.local/bin/iii — only remove if it matches the version we
-  // installed. Older agentmemory wrote here; newer versions don't but the
+  // installed. Older ZiiAgentMemory wrote here; newer versions don't but the
   // file may still be a leftover from a previous install.
   // Heuristic: spawn `iii --version`; if it returns pinnedVersion, safe to
   // remove. Otherwise mark `alwaysAsk` so the operator confirms explicitly.
@@ -253,7 +253,7 @@ export function buildRemovePlan(
   plan.push({
     id: "data-dir",
     description:
-      "Delete memory data directory (~/.agentmemory/data/) — will ask separately",
+      "Delete memory data directory (~/.ziiagentmemory/data/) — will ask separately",
     path: dataDir(home),
     alwaysAsk: true,
     applicable: !options.keepData && pathExists(dataDir(home)),

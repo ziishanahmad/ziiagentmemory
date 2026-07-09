@@ -24,7 +24,7 @@ const IMPLEMENTED_TOOLS = new Set([
 ]);
 
 const SERVER_INFO = {
-  name: "agentmemory",
+  name: "ZiiAgentMemory",
   version: VERSION,
   protocolVersion: "2024-11-05",
 };
@@ -34,9 +34,9 @@ let modeAnnounced = false;
 
 function displayAgentmemoryUrl(): string {
   // Match the literal-placeholder guard in rest-proxy.ts so log lines
-  // don't show `${AGENTMEMORY_URL}` when an MCP host passed the
+  // don't show `${ZIIAGENTMEMORY_URL}` when an MCP host passed the
   // placeholder through unexpanded.
-  const raw = process.env["AGENTMEMORY_URL"];
+  const raw = process.env["ZIIAGENTMEMORY_URL"];
   if (!raw || (raw.startsWith("${") && raw.endsWith("}"))) {
     return "http://localhost:3111";
   }
@@ -48,12 +48,12 @@ function announceMode(handle: Handle): void {
   modeAnnounced = true;
   if (handle.mode === "proxy") {
     process.stderr.write(
-      `[@agentmemory/mcp] proxying to agentmemory server at ${handle.baseUrl}\n`,
+      `[ziiagentmemory] proxying to ziiagentmemory server at ${handle.baseUrl}\n`,
     );
   } else {
     const fullToolCount = getAllTools().length;
     process.stderr.write(
-      `[@agentmemory/mcp] no server reachable at ${displayAgentmemoryUrl()}; running reduced LOCAL FALLBACK with ${IMPLEMENTED_TOOLS.size} of ${fullToolCount} tools. Start 'npx @agentmemory/agentmemory' (and point AGENTMEMORY_URL at it) to unlock all ${fullToolCount} tools.\n`,
+      `[ziiagentmemory] no server reachable at ${displayAgentmemoryUrl()}; running reduced LOCAL FALLBACK with ${IMPLEMENTED_TOOLS.size} of ${fullToolCount} tools. Start 'npx ziiagentmemory' (and point ZIIAGENTMEMORY_URL at it) to unlock all ${fullToolCount} tools.\n`,
     );
   }
 }
@@ -173,7 +173,7 @@ async function handleProxy(
 ): Promise<{ content: Array<{ type: string; text: string }> }> {
   switch (v.tool) {
     case "memory_save": {
-      const result = await handle.call("/agentmemory/remember", {
+      const result = await handle.call("/ziiagentmemory/remember", {
         method: "POST",
         body: JSON.stringify({
           content: v.content,
@@ -191,7 +191,7 @@ async function handleProxy(
         format: v.format ?? "full",
       };
       if (v.tokenBudget != null) body["token_budget"] = v.tokenBudget;
-      const result = await handle.call("/agentmemory/search", {
+      const result = await handle.call("/ziiagentmemory/search", {
         method: "POST",
         body: JSON.stringify(body),
       });
@@ -201,7 +201,7 @@ async function handleProxy(
       const body: Record<string, unknown> = { query: v.query, limit: v.limit };
       if (v.format != null) body["format"] = v.format;
       if (v.tokenBudget != null) body["token_budget"] = v.tokenBudget;
-      const result = await handle.call("/agentmemory/smart-search", {
+      const result = await handle.call("/ziiagentmemory/smart-search", {
         method: "POST",
         body: JSON.stringify(body),
       });
@@ -209,25 +209,25 @@ async function handleProxy(
     }
     case "memory_sessions": {
       const result = await handle.call(
-        `/agentmemory/sessions?limit=${v.limit}`,
+        `/ziiagentmemory/sessions?limit=${v.limit}`,
         { method: "GET" },
       );
       return textResponse(result, true);
     }
     case "memory_governance_delete": {
-      const result = await handle.call("/agentmemory/governance/memories", {
+      const result = await handle.call("/ziiagentmemory/governance/memories", {
         method: "DELETE",
         body: JSON.stringify({ memoryIds: v.memoryIds, reason: v.reason }),
       });
       return textResponse(result);
     }
     case "memory_export": {
-      const result = await handle.call("/agentmemory/export", { method: "GET" });
+      const result = await handle.call("/ziiagentmemory/export", { method: "GET" });
       return textResponse(result, true);
     }
     case "memory_audit": {
       const result = await handle.call(
-        `/agentmemory/audit?limit=${v.limit}`,
+        `/ziiagentmemory/audit?limit=${v.limit}`,
         { method: "GET" },
       );
       return textResponse(result, true);
@@ -342,7 +342,7 @@ async function handleProxyGeneric(
   // reach all 53 tools (lessons, sentinels, slots, signals, graph, …)
   // instead of being capped at the 7 IMPLEMENTED_TOOLS set baked into
   // this shim. The server validates arguments per tool.
-  const result = (await handle.call("/agentmemory/mcp/call", {
+  const result = (await handle.call("/ziiagentmemory/mcp/call", {
     method: "POST",
     body: JSON.stringify({ name: toolName, arguments: args }),
   })) as { content?: Array<{ type: string; text: string }> } | null;
@@ -369,14 +369,14 @@ export async function handleToolCall(
         return await handleProxyGeneric(toolName, args, handle);
       } catch (err) {
         process.stderr.write(
-          `[@agentmemory/mcp] proxy call failed for ${toolName}: ${err instanceof Error ? err.message : String(err)}\n`,
+          `[ziiagentmemory] proxy call failed for ${toolName}: ${err instanceof Error ? err.message : String(err)}\n`,
         );
         invalidateHandle();
         throw err;
       }
     }
     throw new Error(
-      `Unknown tool: ${toolName} (local fallback supports only ${[...IMPLEMENTED_TOOLS].join(", ")}; start an agentmemory server and set AGENTMEMORY_URL to use the full tool set)`,
+      `Unknown tool: ${toolName} (local fallback supports only ${[...IMPLEMENTED_TOOLS].join(", ")}; start an ziiagentmemory server and set ZIIAGENTMEMORY_URL to use the full tool set)`,
     );
   }
 
@@ -386,7 +386,7 @@ export async function handleToolCall(
       return await handleProxy(validated, handle);
     } catch (err) {
       process.stderr.write(
-        `[@agentmemory/mcp] proxy call failed for ${toolName}: ${err instanceof Error ? err.message : String(err)}; invalidating handle and falling back to local KV\n`,
+        `[ziiagentmemory] proxy call failed for ${toolName}: ${err instanceof Error ? err.message : String(err)}; invalidating handle and falling back to local KV\n`,
       );
       invalidateHandle();
     }
@@ -395,17 +395,17 @@ export async function handleToolCall(
 }
 
 export async function handleToolsList(): Promise<{ tools: unknown[] }> {
-  const debug = process.env["AGENTMEMORY_DEBUG"] === "1" || process.env["AGENTMEMORY_DEBUG"] === "true";
+  const debug = process.env["ZIIAGENTMEMORY_DEBUG"] === "1" || process.env["ZIIAGENTMEMORY_DEBUG"] === "true";
   const handle = await resolveHandle();
   announceMode(handle);
   if (debug) {
     process.stderr.write(
-      `[@agentmemory/mcp] tools/list: handle.mode=${handle.mode}${handle.mode === "proxy" ? ` baseUrl=${handle.baseUrl}` : ""}\n`,
+      `[ziiagentmemory] tools/list: handle.mode=${handle.mode}${handle.mode === "proxy" ? ` baseUrl=${handle.baseUrl}` : ""}\n`,
     );
   }
   if (handle.mode === "proxy") {
     try {
-      const remote = (await handle.call("/agentmemory/mcp/tools", {
+      const remote = (await handle.call("/ziiagentmemory/mcp/tools", {
         method: "GET",
       })) as { tools?: unknown } | null;
       if (debug) {
@@ -415,23 +415,23 @@ export async function handleToolsList(): Promise<{ tools: unknown[] }> {
             ? typeof remote
             : `keys=${Object.keys(remote as object).join(",")} toolsType=${Array.isArray((remote as { tools?: unknown }).tools) ? `array(len=${((remote as { tools: unknown[] }).tools).length})` : typeof (remote as { tools?: unknown }).tools}`;
         process.stderr.write(
-          `[@agentmemory/mcp] tools/list: remote response shape: ${shape}\n`,
+          `[ziiagentmemory] tools/list: remote response shape: ${shape}\n`,
         );
       }
       if (remote && Array.isArray(remote.tools)) {
         if (debug) {
           process.stderr.write(
-            `[@agentmemory/mcp] tools/list: returning ${remote.tools.length} tools from server\n`,
+            `[ziiagentmemory] tools/list: returning ${remote.tools.length} tools from server\n`,
           );
         }
         return { tools: remote.tools };
       }
       process.stderr.write(
-        `[@agentmemory/mcp] tools/list: server returned unexpected shape (no .tools array); falling back to local IMPLEMENTED_TOOLS list. Set AGENTMEMORY_DEBUG=1 to inspect response.\n`,
+        `[ziiagentmemory] tools/list: server returned unexpected shape (no .tools array); falling back to local IMPLEMENTED_TOOLS list. Set ZIIAGENTMEMORY_DEBUG=1 to inspect response.\n`,
       );
     } catch (err) {
       process.stderr.write(
-        `[@agentmemory/mcp] tools/list proxy failed: ${err instanceof Error ? err.message : String(err)}; falling back to local list\n`,
+        `[ziiagentmemory] tools/list proxy failed: ${err instanceof Error ? err.message : String(err)}; falling back to local list\n`,
       );
       invalidateHandle();
     }
@@ -439,7 +439,7 @@ export async function handleToolsList(): Promise<{ tools: unknown[] }> {
   const fallback = getAllTools().filter((t) => IMPLEMENTED_TOOLS.has(t.name));
   if (debug) {
     process.stderr.write(
-      `[@agentmemory/mcp] tools/list: returning ${fallback.length} local fallback tools (${fallback.map((t) => t.name).join(",")})\n`,
+      `[ziiagentmemory] tools/list: returning ${fallback.length} local fallback tools (${fallback.map((t) => t.name).join(",")})\n`,
     );
   }
   return { tools: fallback };
@@ -487,7 +487,7 @@ const transport = createStdioTransport(async (method, params) => {
 });
 
 process.stderr.write(
-  `[@agentmemory/mcp] Standalone MCP server v${SERVER_INFO.version} starting...\n`,
+  `[ziiagentmemory] Standalone MCP server v${SERVER_INFO.version} starting...\n`,
 );
 transport.start();
 

@@ -15,7 +15,7 @@
   "ops_per_cell": 200,
   "cells": [
     {
-      "endpoint": "POST /agentmemory/remember",
+      "endpoint": "POST /ziiagentmemory/remember",
       "N": 1000,
       "C": 10,
       "ops": 200,
@@ -29,7 +29,7 @@
       "max_ms": 683.164
     },
     {
-      "endpoint": "POST /agentmemory/smart-search",
+      "endpoint": "POST /ziiagentmemory/smart-search",
       "N": 1000,
       "C": 10,
       "ops": 200,
@@ -43,7 +43,7 @@
       "max_ms": 251.317
     },
     {
-      "endpoint": "GET /agentmemory/memories?latest=true",
+      "endpoint": "GET /ziiagentmemory/memories?latest=true",
       "N": 1000,
       "C": 10,
       "ops": 200,

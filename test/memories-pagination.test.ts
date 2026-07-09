@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 
 // /memories and /export must support count + pagination so the
-// viewer and `agentmemory status` work on large corpora (8K+ memories)
+// viewer and `ziiagentmemory status` work on large corpora (8K+ memories)
 // without timing out at the iii engine boundary.
 describe("memories + export pagination (#544)", () => {
   const api = readFileSync("src/triggers/api.ts", "utf-8");

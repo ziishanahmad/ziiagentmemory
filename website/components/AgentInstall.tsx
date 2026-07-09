@@ -5,31 +5,31 @@ import styles from "./AgentInstall.module.css";
 
 const UNIVERSAL_JSON = `{
   "mcpServers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "args": ["-y", "ziiagentmemory"],
       "env": {
-        "AGENTMEMORY_URL": "http://localhost:3111"
+        "ZIIAGENTMEMORY_URL": "http://localhost:3111"
       }
     }
   }
 }`;
 
-const CODEX_TOML = `[mcp_servers.agentmemory]
+const CODEX_TOML = `[mcp_servers.ZiiAgentMemory]
 command = "npx"
-args    = ["-y", "@agentmemory/mcp"]
+args    = ["-y", "ziiagentmemory"]
 
-[mcp_servers.agentmemory.env]
-AGENTMEMORY_URL = "http://localhost:3111"`;
+[mcp_servers.ZiiAgentMemory.env]
+ZIIAGENTMEMORY_URL = "http://localhost:3111"`;
 
 const OPENCODE_JSON = `{
   "mcp": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "type": "local",
-      "command": ["npx", "-y", "@agentmemory/mcp"],
+      "command": ["npx", "-y", "ziiagentmemory"],
       "enabled": true,
       "environment": {
-        "AGENTMEMORY_URL": "http://localhost:3111"
+        "ZIIAGENTMEMORY_URL": "http://localhost:3111"
       }
     }
   }
@@ -37,30 +37,30 @@ const OPENCODE_JSON = `{
 
 const VSCODE_MCP_JSON = `{
   "servers": {
-    "agentmemory": {
+    "ZiiAgentMemory": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
+      "args": ["-y", "ziiagentmemory"],
       "env": {
-        "AGENTMEMORY_URL": "http://localhost:3111"
+        "ZIIAGENTMEMORY_URL": "http://localhost:3111"
       }
     }
   }
 }`;
 
-const CLAUDE_CODE_CMD = `claude mcp add agentmemory -- npx -y @agentmemory/mcp`;
-const COPILOT_CLI_CMD = `agentmemory connect copilot-cli`;
-const WARP_CMD = `agentmemory connect warp`;
+const CLAUDE_CODE_CMD = `claude mcp add ZiiAgentMemory -- npx -y ziiagentmemory`;
+const COPILOT_CLI_CMD = `ziiagentmemory connect copilot-cli`;
+const WARP_CMD = `ziiagentmemory connect warp`;
 
 const HERMES_YAML = `plugins:
-  - name: agentmemory
-    path: agentmemory/integrations/hermes
+  - name: ZiiAgentMemory
+    path: ZiiAgentMemory/integrations/hermes
     config:
       base_url: http://localhost:3111`;
 
 const OPENCLAW_YAML = `plugins:
-  - id: agentmemory
-    module: agentmemory/integrations/openclaw/plugin.mjs
+  - id: ZiiAgentMemory
+    module: ZiiAgentMemory/integrations/openclaw/plugin.mjs
     config:
       enabled: true
       base_url: http://localhost:3111`;
@@ -68,22 +68,22 @@ const OPENCLAW_YAML = `plugins:
 function cursorDeeplink(): string {
   const cfg = {
     command: "npx",
-    args: ["-y", "@agentmemory/mcp"],
-    env: { AGENTMEMORY_URL: "http://localhost:3111" },
+    args: ["-y", "ziiagentmemory"],
+    env: { ZIIAGENTMEMORY_URL: "http://localhost:3111" },
   };
   const base64 =
     typeof window !== "undefined"
       ? btoa(JSON.stringify(cfg))
       : Buffer.from(JSON.stringify(cfg)).toString("base64");
-  return `cursor://anysphere.cursor-deeplink/mcp/install?name=agentmemory&config=${encodeURIComponent(base64)}`;
+  return `cursor://anysphere.cursor-deeplink/mcp/install?name=ZiiAgentMemory&config=${encodeURIComponent(base64)}`;
 }
 
 function vscodeDeeplink(): string {
   const cfg = {
-    name: "agentmemory",
+    name: "ZiiAgentMemory",
     command: "npx",
-    args: ["-y", "@agentmemory/mcp"],
-    env: { AGENTMEMORY_URL: "http://localhost:3111" },
+    args: ["-y", "ziiagentmemory"],
+    env: { ZIIAGENTMEMORY_URL: "http://localhost:3111" },
   };
   const payload =
     typeof window !== "undefined"

@@ -194,7 +194,7 @@ describe("Mesh Functions", () => {
       })) as { success: boolean; error: string };
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain("AGENTMEMORY_SECRET");
+      expect(result.error).toContain("ZIIAGENTMEMORY_SECRET");
     });
 
     it("sends authorization headers to peers when syncing", async () => {
@@ -223,7 +223,7 @@ describe("Mesh Functions", () => {
       expect(result.success).toBe(true);
       expect(result.results[0].errors).toEqual([]);
       expect(fetchMock).toHaveBeenCalledWith(
-        "https://peer2.example.com/agentmemory/mesh/receive",
+        "https://peer2.example.com/ziiagentmemory/mesh/receive",
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: "Bearer mesh-secret",
