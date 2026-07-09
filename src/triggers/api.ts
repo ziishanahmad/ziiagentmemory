@@ -502,7 +502,21 @@ export function registerApiTriggers(
       sessions.sort((a, b) =>
         (b.startedAt || "").localeCompare(a.startedAt || ""),
       );
-      return { status_code: 200, body: { success: true, sessions } };
+      // Honour ?limit=N (>=1) on the replay list endpoint so the
+      // real-time viewer can page through the most recent N sessions
+      // without forcing the engine to ship the full table. Companion
+      // fix to #1022 (which targeted /agentmemory/sessions); the
+      // replay endpoint had the same gap.
+      const rawLimit = req.query_params?.["limit"];
+      const parsedLimit =
+        typeof rawLimit === "string" && rawLimit.length > 0
+          ? parseInt(rawLimit, 10)
+          : NaN;
+      const limited =
+        Number.isFinite(parsedLimit) && parsedLimit > 0
+          ? sessions.slice(0, parsedLimit)
+          : sessions;
+      return { status_code: 200, body: { success: true, sessions: limited } };
     },
   );
   sdk.registerTrigger({
@@ -831,7 +845,20 @@ export function registerApiTriggers(
       const withSummary = filtered.map((s, i) =>
         summaries[i] ? { ...s, summary: summaries[i] } : s,
       );
-      return { status_code: 200, body: { sessions: withSummary } };
+      // Honour ?limit=N (>=1) on the HTTP list endpoint so callers don't
+      // have to materialize the full session table just to paginate. Fixes
+      // #1022. Negative or non-numeric values fall back to "no limit"
+      // (return everything) so a bad query never produces an empty result.
+      const rawLimit = req.query_params?.["limit"];
+      const parsedLimit =
+        typeof rawLimit === "string" && rawLimit.length > 0
+          ? parseInt(rawLimit, 10)
+          : NaN;
+      const limited =
+        Number.isFinite(parsedLimit) && parsedLimit > 0
+          ? withSummary.slice(0, parsedLimit)
+          : withSummary;
+      return { status_code: 200, body: { sessions: limited } };
     },
   );
   sdk.registerTrigger({
