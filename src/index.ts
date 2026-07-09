@@ -387,6 +387,9 @@ async function main() {
   // HTTP routes on WebSocket reconnection without ownership checks. This
   // timer periodically checks a known REST endpoint; if it returns 404,
   // we re-register all HTTP triggers to restore the route table.
+  // CRITICAL: Cap retries at 3 to prevent memory leak from repeated re-registration.
+  let watchdogFailures = 0;
+  const MAX_WATCHDOG_RETRIES = 3;
   const routeWatchdogTimer = setInterval(async () => {
     try {
       const res = await fetch(
@@ -394,8 +397,15 @@ async function main() {
         { signal: AbortSignal.timeout(5000) },
       );
       if (res.status === 404) {
+        if (watchdogFailures >= MAX_WATCHDOG_RETRIES) {
+          console.warn(
+            `[agentmemory] Route watchdog: giving up after ${MAX_WATCHDOG_RETRIES} failed re-registration attempts`,
+          );
+          return;
+        }
+        watchdogFailures++;
         console.warn(
-          `[agentmemory] Route watchdog: REST endpoints returned 404, re-registering HTTP triggers...`,
+          `[agentmemory] Route watchdog: REST endpoints returned 404, re-registering HTTP triggers (attempt ${watchdogFailures}/${MAX_WATCHDOG_RETRIES})...`,
         );
         reregisterHttpTriggers(sdk);
         // Verify the fix worked
@@ -404,6 +414,7 @@ async function main() {
           { signal: AbortSignal.timeout(5000) },
         );
         if (verify.ok) {
+          watchdogFailures = 0;
           console.warn(
             `[agentmemory] Route watchdog: HTTP triggers re-registered successfully`,
           );
@@ -412,6 +423,8 @@ async function main() {
             `[agentmemory] Route watchdog: re-registration did not restore routes (status ${verify.status})`,
           );
         }
+      } else {
+        watchdogFailures = 0;
       }
     } catch {
       // Network error — engine may be down or restarting; skip this cycle

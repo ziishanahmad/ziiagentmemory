@@ -151,6 +151,8 @@ const httpTriggerConfigs: Array<{
   config: { api_path: string; http_method: string };
 }> = [];
 
+const httpTriggerKeys = new Set<string>();
+
 export function reregisterHttpTriggers(sdk: ISdk): void {
   for (const cfg of httpTriggerConfigs) {
     try {
@@ -174,18 +176,25 @@ export function registerApiTriggers(
 ): void {
   // Wrap sdk.registerTrigger to capture HTTP trigger configs as they're
   // registered, so reregisterHttpTriggers can replay them later.
+  // CRITICAL: Dedup guard prevents memory leak — without it, each watchdog
+  // re-registration cycle adds ~130 entries to the array, leaking memory
+  // until the engine OOMs.
   const origRegisterTrigger = sdk.registerTrigger.bind(sdk);
   (sdk as { registerTrigger: typeof origRegisterTrigger }).registerTrigger = (
     trigger,
   ) => {
     if (trigger.type === "http" && trigger.config?.api_path) {
-      httpTriggerConfigs.push({
-        function_id: trigger.function_id,
-        config: {
-          api_path: trigger.config.api_path,
-          http_method: trigger.config.http_method || "GET",
-        },
-      });
+      const key = `${trigger.function_id}:${trigger.config.api_path}`;
+      if (!httpTriggerKeys.has(key)) {
+        httpTriggerKeys.add(key);
+        httpTriggerConfigs.push({
+          function_id: trigger.function_id,
+          config: {
+            api_path: trigger.config.api_path,
+            http_method: trigger.config.http_method || "GET",
+          },
+        });
+      }
     }
     return origRegisterTrigger(trigger);
   };
