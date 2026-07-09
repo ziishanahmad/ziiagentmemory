@@ -1085,14 +1085,26 @@ export function registerApiTriggers(
     config: { api_path: "/agentmemory/forget", http_method: "POST" },
   });
 
-  sdk.registerFunction("api::consolidate", 
+  sdk.registerFunction("api::consolidate",
     async (
       req: ApiRequest<{ project?: string; minObservations?: number }>,
     ): Promise<Response> => {
       const authErr = checkAuth(req, secret);
       if (authErr) return authErr;
-      const result = await sdk.trigger({ function_id: "mem::consolidate", payload: req.body });
-      return { status_code: 200, body: result };
+      try {
+        const result = await sdk.trigger({ function_id: "mem::consolidate", payload: req.body });
+        return { status_code: 200, body: result };
+      } catch (err) {
+        // #1008: without this catch the engine's default error handler
+        // stringifies the Error as "[object Object]" instead of exposing
+        // the actual .message.
+        const message = err instanceof Error ? err.message : String(err);
+        logger.warn("api::consolidate failed", { error: message });
+        return {
+          status_code: 500,
+          body: { error: message },
+        };
+      }
     },
   );
   sdk.registerTrigger({
