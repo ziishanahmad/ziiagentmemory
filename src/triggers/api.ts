@@ -1662,6 +1662,51 @@ export function registerApiTriggers(
             }
           }
         }
+
+        // #1003: Fallback — when no sessions had observations, build the
+        // graph from saved memories instead. A store can have ~1k memories
+        // with zero session records (e.g. imported data, or sessions were
+        // evicted by retention). Without this fallback graph-build returns
+        // {batches:0, sessions:0} and the graph stays empty forever.
+        if (batchesRun === 0) {
+          const memories = await kv.list<import("../types.js").Memory>(KV.memories);
+          const latestMemories = memories.filter(
+            (m) => m && typeof m.title === "string" && m.title.length > 0 && m.isLatest,
+          );
+          if (latestMemories.length > 0) {
+            const pseudoObservations: CompressedObservation[] = latestMemories.map((m) => ({
+              id: m.id,
+              sessionId: m.sessionIds?.[0] ?? "memory-store",
+              timestamp: m.createdAt,
+              type: "decision" as const,
+              title: m.title,
+              narrative: m.content,
+              concepts: m.concepts ?? [],
+              files: m.files ?? [],
+              importance: m.strength ?? 0.5,
+            }));
+            for (let i = 0; i < pseudoObservations.length; i += batchSize) {
+              const batch = pseudoObservations.slice(i, i + batchSize);
+              try {
+                const result = (await sdk.trigger({
+                  function_id: "mem::graph-extract",
+                  payload: { observations: batch },
+                })) as { success?: boolean; nodesAdded?: number; edgesAdded?: number };
+                if (result?.success) {
+                  totalNodes += Number(result.nodesAdded) || 0;
+                  totalEdges += Number(result.edgesAdded) || 0;
+                }
+                batchesRun++;
+              } catch (err) {
+                logger.warn("graph-build memory-batch failed", {
+                  batchIndex: Math.floor(i / batchSize),
+                  error: err instanceof Error ? err.message : String(err),
+                });
+              }
+            }
+          }
+        }
+
         return {
           status_code: 200,
           body: {
