@@ -140,6 +140,31 @@ function parseOptionalPositiveInt(value: unknown): number | undefined | null {
   return parsed;
 }
 
+// #1013: Collect HTTP trigger configs during registration so they can be
+// re-registered after an iii-engine WebSocket reconnection wipes the route
+// table. The iii-engine's unregister cleanup (pre-v0.19.2) removes routes
+// without ownership checks, so after a reconnect all HTTP endpoints 404.
+// Re-registering the triggers (without re-registering functions, which
+// would throw "already registered") restores the route table.
+const httpTriggerConfigs: Array<{
+  function_id: string;
+  config: { api_path: string; http_method: string };
+}> = [];
+
+export function reregisterHttpTriggers(sdk: ISdk): void {
+  for (const cfg of httpTriggerConfigs) {
+    try {
+      sdk.registerTrigger({
+        type: "http",
+        function_id: cfg.function_id,
+        config: cfg.config,
+      });
+    } catch {
+      // best-effort — a single trigger failing to re-register is not fatal
+    }
+  }
+}
+
 export function registerApiTriggers(
   sdk: ISdk,
   kv: StateKV,
@@ -147,6 +172,24 @@ export function registerApiTriggers(
   metricsStore?: MetricsStore,
   provider?: ResilientProvider | { circuitState?: unknown },
 ): void {
+  // Wrap sdk.registerTrigger to capture HTTP trigger configs as they're
+  // registered, so reregisterHttpTriggers can replay them later.
+  const origRegisterTrigger = sdk.registerTrigger.bind(sdk);
+  (sdk as { registerTrigger: typeof origRegisterTrigger }).registerTrigger = (
+    trigger,
+  ) => {
+    if (trigger.type === "http" && trigger.config?.api_path) {
+      httpTriggerConfigs.push({
+        function_id: trigger.function_id,
+        config: {
+          api_path: trigger.config.api_path,
+          http_method: trigger.config.http_method || "GET",
+        },
+      });
+    }
+    return origRegisterTrigger(trigger);
+  };
+
   sdk.registerFunction(
     "middleware::api-auth",
     async (input: {
