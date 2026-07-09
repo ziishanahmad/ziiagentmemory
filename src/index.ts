@@ -88,7 +88,7 @@ import { registerTemporalGraphFunctions } from "./functions/temporal-graph.js";
 import { registerRetentionFunctions } from "./functions/retention.js";
 import { registerCompressFileFunction } from "./functions/compress-file.js";
 import { registerReplayFunctions } from "./functions/replay.js";
-import { registerApiTriggers } from "./triggers/api.js";
+import { registerApiTriggers, reregisterHttpTriggers } from "./triggers/api.js";
 import { registerEventTriggers } from "./triggers/events.js";
 import { registerMcpEndpoints } from "./mcp/server.js";
 import { getAllTools } from "./mcp/tools-registry.js";
@@ -383,6 +383,43 @@ async function main() {
   registerEventTriggers(sdk, kv);
   registerMcpEndpoints(sdk, kv, secret);
 
+  // #1013: Route health watchdog. The iii-engine (pre-v0.19.2) wipes all
+  // HTTP routes on WebSocket reconnection without ownership checks. This
+  // timer periodically checks a known REST endpoint; if it returns 404,
+  // we re-register all HTTP triggers to restore the route table.
+  const routeWatchdogTimer = setInterval(async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:${config.restPort}/agentmemory/livez`,
+        { signal: AbortSignal.timeout(5000) },
+      );
+      if (res.status === 404) {
+        console.warn(
+          `[agentmemory] Route watchdog: REST endpoints returned 404, re-registering HTTP triggers...`,
+        );
+        reregisterHttpTriggers(sdk);
+        // Verify the fix worked
+        const verify = await fetch(
+          `http://localhost:${config.restPort}/agentmemory/livez`,
+          { signal: AbortSignal.timeout(5000) },
+        );
+        if (verify.ok) {
+          console.warn(
+            `[agentmemory] Route watchdog: HTTP triggers re-registered successfully`,
+          );
+        } else {
+          console.warn(
+            `[agentmemory] Route watchdog: re-registration did not restore routes (status ${verify.status})`,
+          );
+        }
+      }
+    } catch {
+      // Network error — engine may be down or restarting; skip this cycle
+    }
+  }, 60_000);
+  routeWatchdogTimer.unref();
+  bootLog(`Route health watchdog: enabled (checks every 60s)`);
+
   const healthMonitor = registerHealthMonitor(sdk, kv);
 
   const indexPersistence = new IndexPersistence(kv, bm25Index, vectorIndex);
@@ -667,6 +704,7 @@ async function main() {
 
   const shutdown = async () => {
     console.log(`\n[agentmemory] Shutting down...`);
+    clearInterval(routeWatchdogTimer);
     healthMonitor.stop();
     dedupMap.stop();
     indexPersistence.stop();
