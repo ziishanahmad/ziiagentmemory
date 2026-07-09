@@ -36,6 +36,11 @@ function parseOptionalInt(raw: unknown): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
+function parsePositiveLimit(raw: unknown): number | undefined {
+  const n = parseOptionalInt(raw);
+  return n !== undefined && n > 0 ? n : undefined;
+}
+
 function checkAuth(
   req: ApiRequest,
   secret: string | undefined,
@@ -502,20 +507,8 @@ export function registerApiTriggers(
       sessions.sort((a, b) =>
         (b.startedAt || "").localeCompare(a.startedAt || ""),
       );
-      // Honour ?limit=N (>=1) on the replay list endpoint so the
-      // real-time viewer can page through the most recent N sessions
-      // without forcing the engine to ship the full table. Companion
-      // fix to #1022 (which targeted /agentmemory/sessions); the
-      // replay endpoint had the same gap.
-      const rawLimit = req.query_params?.["limit"];
-      const parsedLimit =
-        typeof rawLimit === "string" && rawLimit.length > 0
-          ? parseInt(rawLimit, 10)
-          : NaN;
-      const limited =
-        Number.isFinite(parsedLimit) && parsedLimit > 0
-          ? sessions.slice(0, parsedLimit)
-          : sessions;
+      const limit = parsePositiveLimit(req.query_params?.["limit"]);
+      const limited = limit !== undefined ? sessions.slice(0, limit) : sessions;
       return { status_code: 200, body: { success: true, sessions: limited } };
     },
   );
@@ -837,28 +830,17 @@ export function registerApiTriggers(
       const filtered = filterAgentId
         ? sessions.filter((s) => s.agentId === filterAgentId)
         : sessions;
+      const limit = parsePositiveLimit(req.query_params?.["limit"]);
+      const sliced = limit !== undefined ? filtered.slice(0, limit) : filtered;
       const summaries = await Promise.all(
-        filtered.map((s) =>
+        sliced.map((s) =>
           kv.get<SessionSummary>(KV.summaries, s.id).catch(() => null),
         ),
       );
-      const withSummary = filtered.map((s, i) =>
+      const withSummary = sliced.map((s, i) =>
         summaries[i] ? { ...s, summary: summaries[i] } : s,
       );
-      // Honour ?limit=N (>=1) on the HTTP list endpoint so callers don't
-      // have to materialize the full session table just to paginate. Fixes
-      // #1022. Negative or non-numeric values fall back to "no limit"
-      // (return everything) so a bad query never produces an empty result.
-      const rawLimit = req.query_params?.["limit"];
-      const parsedLimit =
-        typeof rawLimit === "string" && rawLimit.length > 0
-          ? parseInt(rawLimit, 10)
-          : NaN;
-      const limited =
-        Number.isFinite(parsedLimit) && parsedLimit > 0
-          ? withSummary.slice(0, parsedLimit)
-          : withSummary;
-      return { status_code: 200, body: { sessions: limited } };
+      return { status_code: 200, body: { sessions: withSummary } };
     },
   );
   sdk.registerTrigger({
