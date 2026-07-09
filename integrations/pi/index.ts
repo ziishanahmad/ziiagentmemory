@@ -100,11 +100,15 @@ async function callAgentMemory<T>(
   if (secret) headers.Authorization = `Bearer ${secret}`;
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     const response = await fetch(url, {
       method,
       headers,
       body: options?.body !== undefined ? JSON.stringify(options.body) : undefined,
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
