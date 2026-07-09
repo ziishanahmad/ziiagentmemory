@@ -53,7 +53,9 @@ async function main() {
     signal: AbortSignal.timeout(5000),
   }).catch(() => {});
 
-  setTimeout(() => process.exit(0), 1500).unref();
+  // #991: 500ms hard cap (not unref'd). The old 1500ms + .unref() let
+  // in-flight fetch sockets keep the loop alive past the harness grace.
+  setTimeout(() => process.exit(0), 500);
 }
 
 main();

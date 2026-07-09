@@ -16,6 +16,9 @@ function authHeaders(): Record<string, string> {
 }
 
 async function main() {
+  // #991: Guard for Node < 18 where global fetch is absent.
+  if (typeof fetch !== "function") return;
+
   let input = "";
   for await (const chunk of process.stdin) {
     input += chunk;
@@ -32,11 +35,13 @@ async function main() {
 
   const sessionId = ((data.session_id || data.sessionId) as string) || "unknown";
 
+  // #991: fire-and-forget POSTs with short timeouts so the process
+  // exits well inside Claude Code's SessionEnd grace window.
   fetch(`${REST_URL}/agentmemory/session/end`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ sessionId }),
-    signal: AbortSignal.timeout(30000),
+    signal: AbortSignal.timeout(3000),
   }).catch(() => {});
 
   if (process.env["CONSOLIDATION_ENABLED"] === "true") {
@@ -44,14 +49,14 @@ async function main() {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ olderThanDays: 0 }),
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(5000),
     }).catch(() => {});
 
     fetch(`${REST_URL}/agentmemory/consolidate-pipeline`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ tier: "all", force: true }),
-      signal: AbortSignal.timeout(120000),
+      signal: AbortSignal.timeout(5000),
     }).catch(() => {});
   }
 
@@ -59,11 +64,14 @@ async function main() {
     fetch(`${REST_URL}/agentmemory/claude-bridge/sync`, {
       method: "POST",
       headers: authHeaders(),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(3000),
     }).catch(() => {});
   }
 
-  setTimeout(() => process.exit(0), 1500).unref();
+  // #991: 500ms hard cap (not unref'd) so the process exits well inside
+  // the harness grace window. The old 1500ms + .unref() let in-flight
+  // fetch sockets keep the loop alive past the grace → "Hook cancelled".
+  setTimeout(() => process.exit(0), 500);
 }
 
 main();
