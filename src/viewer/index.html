@@ -1248,12 +1248,24 @@
         if (!res.ok) {
           if (res.status === 401) showViewerAuthPrompt();
           console.warn('[viewer] API ' + (fetchOpts.method || 'GET') + ' ' + path + ' returned ' + res.status);
+          // #1019: For health endpoint, return a degraded status object
+          // instead of null so the UI can show the actual state rather
+          // than defaulting to 'unknown'.
+          if (path === 'health') {
+            return { status: 'unreachable', health: { connectionState: 'disconnected', alerts: ['Backend returned HTTP ' + res.status] }, service: 'agentmemory' };
+          }
           return null;
         }
         hideViewerAuthPrompt();
         return await res.json();
       } catch (err) {
         console.warn('[viewer] API error on ' + path + ':', err);
+        // #1019: For health endpoint, return a degraded status on fetch
+        // failure (timeout, connection refused, etc.) so the UI shows
+        // the actual error state rather than 'unknown'.
+        if (path === 'health') {
+          return { status: 'unreachable', health: { connectionState: 'disconnected', alerts: ['Backend unreachable: ' + (err && err.message ? err.message : 'unknown error')] }, service: 'agentmemory' };
+        }
         return null;
       }
     }
@@ -1394,7 +1406,9 @@
       var h = d.health || {};
       var snap = h.health || {};
       var healthStatus = h.status || 'unknown';
-      var dotClass = healthStatus === 'healthy' ? 'healthy' : healthStatus === 'degraded' ? 'degraded' : healthStatus === 'critical' ? 'critical' : '';
+      // #1019: Map 'unreachable' to a visible error state with a distinct
+      // dot class so the UI doesn't silently show 'unknown'.
+      var dotClass = healthStatus === 'healthy' ? 'healthy' : healthStatus === 'degraded' ? 'degraded' : healthStatus === 'critical' ? 'critical' : healthStatus === 'unreachable' ? 'critical' : '';
       var activeSessions = d.sessions.filter(function(s) { return s.status === 'active'; }).length;
       var gs = d.graphStats || {};
       var nodeCount = gs.totalNodes !== undefined ? gs.totalNodes : (gs.nodes !== undefined ? gs.nodes : (gs.nodeCount || 0));
@@ -1423,7 +1437,13 @@
       html += '<div class="stat-card"><div class="label">Crystals</div><div class="value">' + crystalCount + '</div><div class="sub">action digests</div></div>';
       html += '<div class="stat-card"><div class="label">Graph Nodes</div><div class="value">' + nodeCount + '</div><div class="sub">' + edgeCount + ' edges</div></div>';
       html += '<div class="stat-card"><div class="label">Health</div><div class="value"><div class="health-bar"><span class="health-dot ' + dotClass + '"></span> ' + esc(healthStatus) + '</div></div>';
-      html += '<div class="sub">' + esc(snap.connectionState || 'unknown') + '</div></div>';
+      // #1019: Show alerts when backend is reachable but degraded/critical,
+      // or the connection error when unreachable.
+      var healthSub = snap.connectionState || 'unknown';
+      if (healthStatus === 'unreachable' && snap.alerts && snap.alerts.length) {
+        healthSub = snap.alerts[0];
+      }
+      html += '<div class="sub">' + esc(healthSub) + '</div></div>';
       var totalCalls = fMetrics.reduce(function(a, m) { return a + (m.totalCalls || 0); }, 0);
       html += '<div class="stat-card"><div class="label">Function Calls</div><div class="value">' + totalCalls + '</div><div class="sub">' + fMetrics.length + ' functions tracked</div></div>';
       if (cb) {
